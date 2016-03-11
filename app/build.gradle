@@ -17,6 +17,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'DATA_GOV_IN_API_KEY', MyDataGovInApiKey
+    }
 }
 
 ext{
