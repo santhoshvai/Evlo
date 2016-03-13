@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Evlo</string>
     <string name="title_commodity_detail">Commodity Detail</string>
+    <string name="price_xml_url">https://data.gov.in/sites/default/files/Date-Wise-Prices-all-Commodity.xml</string>
 </resources>

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import info.santhosh.evlo.Services.GetXmlService;
 import info.santhosh.evlo.dummy.DummyContent;
 
 /**
@@ -37,6 +38,7 @@ public class CommodityListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        launchXmlService();
         setContentView(R.layout.activity_commodity_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -138,4 +140,15 @@ public class CommodityListActivity extends AppCompatActivity {
             }
         }
     }
+
+    // to startup the service
+    public void launchXmlService() {
+        // Construct our Intent specifying the Service
+        Intent i = new Intent(this, GetXmlService.class);
+        // Add extras to the bundle
+
+        // Start the service
+        startService(i);
+    }
+
 }
