@@ -69,7 +69,7 @@ public class CommodityContract {
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_DATA;
 
         public static final String TABLE_NAME = "commodity_data";
-        public static final String COLUMN_COMMODITY_KEY = "commodity_key";
+        public static final String COLUMN_COMMODITY_KEY = "commodity_id";
         // Column with the foreign key into the market table.
         public static final String COLUMN_MARKET_KEY = "market_id";
         // "13/03/2016"

@@ -81,5 +81,7 @@ public class TestUtilities extends AndroidTestCase {
         <Min_x0020_Price>900</Min_x0020_Price>
         <Max_x0020_Price>1100</Max_x0020_Price>
         <Modal_x0020_Price>1000</Modal_x0020_Price>
+
+        http://sqlfiddle.com/#!5/5d1f27/1
     */
 }

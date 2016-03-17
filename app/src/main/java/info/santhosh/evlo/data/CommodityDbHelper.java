@@ -4,11 +4,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import info.santhosh.evlo.data.CommodityContract.StateEntry;
+import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
+import info.santhosh.evlo.data.CommodityContract.CommodityNameEntry;
 import info.santhosh.evlo.data.CommodityContract.DistrictEntry;
 import info.santhosh.evlo.data.CommodityContract.MarketEntry;
-import info.santhosh.evlo.data.CommodityContract.CommodityNameEntry;
-import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
+import info.santhosh.evlo.data.CommodityContract.StateEntry;
 
 /**
  * Manages a local database for commodity data
@@ -73,6 +73,7 @@ public class CommodityDbHelper  extends SQLiteOpenHelper {
                 " UNIQUE (" + CommodityDataEntry.COLUMN_ARRIVAL_DATE + ", " +
                 CommodityDataEntry.COLUMN_COMMODITY_KEY + ", " +
                 CommodityDataEntry.COLUMN_MARKET_KEY + ") ON CONFLICT REPLACE);";
+
         db.execSQL(SQL_CREATE_STATE_TABLE);
         db.execSQL(SQL_CREATE_DISTRICT_TABLE);
         db.execSQL(SQL_CREATE_MARKET_TABLE);

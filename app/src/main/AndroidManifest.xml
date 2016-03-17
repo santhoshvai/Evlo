@@ -32,6 +32,10 @@
         <service
             android:name=".Services.GetXmlService"
             android:exported="false"/>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".data.CommodityProvider"
+            android:exported="false" />
     </application>
 
 </manifest>
