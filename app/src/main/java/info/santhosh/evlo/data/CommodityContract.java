@@ -40,19 +40,46 @@ public class CommodityContract {
         public static Uri buildStateUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
+        public static String getStateFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
     }
     public static final class DistrictEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_DISTRICT).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DISTRICT;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DISTRICT;
+
         public static final String TABLE_NAME = "district";
         public static final String COLUMN_DISTRICT_NAME = "district_name";
         public static final String COLUMN_STATE_KEY = "state_id";
     }
     public static final class MarketEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_DISTRICT).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MARKET;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MARKET;
+
         public static final String TABLE_NAME = "market";
         public static final String COLUMN_DISTRICT_KEY = "district_id";
         public static final String COLUMN_MARKET_NAME = "market_name";
+
+        public static String getMarketFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
     }
     public static final class CommodityNameEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_COMMODITY_NAME).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_NAME;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_NAME;
+
         public static final String TABLE_NAME = "commodity_variety_name";
         // "Chapathi"
         public static final String COLUMN_VARIETY = "variety";

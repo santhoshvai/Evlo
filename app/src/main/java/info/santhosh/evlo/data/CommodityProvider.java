@@ -19,7 +19,11 @@ public class CommodityProvider extends ContentProvider {
 
     static final int COMMODITY_DATA = 100;
     static final int COMMODITY_DATA_WITH_MARKET = 101;
-    static final int COMMODITY_DATA_WITH_STATE = 102;
+    static final int ALL_COMMODITY_DATA_FOR_MARKET = 102;
+    static final int ALL_COMMODITY_DATA_FOR_STATE = 103;
+    static final int COMMODITY_NAME = 200;
+    static final int MARKET = 300;
+    static final int DISTRICT = 400;
     static final int STATE = 500;
 
     private static final SQLiteQueryBuilder sCommodityByMarketQueryBuilder;
@@ -67,6 +71,16 @@ public class CommodityProvider extends ContentProvider {
             CommodityContract.MarketEntry.TABLE_NAME+
                     "." + CommodityContract.MarketEntry.COLUMN_MARKET_NAME + " = ? ";
 
+    //state.state_name = ?
+    private static final String sStateNameSelection =
+            CommodityContract.StateEntry.TABLE_NAME+
+                    "." + CommodityContract.StateEntry.COLUMN_STATE_NAME + " = ? ";
+
+    //commodity_variety_name.commodity_name = ?
+    private static final String sCommodityNameSelection =
+                    CommodityContract.CommodityNameEntry.TABLE_NAME +
+                    "." + CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " = ? ";
+
     //market.market_name = ? AND commodity_variety_name.commodity_name = ?
     private static final String sMarketNameWithCommodityNameSelection =
             CommodityContract.MarketEntry.TABLE_NAME +
@@ -83,9 +97,13 @@ public class CommodityProvider extends ContentProvider {
         final String authority = CommodityContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA, COMMODITY_DATA);
-        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*", COMMODITY_DATA_WITH_MARKET);
-
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*", COMMODITY_DATA);
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*/*", COMMODITY_DATA_WITH_MARKET);
+        matcher.addURI(authority, CommodityContract.PATH_MARKET + "/*", ALL_COMMODITY_DATA_FOR_MARKET);
+        matcher.addURI(authority, CommodityContract.PATH_STATE + "/*", ALL_COMMODITY_DATA_FOR_STATE);
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME, COMMODITY_NAME);
+        matcher.addURI(authority, CommodityContract.PATH_MARKET, MARKET);
+        matcher.addURI(authority, CommodityContract.PATH_DISTRICT, DISTRICT);
         matcher.addURI(authority, CommodityContract.PATH_STATE, STATE);
         return matcher;
     }
@@ -96,10 +114,129 @@ public class CommodityProvider extends ContentProvider {
         return true;
     }
 
-    @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        // Here's the switch statement that, given a URI, will determine what kind of request it is,
+        // and query the database accordingly.
+        Cursor retCursor;
+        switch (sUriMatcher.match(uri)) {
+            // "commodity_data/*/*"
+            case COMMODITY_DATA_WITH_MARKET:
+            {
+                String commodity = CommodityContract.CommodityDataEntry.getCommodityFromUri(uri);
+                String market = CommodityContract.CommodityDataEntry.getMarketFromUri(uri);
+                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                        projection,
+                        sMarketNameWithCommodityNameSelection, // selection
+                        new String[]{commodity, market}, //selectionArgs
+                        null, //groupBy
+                        null, //having
+                        sortOrder
+                );
+                break;
+            }
+            // "commodity_data/*"
+            case COMMODITY_DATA:
+            {
+                String commodity = CommodityContract.CommodityDataEntry.getCommodityFromUri(uri);
+                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                        projection,
+                        sCommodityNameSelection, // selection
+                        new String[]{commodity}, //selectionArgs
+                        null, //groupBy
+                        null, //having
+                        sortOrder
+                );
+                break;
+            }
+            // "market/*"
+            case ALL_COMMODITY_DATA_FOR_MARKET: {
+                String market = CommodityContract.MarketEntry.getMarketFromUri(uri);
+                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                        projection,
+                        sMarketNameSelection, // selection
+                        new String[]{market}, //selectionArgs
+                        null, //groupBy
+                        null, //having
+                        sortOrder
+                );
+                break;
+            }
+            // "state/*"
+            case ALL_COMMODITY_DATA_FOR_STATE: {
+                String state = CommodityContract.StateEntry.getStateFromUri(uri);
+                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                        projection,
+                        sStateNameSelection, // selection
+                        new String[]{state}, //selectionArgs
+                        null, //groupBy
+                        null, //having
+                        sortOrder
+                );
+                break;
+            }
+            // "commodity_name"
+            case COMMODITY_NAME: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        CommodityContract.CommodityNameEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            // "market"
+            case MARKET: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        CommodityContract.MarketEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            // "district"
+            case DISTRICT: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        CommodityContract.DistrictEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+            // "state"
+            case STATE: {
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        CommodityContract.StateEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            }
+
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        // Setting the notification URI of the cursor to the one that was passed causes the cursor
+        // to register a content observer, to watch for changes that happen to that URI and any of
+        // its descendants. This allows the content provider to easily tell the UI when the
+        // cursor changes, on operations like database insert or update.
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return retCursor;
     }
 
     /*
@@ -111,11 +248,20 @@ public class CommodityProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            // Student: Uncomment and fill out these two cases
             case COMMODITY_DATA_WITH_MARKET:
                 return CommodityContract.CommodityDataEntry.CONTENT_ITEM_TYPE;
             case COMMODITY_DATA:
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
+            case ALL_COMMODITY_DATA_FOR_MARKET:
+                return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
+            case ALL_COMMODITY_DATA_FOR_STATE:
+                return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
+            case COMMODITY_NAME:
+                return CommodityContract.CommodityNameEntry.CONTENT_TYPE;
+            case MARKET:
+                return CommodityContract.MarketEntry.CONTENT_TYPE;
+            case DISTRICT:
+                return CommodityContract.DistrictEntry.CONTENT_TYPE;
             case STATE:
                 return CommodityContract.StateEntry.CONTENT_TYPE;
             default:
