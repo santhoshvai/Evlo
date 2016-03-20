@@ -55,6 +55,10 @@ public class CommodityContract {
         public static final String TABLE_NAME = "district";
         public static final String COLUMN_DISTRICT_NAME = "district_name";
         public static final String COLUMN_STATE_KEY = "state_id";
+
+        public static Uri buildDistrictUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
     public static final class MarketEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
@@ -71,6 +75,10 @@ public class CommodityContract {
         public static String getMarketFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
         }
+
+        public static Uri buildMarketUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
     public static final class CommodityNameEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
@@ -85,6 +93,10 @@ public class CommodityContract {
         public static final String COLUMN_VARIETY = "variety";
         // "Tamarind fruit"
         public static final String COLUMN_COMMODITY_NAME = "commodity_name";
+
+        public static Uri buildCommodityNameUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 
     public static final class CommodityDataEntry implements BaseColumns {

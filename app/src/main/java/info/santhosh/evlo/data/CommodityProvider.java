@@ -4,9 +4,9 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 
 /**
  * Created by santhoshvai on 16/03/16.
@@ -21,6 +21,7 @@ public class CommodityProvider extends ContentProvider {
     static final int COMMODITY_DATA_WITH_MARKET = 101;
     static final int ALL_COMMODITY_DATA_FOR_MARKET = 102;
     static final int ALL_COMMODITY_DATA_FOR_STATE = 103;
+    static final int ALL_COMMODITY_DATA_FOR_COMMODITY_NAME = 104;
     static final int COMMODITY_NAME = 200;
     static final int MARKET = 300;
     static final int DISTRICT = 400;
@@ -97,10 +98,16 @@ public class CommodityProvider extends ContentProvider {
         final String authority = CommodityContract.CONTENT_AUTHORITY;
 
         // For each type of URI you want to add, create a corresponding code.
-        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*", COMMODITY_DATA);
-        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*/*", COMMODITY_DATA_WITH_MARKET);
+        //commodity_data
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA, COMMODITY_DATA);
+        // commodity_data/*/market/*
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*" +
+                CommodityContract.PATH_MARKET + "/*", COMMODITY_DATA_WITH_MARKET);
         matcher.addURI(authority, CommodityContract.PATH_MARKET + "/*", ALL_COMMODITY_DATA_FOR_MARKET);
         matcher.addURI(authority, CommodityContract.PATH_STATE + "/*", ALL_COMMODITY_DATA_FOR_STATE);
+        // commodity_variety_name/*
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME
+                + "/*", ALL_COMMODITY_DATA_FOR_COMMODITY_NAME);
         matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME, COMMODITY_NAME);
         matcher.addURI(authority, CommodityContract.PATH_MARKET, MARKET);
         matcher.addURI(authority, CommodityContract.PATH_DISTRICT, DISTRICT);
@@ -120,7 +127,7 @@ public class CommodityProvider extends ContentProvider {
         // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // "commodity_data/*/*"
+            // commodity_data/*/market/*
             case COMMODITY_DATA_WITH_MARKET:
             {
                 String commodity = CommodityContract.CommodityDataEntry.getCommodityFromUri(uri);
@@ -249,7 +256,7 @@ public class CommodityProvider extends ContentProvider {
 
         switch (match) {
             case COMMODITY_DATA_WITH_MARKET:
-                return CommodityContract.CommodityDataEntry.CONTENT_ITEM_TYPE;
+                return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
             case COMMODITY_DATA:
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
             case ALL_COMMODITY_DATA_FOR_MARKET:
@@ -269,19 +276,157 @@ public class CommodityProvider extends ContentProvider {
         }
     }
 
-    @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        Uri returnUri;
+
+        switch (match) {
+            case COMMODITY_DATA: {
+                long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = CommodityContract.CommodityDataEntry.buildCommodityDataUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case COMMODITY_NAME: {
+                long _id = db.insert(CommodityContract.CommodityNameEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = CommodityContract.CommodityNameEntry.buildCommodityNameUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case MARKET: {
+                long _id = db.insert(CommodityContract.MarketEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = CommodityContract.MarketEntry.buildMarketUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case STATE: {
+                long _id = db.insert(CommodityContract.StateEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = CommodityContract.StateEntry.buildStateUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case DISTRICT: {
+                long _id = db.insert(CommodityContract.DistrictEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = CommodityContract.DistrictEntry.buildDistrictUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int rowsDeleted;
+        // this makes delete all rows return the number of rows deleted
+        if ( null == selection ) selection = "1";
+        switch (match) {
+            case COMMODITY_DATA:
+                rowsDeleted = db.delete(
+                        CommodityContract.CommodityDataEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case MARKET:
+                rowsDeleted = db.delete(
+                        CommodityContract.MarketEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case COMMODITY_NAME:
+                rowsDeleted = db.delete(
+                        CommodityContract.CommodityNameEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case STATE:
+                rowsDeleted = db.delete(
+                        CommodityContract.StateEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case DISTRICT:
+                rowsDeleted = db.delete(
+                        CommodityContract.DistrictEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        int rowsUpdated;
+        // this makes delete all rows return the number of rows deleted
+        if ( null == selection ) selection = "1";
+        switch (match) {
+            case COMMODITY_DATA:
+                rowsUpdated = db.update(
+                        CommodityContract.CommodityDataEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case MARKET:
+                rowsUpdated = db.update(
+                        CommodityContract.MarketEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case COMMODITY_NAME:
+                rowsUpdated = db.update(
+                        CommodityContract.CommodityNameEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case STATE:
+                rowsUpdated = db.update(
+                        CommodityContract.StateEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case DISTRICT:
+                rowsUpdated = db.update(
+                        CommodityContract.DistrictEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case COMMODITY_DATA:
+                db.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 }
