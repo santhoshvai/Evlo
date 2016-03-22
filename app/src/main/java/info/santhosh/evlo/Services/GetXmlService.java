@@ -45,10 +45,14 @@ public class GetXmlService  extends IntentService {
         try{
             Response response = client.newCall(request).execute(); // synchronous
             final String responseXml = response.body().string();
-            //Log.d(TAG, responseXml);
             Serializer serializer = new Persister(new AnnotationStrategy());
             SOAPEnvelope envelope = serializer.read(SOAPEnvelope.class, responseXml);
             Log.d(TAG, envelope.getCommodities().getCommodities().get(0).toString());
+            // INSERT VALUES TO TABLE HERE
+            // STATE -> DISTRICT -> MARKET -> get Id
+            // commodity_name -> get Id
+            // use both id to build commodityData table
+            // see https://github.com/udacity/Sunshine-Version-2/blob/5.19_accessibility/app/src/main/java/com/example/android/sunshine/app/FetchWeatherTask.java
         } catch(Exception e) {
             Log.e(TAG, "Exception: "+ e.getMessage());
         }
