@@ -34,7 +34,7 @@ public class WriteDb {
         Vector<ContentValues> cVVector = new Vector<ContentValues>(commodities.size());
 
         for(Commodity commodity : commodities) {
-            ContentValues weatherValues = new ContentValues();
+            ContentValues commodityValues = new ContentValues();
 
             // STATE -> DISTRICT -> MARKET -> get Id
             long stateId = addState(commodity.getState());
@@ -44,12 +44,14 @@ public class WriteDb {
             // commodity_name -> get Id
             long commodityId = addCommodityName(commodity.getCommodity(), commodity.getVariety());
 
-            weatherValues.put(CommodityDataEntry.COLUMN_COMMODITY_KEY, commodityId);
-            weatherValues.put(CommodityDataEntry.COLUMN_MARKET_KEY, marketId);
-            weatherValues.put(CommodityDataEntry.COLUMN_ARRIVAL_DATE, commodity.getArrival_Date());
-            weatherValues.put(CommodityDataEntry.COLUMN_MAX_PRICE, commodity.getMax_Price());
-            weatherValues.put(CommodityDataEntry.COLUMN_MIN_PRICE, commodity.getMin_Price());
-            weatherValues.put(CommodityDataEntry.COLUMN_MODAL_PRICE, commodity.getModal_Price());
+            commodityValues.put(CommodityDataEntry.COLUMN_COMMODITY_KEY, commodityId);
+            commodityValues.put(CommodityDataEntry.COLUMN_MARKET_KEY, marketId);
+            commodityValues.put(CommodityDataEntry.COLUMN_ARRIVAL_DATE, commodity.getArrival_Date());
+            commodityValues.put(CommodityDataEntry.COLUMN_MAX_PRICE, commodity.getMax_Price());
+            commodityValues.put(CommodityDataEntry.COLUMN_MIN_PRICE, commodity.getMin_Price());
+            commodityValues.put(CommodityDataEntry.COLUMN_MODAL_PRICE, commodity.getModal_Price());
+
+            cVVector.add(commodityValues);
         }
 
         // add to database
