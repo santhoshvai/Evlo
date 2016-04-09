@@ -34,6 +34,50 @@ public class Commodity {
     @Element(name = "Min_x0020_Price")
     private String Min_Price;
 
+    public String getId() {
+        return Id;
+    }
+
+    public String getRowOrder() {
+        return RowOrder;
+    }
+
+    public String getState() {
+        return State;
+    }
+
+    public String getVariety() {
+        return Variety;
+    }
+
+    public String getDistrict() {
+        return District;
+    }
+
+    public String getCommodity() {
+        return Commodity;
+    }
+
+    public String getMarket() {
+        return Market;
+    }
+
+    public String getArrival_Date() {
+        return Arrival_Date;
+    }
+
+    public String getMax_Price() {
+        return Max_Price;
+    }
+
+    public String getModal_Price() {
+        return Modal_Price;
+    }
+
+    public String getMin_Price() {
+        return Min_Price;
+    }
+
     @Override
     public String toString() {
         return "Commodity{" +

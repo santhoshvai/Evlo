@@ -10,6 +10,7 @@ import org.simpleframework.xml.core.Persister;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.Services.SOAP.SOAPEnvelope;
+import info.santhosh.evlo.Services.SOAP.WriteDb;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -53,6 +54,8 @@ public class GetXmlService  extends IntentService {
             // commodity_name -> get Id
             // use both id to build commodityData table
             // see https://github.com/udacity/Sunshine-Version-2/blob/5.19_accessibility/app/src/main/java/com/example/android/sunshine/app/FetchWeatherTask.java
+            WriteDb writeDb = new WriteDb(getApplicationContext());
+            writeDb.usingCommoditiesList(envelope.getCommodities().getCommodities());
         } catch(Exception e) {
             Log.e(TAG, "Exception: "+ e.getMessage());
         }
