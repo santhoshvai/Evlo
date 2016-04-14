@@ -16,7 +16,7 @@ import info.santhosh.evlo.data.CommodityContract.StateEntry;
  */
 public class CommodityDbHelper  extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     static final String DATABASE_NAME = "commodities.db";
 
@@ -34,18 +34,24 @@ public class CommodityDbHelper  extends SQLiteOpenHelper {
         // Create a table to hold district name.
         final String SQL_CREATE_DISTRICT_TABLE = "CREATE TABLE " + DistrictEntry.TABLE_NAME + " ( " +
                 DistrictEntry._ID + " INTEGER PRIMARY KEY, " +
-                DistrictEntry.COLUMN_DISTRICT_NAME + " TEXT UNIQUE NOT NULL, " +
+                DistrictEntry.COLUMN_DISTRICT_NAME + " TEXT NOT NULL, " +
                 DistrictEntry.COLUMN_STATE_KEY + " INTEGER , " +
                 " FOREIGN KEY (" + DistrictEntry.COLUMN_STATE_KEY + ") REFERENCES " +
                 StateEntry.TABLE_NAME + " (" + StateEntry._ID + ") " +
+                // STATE-DISTRICT UNIQUE PAIR
+                " UNIQUE (" +  DistrictEntry.COLUMN_DISTRICT_NAME + ", " +
+                DistrictEntry.COLUMN_STATE_KEY + ") ON CONFLICT REPLACE" +
                 " );";
         // Create a table to hold market name.
         final String SQL_CREATE_MARKET_TABLE = "CREATE TABLE " + MarketEntry.TABLE_NAME + " ( " +
                 MarketEntry._ID + " INTEGER PRIMARY KEY," +
-                MarketEntry.COLUMN_MARKET_NAME + " TEXT UNIQUE NOT NULL, " +
+                MarketEntry.COLUMN_MARKET_NAME + " TEXT NOT NULL, " +
                 MarketEntry.COLUMN_DISTRICT_KEY + " INTEGER , " +
                 " FOREIGN KEY (" + MarketEntry.COLUMN_DISTRICT_KEY + ") REFERENCES " +
-                DistrictEntry.TABLE_NAME + " (" + DistrictEntry._ID + ") " +
+                DistrictEntry.TABLE_NAME + " (" + DistrictEntry._ID + "), " +
+                // MARKET-DISTRICT UNIQUE PAIR
+                " UNIQUE (" +  MarketEntry.COLUMN_MARKET_NAME + ", " +
+                MarketEntry.COLUMN_DISTRICT_KEY + ") ON CONFLICT REPLACE" +
                 " );";
         // Create a table to hold market name.
         final String SQL_CREATE_COMMODITY_NAME_TABLE = "CREATE TABLE " + CommodityNameEntry.TABLE_NAME + " ( " +

@@ -44,18 +44,28 @@ public class GetXmlService  extends IntentService {
                 .build();
 
         try{
+            long startTime = System.currentTimeMillis();
             Response response = client.newCall(request).execute(); // synchronous
-            final String responseXml = response.body().string();
+            final String responseXml = response.body().string(); // get the xml string
             Serializer serializer = new Persister(new AnnotationStrategy());
             SOAPEnvelope envelope = serializer.read(SOAPEnvelope.class, responseXml);
             Log.d(TAG, envelope.getCommodities().getCommodities().get(0).toString());
+            long stopTime = System.currentTimeMillis();
+            long elapsedTime = stopTime - startTime;
+            Log.d(TAG, "elapsedTime to read data: " + Long.toString(elapsedTime) );
             // INSERT VALUES TO TABLE HERE
             // STATE -> DISTRICT -> MARKET -> get Id
             // commodity_name -> get Id
             // use both id to build commodityData table
             // see https://github.com/udacity/Sunshine-Version-2/blob/5.19_accessibility/app/src/main/java/com/example/android/sunshine/app/FetchWeatherTask.java
+            startTime = System.currentTimeMillis();
+
             WriteDb writeDb = new WriteDb(getApplicationContext());
             writeDb.usingCommoditiesList(envelope.getCommodities().getCommodities());
+
+            stopTime = System.currentTimeMillis();
+            elapsedTime = stopTime - startTime;
+            Log.d(TAG, "elapsedTime to write data: " + Long.toString(elapsedTime) );
         } catch(Exception e) {
             Log.e(TAG, "Exception: "+ e.getMessage());
         }

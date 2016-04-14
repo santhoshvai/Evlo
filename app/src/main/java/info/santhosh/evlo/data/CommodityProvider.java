@@ -103,7 +103,7 @@ public class CommodityProvider extends ContentProvider {
         // commodity_data/*/market/*
         matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*" +
                 CommodityContract.PATH_MARKET + "/*", COMMODITY_DATA_WITH_MARKET);
-        matcher.addURI(authority, CommodityContract.PATH_MARKET + "/*", ALL_COMMODITY_DATA_FOR_MARKET);
+        //matcher.addURI(authority, CommodityContract.PATH_MARKET + "/*", ALL_COMMODITY_DATA_FOR_MARKET);
         matcher.addURI(authority, CommodityContract.PATH_STATE + "/*", ALL_COMMODITY_DATA_FOR_STATE);
         // commodity_variety_name/*
         matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME
@@ -156,19 +156,19 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
-            // "market/*"
-            case ALL_COMMODITY_DATA_FOR_MARKET: {
-                String market = CommodityContract.MarketEntry.getMarketFromUri(uri);
-                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        sMarketNameSelection, // selection
-                        new String[]{market}, //selectionArgs
-                        null, //groupBy
-                        null, //having
-                        sortOrder
-                );
-                break;
-            }
+//            // "market/*"
+//            case ALL_COMMODITY_DATA_FOR_MARKET: {
+//                String market = CommodityContract.MarketEntry.getMarketFromUri(uri);
+//                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+//                        projection,
+//                        sMarketNameSelection, // selection
+//                        new String[]{market}, //selectionArgs
+//                        null, //groupBy
+//                        null, //having
+//                        sortOrder
+//                );
+//                break;
+//            }
             // "state/*"
             case ALL_COMMODITY_DATA_FOR_STATE: {
                 String state = CommodityContract.StateEntry.getStateFromUri(uri);

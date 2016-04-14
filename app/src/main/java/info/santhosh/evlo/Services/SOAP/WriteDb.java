@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.util.SimpleArrayMap;
 import android.util.Log;
 
 import java.util.List;
@@ -33,17 +34,25 @@ public class WriteDb {
         // Insert the new weather information into the database
         Vector<ContentValues> cVVector = new Vector<ContentValues>(commodities.size());
 
+        // storing intermediate market values, to prevent check in db
+        SimpleArrayMap<String, Long> marketMap = new SimpleArrayMap<>();
+        // storing intermediate commodity name values, to prevent check in db
+        SimpleArrayMap<String, Long> commodityMap = new SimpleArrayMap<>();
+
         for(Commodity commodity : commodities) {
             ContentValues commodityValues = new ContentValues();
-
-            // STATE -> DISTRICT -> MARKET -> get Id
-            long stateId = addState(commodity.getState());
-            long districtId = addDistrict(commodity.getDistrict(), stateId);
-            long marketId = addMarket(commodity.getMarket(), districtId);
-
+            long marketId;
+            if(marketMap.containsKey(commodity.getMarket())) {
+                marketId = marketMap.get(commodity.getMarket());
+            } else {
+                // STATE -> DISTRICT -> MARKET -> get Id
+                long stateId = addState(commodity.getState());
+                long districtId = addDistrict(commodity.getDistrict(), stateId);
+                marketId = addMarket(commodity.getMarket(), districtId);
+                marketMap.put(commodity.getMarket(), marketId);
+            }
             // commodity_name -> get Id
             long commodityId = addCommodityName(commodity.getCommodity(), commodity.getVariety());
-
             commodityValues.put(CommodityDataEntry.COLUMN_COMMODITY_KEY, commodityId);
             commodityValues.put(CommodityDataEntry.COLUMN_MARKET_KEY, marketId);
             commodityValues.put(CommodityDataEntry.COLUMN_ARRIVAL_DATE, commodity.getArrival_Date());
@@ -126,7 +135,7 @@ public class WriteDb {
 
             // Finally, insert location data into the database.
             Uri insertedUri = mContext.getContentResolver().insert(
-                    CommodityContract.StateEntry.CONTENT_URI,
+                    CommodityContract.DistrictEntry.CONTENT_URI,
                     values
             );
 
@@ -199,7 +208,7 @@ public class WriteDb {
 
             // Finally, insert location data into the database.
             Uri insertedUri = mContext.getContentResolver().insert(
-                    CommodityContract.MarketEntry.CONTENT_URI,
+                    CommodityContract.CommodityNameEntry.CONTENT_URI,
                     values
             );
 

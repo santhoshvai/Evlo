@@ -62,7 +62,7 @@ public class CommodityContract {
     }
     public static final class MarketEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_DISTRICT).build();
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_MARKET).build();
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MARKET;
         public static final String CONTENT_ITEM_TYPE =
