@@ -22,17 +22,15 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mCommodityNameView;
+        public final TextView mVarietyNameView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
+            mVarietyNameView = (TextView) view.findViewById(R.id.variety_name);
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mCommodityNameView.getText() + "'";
-        }
     }
 
     public CommodityAdapter(Context context) {
@@ -56,6 +54,10 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
         // Read from cursor
         String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
         String varietyName = mCursor.getString(CommodityListActivity.COL_VARIETY);
+
+        holder.mCommodityNameView.setText(commodityName);
+        holder.mVarietyNameView.setText(varietyName);
+
     }
 
     @Override

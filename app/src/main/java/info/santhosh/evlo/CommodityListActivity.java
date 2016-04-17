@@ -40,6 +40,7 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
      * device.
      */
     private boolean mTwoPane;
+    private CommodityAdapter mCommodityAdapter;
 
     private static final int COMMODITY_NAME_LOADER = 0;
 
@@ -75,6 +76,9 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
             }
         });
 
+        mCommodityAdapter = new CommodityAdapter(this);
+        getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
+
         View recyclerView = findViewById(R.id.commodity_list);
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
@@ -89,7 +93,8 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+//        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        recyclerView.setAdapter(mCommodityAdapter);
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -189,13 +194,13 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
     // this is where the results you deliver appear
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        mCommodityAdapter.swapCursor(data);
     }
 
     // your chance to clean up any references to the now reset Loader data
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mCommodityAdapter.swapCursor(null);
     }
 
 }
