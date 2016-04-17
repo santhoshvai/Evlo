@@ -3,11 +3,13 @@ package info.santhosh.evlo;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import info.santhosh.evlo.Services.GetXmlService;
+import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.dummy.DummyContent;
 
 /**
@@ -37,6 +40,20 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
      * device.
      */
     private boolean mTwoPane;
+
+    private static final int COMMODITY_NAME_LOADER = 0;
+
+    // Specify the columns we need.
+    private static final String[] COMMODITY_NAME_COLUMNS = {
+            CommodityContract.CommodityNameEntry.TABLE_NAME + "." + CommodityContract.CommodityNameEntry._ID,
+            CommodityContract.CommodityNameEntry.COLUMN_VARIETY,
+            CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME
+    };
+
+    // These indices are tied to COMMODITY_NAME_COLUMNS.  If COMMODITY_NAME_COLUMNS change, these must change.
+    static final int COL_COMMODITY_ID = 0;
+    static final int COL_VARIETY = 1;
+    static final int COL_COMMODITY_NAME = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,16 +168,31 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
         startService(i);
     }
 
+    // need to use cursor loader: https://github.com/santhoshvai/Android_Notes/blob/master/SQLITE_USAGE/5_Loaders.md#using-cursor-adapter
+    // here’s where you construct the actual Loader instance
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        // Sort order:  Ascending, by name.
+        // TODO: sort by recently used
+        String sortOrder = CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " ASC";
+
+        Uri commodityNameUri = CommodityContract.CommodityNameEntry.CONTENT_URI;
+
+        return new CursorLoader(this,
+                commodityNameUri,
+                COMMODITY_NAME_COLUMNS,
+                null,
+                null,
+                sortOrder);
     }
 
+    // this is where the results you deliver appear
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
     }
 
+    // your chance to clean up any references to the now reset Loader data
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 

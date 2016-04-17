@@ -89,9 +89,9 @@ public class CommodityContract {
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_NAME;
 
         public static final String TABLE_NAME = "commodity_variety_name";
-        // "Chapathi"
+        // "Local"
         public static final String COLUMN_VARIETY = "variety";
-        // "Tamarind fruit"
+        // "Onion"
         public static final String COLUMN_COMMODITY_NAME = "commodity_name";
 
         public static Uri buildCommodityNameUri(long id) {
