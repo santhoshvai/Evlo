@@ -29,12 +29,6 @@ public class GetXmlService  extends IntentService {
     }
 
     @Override
-    public void onCreate() {
-        super.onCreate(); // if you override onCreate(), make sure to call super().
-        // If a Context object is needed, call getApplicationContext() here.
-    }
-
-    @Override
     protected void onHandleIntent(Intent intent) {
         // This describes what will happen when service is triggered
         // should be a singleton
@@ -47,12 +41,18 @@ public class GetXmlService  extends IntentService {
             long startTime = System.currentTimeMillis();
             Response response = client.newCall(request).execute(); // synchronous
             final String responseXml = response.body().string(); // get the xml string
-            Serializer serializer = new Persister(new AnnotationStrategy());
-            SOAPEnvelope envelope = serializer.read(SOAPEnvelope.class, responseXml);
-            Log.d(TAG, envelope.getCommodities().getCommodities().get(0).toString());
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;
-            Log.d(TAG, "elapsedTime to read data: " + Long.toString(elapsedTime) );
+            Log.d(TAG, "elapsedTime to get xml from network: " + Long.toString(elapsedTime) );
+
+            startTime = System.currentTimeMillis();
+            Serializer serializer = new Persister(new AnnotationStrategy());
+            SOAPEnvelope envelope = serializer.read(SOAPEnvelope.class, responseXml);
+//            Log.d(TAG, envelope.getCommodities().getCommodities().get(0).toString());
+            stopTime = System.currentTimeMillis();
+            elapsedTime = stopTime - startTime;
+            Log.d(TAG, "elapsedTime to parse data: " + Long.toString(elapsedTime) );
+
             // INSERT VALUES TO TABLE HERE
             // STATE -> DISTRICT -> MARKET -> get Id
             // commodity_name -> get Id
