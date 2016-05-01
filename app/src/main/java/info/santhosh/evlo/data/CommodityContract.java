@@ -97,6 +97,14 @@ public class CommodityContract {
         public static Uri buildCommodityNameUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static Uri buildCommodityNameSearchUri(String commodityName) {
+            return CONTENT_URI.buildUpon().appendPath(commodityName).build();
+        }
+
+        public static String getCommodityNameFromUri(Uri uri) {
+            return uri.getPathSegments().get(1);
+        }
     }
 
     public static final class CommodityDataEntry implements BaseColumns {

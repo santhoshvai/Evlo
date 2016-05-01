@@ -21,8 +21,8 @@ public class CommodityProvider extends ContentProvider {
     static final int COMMODITY_DATA_WITH_MARKET = 101;
     static final int ALL_COMMODITY_DATA_FOR_MARKET = 102;
     static final int ALL_COMMODITY_DATA_FOR_STATE = 103;
-    static final int ALL_COMMODITY_DATA_FOR_COMMODITY_NAME = 104;
     static final int COMMODITY_NAME = 200;
+    static final int SEARCH_FOR_COMMODITY_NAME = 201;
     static final int MARKET = 300;
     static final int DISTRICT = 400;
     static final int STATE = 500;
@@ -82,6 +82,11 @@ public class CommodityProvider extends ContentProvider {
                     CommodityContract.CommodityNameEntry.TABLE_NAME +
                     "." + CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " = ? ";
 
+    //commodity_variety_name.commodity_name = ?
+    private static final String sCommodityNameSearchSelection =
+            CommodityContract.CommodityNameEntry.TABLE_NAME +
+                    "." + CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " LIKE ?";
+
     //market.market_name = ? AND commodity_variety_name.commodity_name = ?
     private static final String sMarketNameWithCommodityNameSelection =
             CommodityContract.MarketEntry.TABLE_NAME +
@@ -107,7 +112,7 @@ public class CommodityProvider extends ContentProvider {
         matcher.addURI(authority, CommodityContract.PATH_STATE + "/*", ALL_COMMODITY_DATA_FOR_STATE);
         // commodity_variety_name/*
         matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME
-                + "/*", ALL_COMMODITY_DATA_FOR_COMMODITY_NAME);
+                + "/*", SEARCH_FOR_COMMODITY_NAME);
         matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME, COMMODITY_NAME);
         matcher.addURI(authority, CommodityContract.PATH_MARKET, MARKET);
         matcher.addURI(authority, CommodityContract.PATH_DISTRICT, DISTRICT);
@@ -182,16 +187,33 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
-            // "commodity_name"
+            case SEARCH_FOR_COMMODITY_NAME: {
+                String commodityName =  CommodityContract.CommodityNameEntry.getCommodityNameFromUri(uri);
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        true,
+                        CommodityContract.CommodityNameEntry.TABLE_NAME,
+                        projection,
+                        sCommodityNameSearchSelection,
+                        new String[]{"%"+commodityName+"%"}, // example LIKE %apple%
+                        CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME, // groupby
+                        null,
+                        sortOrder,
+                        null
+                );
+                break;
+            }
+            // "commodity_name" - DISTINCT: http://stackoverflow.com/a/13879436/3394023
             case COMMODITY_NAME: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
+                        true, // distinct
                         CommodityContract.CommodityNameEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
+                        CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME, // groupby
                         null,
-                        null,
-                        sortOrder
+                        sortOrder,
+                        null // limit
                 );
                 break;
             }

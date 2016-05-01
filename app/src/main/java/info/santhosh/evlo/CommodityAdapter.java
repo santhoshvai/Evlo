@@ -2,7 +2,11 @@ package info.santhosh.evlo;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +19,7 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
 
     private Cursor mCursor;
     final private Context mContext;
+    private String mFilterSearch;
 
     /**
      * Cache of the children views for a commodity list item.
@@ -22,19 +27,20 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mCommodityNameView;
-        public final TextView mVarietyNameView;
+//        public final TextView mVarietyNameView;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
             mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
-            mVarietyNameView = (TextView) view.findViewById(R.id.variety_name);
+//            mVarietyNameView = (TextView) view.findViewById(R.id.variety_name);
         }
 
     }
 
-    public CommodityAdapter(Context context) {
+    public CommodityAdapter(Context context, String filter) {
         mContext = context;
+        mFilterSearch = filter;
     }
 
     @Override
@@ -52,11 +58,26 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
     public void onBindViewHolder(CommodityAdapter.ViewHolder holder, int position) {
         mCursor.moveToPosition(position);
         // Read from cursor
-        String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
-        String varietyName = mCursor.getString(CommodityListActivity.COL_VARIETY);
 
-        holder.mCommodityNameView.setText(commodityName);
-        holder.mVarietyNameView.setText(varietyName);
+        String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
+
+        if(mFilterSearch.length() > 0 ) {
+            // highlight searched text - http://stackoverflow.com/a/23967561/3394023
+            int startPos = commodityName.toLowerCase().indexOf(mFilterSearch.toLowerCase());
+            int endPos = startPos + mFilterSearch.length();
+
+            if (startPos != -1) // This should always be true, just a sanity check
+            {
+                Spannable spannable = new SpannableString(commodityName);
+                // #4fc3f7 Color
+                spannable.setSpan(new ForegroundColorSpan(Color.rgb(79,195,247)), startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                holder.mCommodityNameView.setText(spannable);
+            }
+
+        } else {
+            holder.mCommodityNameView.setText(commodityName);
+        }
+
 
     }
 
@@ -74,5 +95,9 @@ public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.View
 
     public Cursor getCursor() {
         return mCursor;
+    }
+
+    public void setmFilterSearch(String query) {
+        mFilterSearch = query;
     }
 }

@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<TextView android:id="@+id/commodity_name"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/commodity_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem"
-        tools:text = "Onion"/>
-    <TextView
-        android:id="@+id/variety_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItemSmall"
-        android:textSize="11sp"
-        tools:text = "Local"/>
-</LinearLayout>
+    android:layout_margin="@dimen/text_margin"
+    android:textAppearance="?attr/textAppearanceListItem"
+    android:textStyle="bold"
+    tools:text="Onion"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" />

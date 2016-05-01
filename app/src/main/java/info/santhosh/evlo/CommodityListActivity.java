@@ -12,15 +12,21 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.lang.reflect.Field;
 
 import info.santhosh.evlo.Services.GetXmlService;
 import info.santhosh.evlo.data.CommodityContract;
@@ -33,7 +39,8 @@ import info.santhosh.evlo.data.CommodityContract;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class CommodityListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CommodityListActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -43,6 +50,7 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
     private CommodityAdapter mCommodityAdapter;
 
     private static final int COMMODITY_NAME_LOADER = 0;
+    private static final String LOG_TAG = "Main_Activity";
 
     // Specify the columns we need.
     private static final String[] COMMODITY_NAME_COLUMNS = {
@@ -60,6 +68,9 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
      * Whether the service has already started
      */
     private boolean mServiceStarted = false;
+
+    private String mSearchQuery = "";
+    private boolean mSearchViewExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +92,9 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
             }
         });
 
-        mCommodityAdapter = new CommodityAdapter(this);
+        mCommodityAdapter = new CommodityAdapter(this, mSearchQuery);
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
+        getSupportLoaderManager().enableDebugLogging(true);
 
         View recyclerView = findViewById(R.id.commodity_list);
         assert recyclerView != null;
@@ -99,8 +111,11 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        // Save the user's current game state
+        // Save whether the service has already been started
         savedInstanceState.putBoolean("mServiceStarted", mServiceStarted);
+
+        savedInstanceState.putString("mSearchQuery", mSearchQuery);
+        savedInstanceState.putBoolean("mSearchViewExpanded", mSearchViewExpanded);
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
@@ -111,6 +126,8 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
         super.onRestoreInstanceState(savedInstanceState);
 
         mServiceStarted = savedInstanceState.getBoolean("mServiceStarted");
+        mSearchQuery = savedInstanceState.getString("mSearchQuery","");
+        mSearchViewExpanded = savedInstanceState.getBoolean("mSearchViewExpanded");
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -139,6 +156,17 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
         String sortOrder = CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " ASC";
 
         Uri commodityNameUri = CommodityContract.CommodityNameEntry.CONTENT_URI;
+
+        if(args != null) {
+            String name = args.getString("name","");
+            Log.d(LOG_TAG, "onCreateLoader: "+ name);
+            return new CursorLoader(this,
+                    CommodityContract.CommodityNameEntry.buildCommodityNameSearchUri(name),
+                    COMMODITY_NAME_COLUMNS,
+                    null,
+                    null,
+                    sortOrder);
+        }
 
         return new CursorLoader(this,
                 commodityNameUri,
@@ -169,11 +197,72 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
         // Associate searchable configuration with the SearchView
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
+
+        MenuItem searchItem = menu.findItem(R.id.search_commodities);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE); // occupy full width
         // The call to getSearchableInfo() obtains a SearchableInfo object that is created from the searchable configuration XML file.
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
+
+        // This sets the cursor blink to be White
+        final EditText searchTextView = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+        try {
+            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+            mCursorDrawableRes.setAccessible(true);
+            mCursorDrawableRes.set(searchTextView, 0);
+        } catch (Exception e) {}
+
+        // if previous searchQuery is present - due to configuration changes
+        if (mSearchViewExpanded) {
+            searchItem.expandActionView();
+            searchView.setQuery(mSearchQuery, false);
+            ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
+            if(mSearchQuery.length() >0) {
+                // preserve the highlight
+                mCommodityAdapter.setmFilterSearch(mSearchQuery);
+                mCommodityAdapter.notifyDataSetChanged();
+            }
+            // searchView.clearFocus(); // hide keyboard
+        }
+
+        searchView.setOnQueryTextListener(
+                new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextChange(String query) {
+                        Bundle args = new Bundle();
+                        query = query.trim();
+                        args.putString("name", query);
+                        mSearchQuery = query;
+                        getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, CommodityListActivity.this);
+                        mCommodityAdapter.setmFilterSearch(query);
+                        return false;
+                    }
+                    @Override
+                    public boolean onQueryTextSubmit(String query) { return false; }
+                }
+        );
+
+        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.search_commodities),
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        // hide FAB
+                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.GONE);
+                        mSearchViewExpanded = true;
+                        return true; //true if item should expand
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        // FAB should re-appear
+                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.VISIBLE);
+                        mSearchQuery = "";
+                        mSearchViewExpanded = false;
+                        return true; //true if item should collapse
+                    }
+                }
+        );
 
         return true;
     }
@@ -187,10 +276,9 @@ public class CommodityListActivity extends AppCompatActivity implements LoaderMa
         if (id == R.id.action_refresh) {
             mServiceStarted = false;
             launchXmlService();
-            Toast.makeText(getApplicationContext(), "Refresh clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Data refresh started..", Toast.LENGTH_SHORT).show();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
