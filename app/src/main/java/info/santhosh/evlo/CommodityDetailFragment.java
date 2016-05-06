@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -65,6 +67,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     private CommodityDetailAdapter mCommodityDetailAdapter;
 
     public static final String LOG_TAG = "CommodityDetailFragment";
+    private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityDetailFragment.recycler.layout";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -105,6 +108,24 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         recyclerView.setAdapter(mCommodityDetailAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.commodity_detail_list);
+        if(savedInstanceState != null)
+        {
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.commodity_detail_list);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
     }
 
     @Override

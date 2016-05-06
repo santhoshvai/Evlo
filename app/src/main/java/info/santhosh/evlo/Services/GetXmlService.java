@@ -4,6 +4,10 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
 
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
@@ -11,9 +15,6 @@ import org.simpleframework.xml.core.Persister;
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.Services.SOAP.SOAPEnvelope;
 import info.santhosh.evlo.Services.SOAP.WriteDb;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by santhoshvai on 12/03/16.
@@ -33,6 +34,7 @@ public class GetXmlService  extends IntentService {
         // This describes what will happen when service is triggered
         // should be a singleton
         OkHttpClient client = new OkHttpClient();
+
         Request request = new Request.Builder()
                 .url( getApplicationContext().getResources().getString(R.string.price_xml_url) )
                 .build();
@@ -67,7 +69,8 @@ public class GetXmlService  extends IntentService {
             elapsedTime = stopTime - startTime;
             Log.d(TAG, "elapsedTime to write data: " + Long.toString(elapsedTime) );
         } catch(Exception e) {
-            Log.e(TAG, "Exception: "+ e.getMessage());
+            e.printStackTrace();
+            Log.e(TAG, e.getClass().getSimpleName()+ ": "+ e.getLocalizedMessage());
         }
     }
 }

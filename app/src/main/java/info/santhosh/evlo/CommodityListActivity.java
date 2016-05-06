@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -59,6 +60,7 @@ public class CommodityListActivity extends AppCompatActivity
 
     private static final int COMMODITY_NAME_LOADER = 0;
     private static final String LOG_TAG = "Main_Activity";
+    private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
 
     // Specify the columns we need.
     private static final String[] COMMODITY_NAME_COLUMNS = {
@@ -118,15 +120,18 @@ public class CommodityListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(Bundle outState) {
         // Save whether the service has already been started
-        savedInstanceState.putBoolean("mServiceStarted", mServiceStarted);
+        outState.putBoolean("mServiceStarted", mServiceStarted);
 
-        savedInstanceState.putString("mSearchQuery", mSearchQuery);
-        savedInstanceState.putBoolean("mSearchViewExpanded", mSearchViewExpanded);
+        outState.putString("mSearchQuery", mSearchQuery);
+        outState.putBoolean("mSearchViewExpanded", mSearchViewExpanded);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
 
         // Always call the superclass so it can save the view hierarchy state
-        super.onSaveInstanceState(savedInstanceState);
+        super.onSaveInstanceState(outState);
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -136,6 +141,9 @@ public class CommodityListActivity extends AppCompatActivity
         mServiceStarted = savedInstanceState.getBoolean("mServiceStarted");
         mSearchQuery = savedInstanceState.getString("mSearchQuery","");
         mSearchViewExpanded = savedInstanceState.getBoolean("mSearchViewExpanded");
+        Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
+        recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
