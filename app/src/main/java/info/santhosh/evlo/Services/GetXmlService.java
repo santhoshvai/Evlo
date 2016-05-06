@@ -20,7 +20,7 @@ import okhttp3.Response;
  */
 public class GetXmlService  extends IntentService {
 
-    final String TAG = "IntentService";
+    static final String TAG = "GetXmlService";
 
     // Must create a default constructor
     public GetXmlService() {

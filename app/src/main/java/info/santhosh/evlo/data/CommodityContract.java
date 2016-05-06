@@ -21,91 +21,8 @@ public class CommodityContract {
 
     // Possible paths (appended to base content URI for possible URI's)
     public static final String PATH_COMMODITY_DATA = "commodity_data";
-    public static final String PATH_COMMODITY_NAME = "commodity_name";
-    public static final String PATH_STATE = "state";
-    public static final String PATH_DISTRICT = "district";
-    public static final String PATH_MARKET = "market";
-
-    public static final class StateEntry implements BaseColumns {
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_STATE).build();
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATE;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATE;
-
-        public static final String TABLE_NAME = "state";
-        public static final String COLUMN_STATE_NAME = "state_name";
-
-        public static Uri buildStateUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-        public static String getStateFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-    }
-    public static final class DistrictEntry implements BaseColumns {
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_DISTRICT).build();
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DISTRICT;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_DISTRICT;
-
-        public static final String TABLE_NAME = "district";
-        public static final String COLUMN_DISTRICT_NAME = "district_name";
-        public static final String COLUMN_STATE_KEY = "state_id";
-
-        public static Uri buildDistrictUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-    }
-    public static final class MarketEntry implements BaseColumns {
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_MARKET).build();
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MARKET;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MARKET;
-
-        public static final String TABLE_NAME = "market";
-        public static final String COLUMN_DISTRICT_KEY = "district_id";
-        public static final String COLUMN_MARKET_NAME = "market_name";
-
-        public static String getMarketFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-
-        public static Uri buildMarketUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-    }
-    public static final class CommodityNameEntry implements BaseColumns {
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_COMMODITY_NAME).build();
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_NAME;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_NAME;
-
-        public static final String TABLE_NAME = "commodity_variety_name";
-        // "Local"
-        public static final String COLUMN_VARIETY = "variety";
-        // "Onion"
-        public static final String COLUMN_COMMODITY_NAME = "commodity_name";
-
-        public static Uri buildCommodityNameUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-
-        public static Uri buildCommodityNameSearchUri(String commodityName) {
-            return CONTENT_URI.buildUpon().appendPath(commodityName).build();
-        }
-
-        public static String getCommodityNameFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
-        }
-    }
+    public static final String PATH_COMMODITY_VARIETY = "commodity_variety";
+    public static final String PATH_COMMODITY_VARIETY_DETAIL = "commodity_variety_detail";
 
     public static final class CommodityDataEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
@@ -116,9 +33,11 @@ public class CommodityContract {
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_DATA;
 
         public static final String TABLE_NAME = "commodity_data";
-        public static final String COLUMN_COMMODITY_KEY = "commodity_id";
-        // Column with the foreign key into the market table.
-        public static final String COLUMN_MARKET_KEY = "market_id";
+        // "Local"
+        public static final String COLUMN_VARIETY = "variety";
+        // "Onion"
+        public static final String COLUMN_COMMODITY_NAME = "commodity_name";
+
         // "13/03/2016"
         public static final String COLUMN_ARRIVAL_DATE = "arrival_date";
         // "8000"
@@ -128,26 +47,36 @@ public class CommodityContract {
         // "9000"
         public static final String COLUMN_MIN_PRICE = "min_price";
 
+        public static final String COLUMN_MARKET_NAME = "market_name";
+
+        public static final String COLUMN_DISTRICT_NAME = "district_name";
+
+        public static final String COLUMN_STATE_NAME = "state_name";
+
         public static Uri buildCommodityDataUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildCommodity(String commodityName) {
-            return CONTENT_URI.buildUpon().appendPath(commodityName).build();
+        // commodity_data/commodity_variety
+        public static Uri buildAllCommodityNames() {
+            return CONTENT_URI.buildUpon().appendPath(PATH_COMMODITY_VARIETY).build();
         }
 
-
-        public static Uri buildCommodityWithMarket(String commodityName, String marketName) {
-            return CONTENT_URI.buildUpon().appendPath(commodityName)
-                    .appendPath(marketName).build();
+        // commodity_data/*
+        public static Uri buildCommodityNameDetailUri(String commodityName) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_COMMODITY_VARIETY_DETAIL)
+                    .appendPath(commodityName).build();
         }
 
-        public static String getCommodityFromUri(Uri uri) {
-            return uri.getPathSegments().get(1);
+        // commodity_data/commodity_variety/*
+        public static Uri buildCommodityNameSearchUri(String commodityName) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_COMMODITY_VARIETY)
+                    .appendPath(commodityName).build();
         }
 
-        public static String getMarketFromUri(Uri uri) {
-            return uri.getPathSegments().get(2);
+        public static String getCommodityNameFromUri(Uri uri) {
+            return uri.getLastPathSegment();
         }
+
     }
 }

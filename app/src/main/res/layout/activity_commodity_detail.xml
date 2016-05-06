@@ -38,6 +38,7 @@
         android:id="@+id/commodity_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:layout="@layout/commodity_detail"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton

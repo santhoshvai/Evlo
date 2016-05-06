@@ -5,4 +5,6 @@
     <string name="content_authority">info.santhosh.evlo</string>
     <string name="search_hint">Search Commodities</string>
     <string name="action_refresh">Refresh data</string>
+    <string name="rupee_symbol">\u20B9</string>
+    <string name="modal_price">\u20B9 %1$s</string>
 </resources>

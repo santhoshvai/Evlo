@@ -4,12 +4,14 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
@@ -17,12 +19,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,9 +62,9 @@ public class CommodityListActivity extends AppCompatActivity
 
     // Specify the columns we need.
     private static final String[] COMMODITY_NAME_COLUMNS = {
-            CommodityContract.CommodityNameEntry.TABLE_NAME + "." + CommodityContract.CommodityNameEntry._ID,
-            CommodityContract.CommodityNameEntry.COLUMN_VARIETY,
-            CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME
+            CommodityContract.CommodityDataEntry.TABLE_NAME + "." + CommodityContract.CommodityDataEntry._ID,
+            CommodityContract.CommodityDataEntry.COLUMN_VARIETY,
+            CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME
     };
 
     // These indices are tied to COMMODITY_NAME_COLUMNS.  If COMMODITY_NAME_COLUMNS change, these must change.
@@ -94,7 +102,7 @@ public class CommodityListActivity extends AppCompatActivity
 
         mCommodityAdapter = new CommodityAdapter(this, mSearchQuery);
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
-        getSupportLoaderManager().enableDebugLogging(true);
+//        getSupportLoaderManager().enableDebugLogging(true);
 
         View recyclerView = findViewById(R.id.commodity_list);
         assert recyclerView != null;
@@ -153,15 +161,15 @@ public class CommodityListActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // Sort order:  Ascending, by name.
         // TODO: sort by recently used
-        String sortOrder = CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " ASC";
+        String sortOrder = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME + " ASC";
 
-        Uri commodityNameUri = CommodityContract.CommodityNameEntry.CONTENT_URI;
+        Uri commodityNameUri = CommodityContract.CommodityDataEntry.buildAllCommodityNames();
 
         if(args != null) {
             String name = args.getString("name","");
             Log.d(LOG_TAG, "onCreateLoader: "+ name);
             return new CursorLoader(this,
-                    CommodityContract.CommodityNameEntry.buildCommodityNameSearchUri(name),
+                    CommodityContract.CommodityDataEntry.buildCommodityNameSearchUri(name),
                     COMMODITY_NAME_COLUMNS,
                     null,
                     null,
@@ -281,4 +289,124 @@ public class CommodityListActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.ViewHolder> {
+
+        private Cursor mCursor;
+        final private Context mContext;
+        private String mFilterSearch;
+        private int mSelectedPos; // keep track of the selected row item
+        private boolean mSelectedState;
+
+        /**
+         * Cache of the children views for a commodity list item.
+         */
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public final View mView;
+            public final TextView mCommodityNameView;
+            public final LinearLayout mLinearLayout;
+
+            public ViewHolder(View view) {
+                super(view);
+                mView = view;
+                mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
+                mLinearLayout = (LinearLayout) view.findViewById(R.id.commodity_row);
+            }
+
+        }
+
+        public CommodityAdapter(Context context, String filter) {
+            mContext = context;
+            mFilterSearch = filter;
+        }
+
+        @Override
+        public CommodityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if ( parent instanceof RecyclerView ) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.commodity_list_content, parent, false);
+                return new ViewHolder(view);
+            } else {
+                throw new RuntimeException("Not bound to RecyclerViewSelection");
+            }
+        }
+
+        @Override
+        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, final int position) {
+            mCursor.moveToPosition(position);
+            // Read from cursor
+
+            final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
+
+            if(mFilterSearch.length() > 0 ) {
+                // highlight searched text - http://stackoverflow.com/a/23967561/3394023
+                int startPos = commodityName.toLowerCase().indexOf(mFilterSearch.toLowerCase());
+                int endPos = startPos + mFilterSearch.length();
+
+                if (startPos != -1) // This should always be true, just a sanity check
+                {
+                    Spannable spannable = new SpannableString(commodityName);
+                    // #4fc3f7 Color
+                    spannable.setSpan(new ForegroundColorSpan(Color.rgb(79,195,247)), startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    holder.mCommodityNameView.setText(spannable);
+                }
+
+            } else {
+                holder.mCommodityNameView.setText(commodityName);
+            }
+
+            if(mSelectedPos == position) {
+                if(mSelectedState) {
+                    holder.mLinearLayout.setBackgroundColor(
+                            ContextCompat.getColor(mContext, R.color.colorListRowSelect));
+                }
+            } else {
+                holder.mLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+            }
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSelectedPos = position;
+                    mSelectedState = true;
+                    if (mTwoPane) {
+                        Bundle arguments = new Bundle();
+                        arguments.putString(CommodityDetailFragment.COMMODITY_NAME, commodityName);
+                        CommodityDetailFragment fragment = new CommodityDetailFragment();
+                        fragment.setArguments(arguments);
+                        notifyDataSetChanged(); // for background colorßß
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.commodity_detail_container, fragment)
+                                .commit();
+                    } else {
+                        Context context = v.getContext();
+                        Intent intent = new Intent(context, CommodityDetailActivity.class);
+                        intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
+
+                        context.startActivity(intent);
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            if ( null == mCursor ) return 0;
+            return mCursor.getCount();
+        }
+
+
+        public void swapCursor(Cursor newCursor) {
+            mCursor = newCursor;
+            notifyDataSetChanged();
+        }
+
+        public Cursor getCursor() {
+            return mCursor;
+        }
+
+        public void setmFilterSearch(String query) {
+            mFilterSearch = query;
+        }
+    }
+
 }

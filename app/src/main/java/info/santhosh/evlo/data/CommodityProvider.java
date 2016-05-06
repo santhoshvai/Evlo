@@ -18,14 +18,9 @@ public class CommodityProvider extends ContentProvider {
     private CommodityDbHelper mOpenHelper;
 
     static final int COMMODITY_DATA = 100;
-    static final int COMMODITY_DATA_WITH_MARKET = 101;
-    static final int ALL_COMMODITY_DATA_FOR_MARKET = 102;
-    static final int ALL_COMMODITY_DATA_FOR_STATE = 103;
-    static final int COMMODITY_NAME = 200;
-    static final int SEARCH_FOR_COMMODITY_NAME = 201;
-    static final int MARKET = 300;
-    static final int DISTRICT = 400;
-    static final int STATE = 500;
+    static final int COMMODITY_DATA_WITH_NAME = 101;
+    static final int COMMODITY_NAME = 102;
+    static final int SEARCH_FOR_COMMODITY_NAME = 103;
 
     private static final SQLiteQueryBuilder sCommodityByMarketQueryBuilder;
 
@@ -34,65 +29,22 @@ public class CommodityProvider extends ContentProvider {
 
         /*
         from commodity_data
-        INNER JOIN market ON commodity_data.market_id = market._id
-        INNER JOIN commodity_variety_name ON commodity_data.commodity_id = commodity_variety_name._id
-        INNER JOIN district ON market.district_id = district._id
-        INNER JOIN state ON district.state_id = state._id
          */
         sCommodityByMarketQueryBuilder.setTables(
-                CommodityContract.CommodityDataEntry.TABLE_NAME + " INNER JOIN " +
-                        CommodityContract.MarketEntry.TABLE_NAME +
-                        " ON " + CommodityContract.CommodityDataEntry.TABLE_NAME +
-                        "." + CommodityContract.CommodityDataEntry.COLUMN_MARKET_KEY +
-                        " = " + CommodityContract.MarketEntry.TABLE_NAME +
-                        "." + CommodityContract.MarketEntry._ID
-                        + " INNER JOIN " +
-                        CommodityContract.CommodityNameEntry.TABLE_NAME +
-                        " ON " + CommodityContract.CommodityDataEntry.TABLE_NAME +
-                        "." + CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_KEY +
-                        " = " + CommodityContract.CommodityNameEntry.TABLE_NAME +
-                        "." + CommodityContract.CommodityNameEntry._ID
-                        + " INNER JOIN " +
-                        CommodityContract.DistrictEntry.TABLE_NAME +
-                        " ON " + CommodityContract.MarketEntry.TABLE_NAME +
-                        "." + CommodityContract.MarketEntry.COLUMN_DISTRICT_KEY +
-                        " = " + CommodityContract.DistrictEntry.TABLE_NAME +
-                        "." + CommodityContract.CommodityNameEntry._ID
-                        + " INNER JOIN " +
-                        CommodityContract.StateEntry.TABLE_NAME +
-                        " ON " + CommodityContract.DistrictEntry.TABLE_NAME +
-                        "." + CommodityContract.DistrictEntry.COLUMN_STATE_KEY +
-                        " = " + CommodityContract.StateEntry.TABLE_NAME +
-                        "." + CommodityContract.StateEntry._ID
+                CommodityContract.CommodityDataEntry.TABLE_NAME
         );
     }
 
-    //market.market_name = ?
-    private static final String sMarketNameSelection =
-            CommodityContract.MarketEntry.TABLE_NAME+
-                    "." + CommodityContract.MarketEntry.COLUMN_MARKET_NAME + " = ? ";
-
-    //state.state_name = ?
-    private static final String sStateNameSelection =
-            CommodityContract.StateEntry.TABLE_NAME+
-                    "." + CommodityContract.StateEntry.COLUMN_STATE_NAME + " = ? ";
-
-    //commodity_variety_name.commodity_name = ?
+    // commodity_data.commodity_name = ?
     private static final String sCommodityNameSelection =
-                    CommodityContract.CommodityNameEntry.TABLE_NAME +
-                    "." + CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " = ? ";
+                    CommodityContract.CommodityDataEntry.TABLE_NAME +
+                    "." + CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME + " = ? ";
 
-    //commodity_variety_name.commodity_name = ?
+    // commodity_data.commodity_name = ?
     private static final String sCommodityNameSearchSelection =
-            CommodityContract.CommodityNameEntry.TABLE_NAME +
-                    "." + CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " LIKE ?";
+            CommodityContract.CommodityDataEntry.TABLE_NAME +
+                    "." + CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME + " LIKE ?";
 
-    //market.market_name = ? AND commodity_variety_name.commodity_name = ?
-    private static final String sMarketNameWithCommodityNameSelection =
-            CommodityContract.MarketEntry.TABLE_NAME +
-                    "." + CommodityContract.MarketEntry.COLUMN_MARKET_NAME + " = ? AND " +
-                    CommodityContract.CommodityNameEntry.TABLE_NAME +
-                    "." + CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME + " = ? ";
 
 
     static UriMatcher buildUriMatcher() {
@@ -105,18 +57,21 @@ public class CommodityProvider extends ContentProvider {
         // For each type of URI you want to add, create a corresponding code.
         //commodity_data
         matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA, COMMODITY_DATA);
-        // commodity_data/*/market/*
-        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA + "/*" +
-                CommodityContract.PATH_MARKET + "/*", COMMODITY_DATA_WITH_MARKET);
-        //matcher.addURI(authority, CommodityContract.PATH_MARKET + "/*", ALL_COMMODITY_DATA_FOR_MARKET);
-        matcher.addURI(authority, CommodityContract.PATH_STATE + "/*", ALL_COMMODITY_DATA_FOR_STATE);
-        // commodity_variety_name/*
-        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME
+        //commodity_data/commodity_variety_detail/*
+        matcher.addURI(authority,CommodityContract.PATH_COMMODITY_DATA
+                + "/"
+                + CommodityContract.PATH_COMMODITY_VARIETY_DETAIL
+                +"/*", COMMODITY_DATA_WITH_NAME);
+        // commodity_data/commodity_variety/*
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA
+                + "/"
+                + CommodityContract.PATH_COMMODITY_VARIETY
                 + "/*", SEARCH_FOR_COMMODITY_NAME);
-        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_NAME, COMMODITY_NAME);
-        matcher.addURI(authority, CommodityContract.PATH_MARKET, MARKET);
-        matcher.addURI(authority, CommodityContract.PATH_DISTRICT, DISTRICT);
-        matcher.addURI(authority, CommodityContract.PATH_STATE, STATE);
+        // commodity_data/commodity_variety
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_DATA
+                + "/"
+                + CommodityContract.PATH_COMMODITY_VARIETY,
+                COMMODITY_NAME);
         return matcher;
     }
 
@@ -132,26 +87,12 @@ public class CommodityProvider extends ContentProvider {
         // and query the database accordingly.
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
-            // commodity_data/*/market/*
-            case COMMODITY_DATA_WITH_MARKET:
-            {
-                String commodity = CommodityContract.CommodityDataEntry.getCommodityFromUri(uri);
-                String market = CommodityContract.CommodityDataEntry.getMarketFromUri(uri);
-                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        sMarketNameWithCommodityNameSelection, // selection
-                        new String[]{commodity, market}, //selectionArgs
-                        null, //groupBy
-                        null, //having
-                        sortOrder
-                );
-                break;
-            }
             // "commodity_data/*"
-            case COMMODITY_DATA:
+            case COMMODITY_DATA_WITH_NAME:
             {
-                String commodity = CommodityContract.CommodityDataEntry.getCommodityFromUri(uri);
-                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                String commodity = CommodityContract.CommodityDataEntry.getCommodityNameFromUri(uri);
+                retCursor = sCommodityByMarketQueryBuilder.query(
+                        mOpenHelper.getReadableDatabase(),
                         projection,
                         sCommodityNameSelection, // selection
                         new String[]{commodity}, //selectionArgs
@@ -161,102 +102,37 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
-//            // "market/*"
-//            case ALL_COMMODITY_DATA_FOR_MARKET: {
-//                String market = CommodityContract.MarketEntry.getMarketFromUri(uri);
-//                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-//                        projection,
-//                        sMarketNameSelection, // selection
-//                        new String[]{market}, //selectionArgs
-//                        null, //groupBy
-//                        null, //having
-//                        sortOrder
-//                );
-//                break;
-//            }
-            // "state/*"
-            case ALL_COMMODITY_DATA_FOR_STATE: {
-                String state = CommodityContract.StateEntry.getStateFromUri(uri);
-                retCursor = sCommodityByMarketQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                        projection,
-                        sStateNameSelection, // selection
-                        new String[]{state}, //selectionArgs
-                        null, //groupBy
-                        null, //having
-                        sortOrder
-                );
-                break;
-            }
+            // commodity_data/commodity_variety/*
             case SEARCH_FOR_COMMODITY_NAME: {
-                String commodityName =  CommodityContract.CommodityNameEntry.getCommodityNameFromUri(uri);
+                String commodityName =  CommodityContract.CommodityDataEntry.getCommodityNameFromUri(uri);
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         true,
-                        CommodityContract.CommodityNameEntry.TABLE_NAME,
+                        CommodityContract.CommodityDataEntry.TABLE_NAME,
                         projection,
                         sCommodityNameSearchSelection,
                         new String[]{"%"+commodityName+"%"}, // example LIKE %apple%
-                        CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME, // groupby
+                        CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME, // groupby
                         null,
                         sortOrder,
                         null
                 );
                 break;
             }
-            // "commodity_name" - DISTINCT: http://stackoverflow.com/a/13879436/3394023
+            // "commodity_data/commodity_variety" - DISTINCT: http://stackoverflow.com/a/13879436/3394023
             case COMMODITY_NAME: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         true, // distinct
-                        CommodityContract.CommodityNameEntry.TABLE_NAME,
+                        CommodityContract.CommodityDataEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
-                        CommodityContract.CommodityNameEntry.COLUMN_COMMODITY_NAME, // groupby
+                        CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME, // groupby
                         null,
                         sortOrder,
                         null // limit
                 );
                 break;
             }
-            // "market"
-            case MARKET: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        CommodityContract.MarketEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                break;
-            }
-            // "district"
-            case DISTRICT: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        CommodityContract.DistrictEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                break;
-            }
-            // "state"
-            case STATE: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        CommodityContract.StateEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
-                break;
-            }
-
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -277,22 +153,14 @@ public class CommodityProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            case COMMODITY_DATA_WITH_MARKET:
+            case SEARCH_FOR_COMMODITY_NAME:
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
             case COMMODITY_DATA:
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
-            case ALL_COMMODITY_DATA_FOR_MARKET:
-                return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
-            case ALL_COMMODITY_DATA_FOR_STATE:
+            case COMMODITY_DATA_WITH_NAME:
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
             case COMMODITY_NAME:
-                return CommodityContract.CommodityNameEntry.CONTENT_TYPE;
-            case MARKET:
-                return CommodityContract.MarketEntry.CONTENT_TYPE;
-            case DISTRICT:
-                return CommodityContract.DistrictEntry.CONTENT_TYPE;
-            case STATE:
-                return CommodityContract.StateEntry.CONTENT_TYPE;
+                return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -309,38 +177,6 @@ public class CommodityProvider extends ContentProvider {
                 long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = CommodityContract.CommodityDataEntry.buildCommodityDataUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
-            case COMMODITY_NAME: {
-                long _id = db.insert(CommodityContract.CommodityNameEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = CommodityContract.CommodityNameEntry.buildCommodityNameUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
-            case MARKET: {
-                long _id = db.insert(CommodityContract.MarketEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = CommodityContract.MarketEntry.buildMarketUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
-            case STATE: {
-                long _id = db.insert(CommodityContract.StateEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = CommodityContract.StateEntry.buildStateUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
-                break;
-            }
-            case DISTRICT: {
-                long _id = db.insert(CommodityContract.DistrictEntry.TABLE_NAME, null, values);
-                if ( _id > 0 )
-                    returnUri = CommodityContract.DistrictEntry.buildDistrictUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -364,22 +200,6 @@ public class CommodityProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         CommodityContract.CommodityDataEntry.TABLE_NAME, selection, selectionArgs);
                 break;
-            case MARKET:
-                rowsDeleted = db.delete(
-                        CommodityContract.MarketEntry.TABLE_NAME, selection, selectionArgs);
-                break;
-            case COMMODITY_NAME:
-                rowsDeleted = db.delete(
-                        CommodityContract.CommodityNameEntry.TABLE_NAME, selection, selectionArgs);
-                break;
-            case STATE:
-                rowsDeleted = db.delete(
-                        CommodityContract.StateEntry.TABLE_NAME, selection, selectionArgs);
-                break;
-            case DISTRICT:
-                rowsDeleted = db.delete(
-                        CommodityContract.DistrictEntry.TABLE_NAME, selection, selectionArgs);
-                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -400,22 +220,6 @@ public class CommodityProvider extends ContentProvider {
             case COMMODITY_DATA:
                 rowsUpdated = db.update(
                         CommodityContract.CommodityDataEntry.TABLE_NAME, values, selection, selectionArgs);
-                break;
-            case MARKET:
-                rowsUpdated = db.update(
-                        CommodityContract.MarketEntry.TABLE_NAME, values, selection, selectionArgs);
-                break;
-            case COMMODITY_NAME:
-                rowsUpdated = db.update(
-                        CommodityContract.CommodityNameEntry.TABLE_NAME, values, selection, selectionArgs);
-                break;
-            case STATE:
-                rowsUpdated = db.update(
-                        CommodityContract.StateEntry.TABLE_NAME, values, selection, selectionArgs);
-                break;
-            case DISTRICT:
-                rowsUpdated = db.update(
-                        CommodityContract.DistrictEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
