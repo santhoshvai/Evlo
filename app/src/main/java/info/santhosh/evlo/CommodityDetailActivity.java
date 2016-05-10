@@ -62,6 +62,9 @@ public class CommodityDetailActivity extends AppCompatActivity {
                     .add(R.id.commodity_detail_container, fragment)
                     .commit();
         }
+
+        // we set the background for viewgroup in xml, no need for window background
+        getWindow().setBackgroundDrawable(null);
     }
 
     @Override

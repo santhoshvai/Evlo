@@ -117,6 +117,9 @@ public class CommodityListActivity extends AppCompatActivity
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        // we set the background for viewgroup in xml, no need for window background
+        getWindow().setBackgroundDrawable(null);
     }
 
     @Override
@@ -381,10 +384,11 @@ public class CommodityListActivity extends AppCompatActivity
                         arguments.putString(CommodityDetailFragment.COMMODITY_NAME, commodityName);
                         CommodityDetailFragment fragment = new CommodityDetailFragment();
                         fragment.setArguments(arguments);
-                        notifyDataSetChanged(); // for background colorßß
+                        notifyDataSetChanged(); // for background color of commodityList
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.commodity_detail_container, fragment)
                                 .commit();
+                        Utils.hideSoftKeyboard(CommodityListActivity.this);
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, CommodityDetailActivity.class);

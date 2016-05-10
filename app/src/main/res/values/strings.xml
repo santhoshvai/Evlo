@@ -7,4 +7,7 @@
     <string name="action_refresh">Refresh data</string>
     <string name="rupee_symbol">\u20B9</string>
     <string name="modal_price">\u20B9 %1$s</string>
+    <string name="market">%1$s market, %2$s district</string>
+    <string name="favorite_content">Favorite</string>
+    <string name="share_content">Share</string>
 </resources>

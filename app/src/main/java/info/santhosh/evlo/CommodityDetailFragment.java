@@ -167,25 +167,17 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
             public final TextView mVariety;
-            public final TextView mDate;
-            public final TextView mMaxPrice;
-            public final TextView mMinPrice;
             public final TextView mModalPrice;
             public final TextView mState;
-            public final TextView mDistrict;
             public final TextView mMarket;
 
             public ViewHolder(View view) {
                 super(view);
                 this.mView = view;
                 this.mVariety = (TextView) view.findViewById(R.id.text_variety);
-                this.mDate = (TextView) view.findViewById(R.id.text_date);
-                this.mMaxPrice = (TextView) view.findViewById(R.id.text_maximum_price);
-                this.mMinPrice = (TextView) view.findViewById(R.id.text_minimum_price);
                 this.mModalPrice = (TextView) view.findViewById(R.id.text_modal_price);
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
-                this.mDistrict = (TextView) view.findViewById(R.id.text_district_name);
-                this.mMarket = (TextView) view.findViewById(R.id.text_market_name);
+                this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
             }
         }
 
@@ -222,12 +214,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             final String variety = mCursor.getString(CommodityDetailFragment.COL_VARIETY);
 
             String modal_price_text = String.format(res.getString(R.string.modal_price), modalPrice);
+            String market_text = String.format(res.getString(R.string.market), market, district);
             holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
-            holder.mDistrict.setText(district);
-            holder.mMaxPrice.setText(maxPrice);
-            holder.mMarket.setText(market);
-            holder.mMinPrice.setText(minPrice);
-            holder.mDate.setText(date);
+            holder.mMarket.setText(market_text);
             holder.mState.setText(state);
             holder.mVariety.setText(variety);
 
