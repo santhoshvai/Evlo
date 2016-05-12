@@ -7,4 +7,6 @@
     <dimen name="text_margin_left">16dp</dimen>
     <dimen name="card_padding_large">16dp</dimen>
     <dimen name="card_padding_medium">4dp</dimen>
+    <dimen name="card_action_button_margin">8dp</dimen>
+    <dimen name="card_action_button_padding">12dp</dimen>
 </resources>

@@ -65,18 +65,23 @@
             <ImageView
                 android:id="@+id/share_icon"
                 android:layout_width="wrap_content"
-                android:padding="8dp"
+                android:clickable="true"
+                android:padding="@dimen/card_action_button_padding"
+                android:layout_margin="@dimen/card_action_button_margin"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_share_grey600_24dp"
                 android:contentDescription="@string/share_content" />
 
             <ImageView
                 android:id="@+id/favorite_icon"
-                android:padding="8dp"
+                android:layout_margin="@dimen/card_action_button_margin"
+                android:padding="@dimen/card_action_button_padding"
+                android:clickable="true"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_favorite_grey600_24dp"
+                android:src="@drawable/favorite_state_list"
                 android:contentDescription="@string/favorite_content"
                 android:layout_width="wrap_content" />
+
 
         </LinearLayout>
     </GridLayout>

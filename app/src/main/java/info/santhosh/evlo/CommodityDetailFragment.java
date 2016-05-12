@@ -18,6 +18,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import info.santhosh.evlo.data.CommodityContract;
@@ -170,6 +172,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             public final TextView mModalPrice;
             public final TextView mState;
             public final TextView mMarket;
+            public final ImageView mFav;
 
             public ViewHolder(View view) {
                 super(view);
@@ -178,6 +181,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 this.mModalPrice = (TextView) view.findViewById(R.id.text_modal_price);
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
                 this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
+                this.mFav = (ImageView) view.findViewById(R.id.favorite_icon);
             }
         }
 
@@ -221,12 +225,13 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             holder.mVariety.setText(variety);
 
 
-//            holder.mView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                }
-//            });
+
+            holder.mFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setSelected(!v.isSelected());
+                }
+            });
         }
 
         @Override
