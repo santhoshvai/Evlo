@@ -9,4 +9,7 @@
     <dimen name="card_padding_medium">4dp</dimen>
     <dimen name="card_action_button_margin">8dp</dimen>
     <dimen name="card_action_button_padding">12dp</dimen>
+    <dimen name="card_primary_text_top_padding">24dp</dimen>
+    <dimen name="card_subtitle_text_top_padding">12dp</dimen>
+    <dimen name="card_text_horizontal_padding">16dp</dimen>
 </resources>
