@@ -2,13 +2,13 @@ package info.santhosh.evlo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -84,11 +84,12 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
          if (getArguments().containsKey(COMMODITY_NAME)) {
              mCommodityName = getArguments().getString(COMMODITY_NAME);
              Activity activity = this.getActivity();
-             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-             if (appBarLayout != null) {
-                 appBarLayout.setTitle(mCommodityName);
+
+             TextView title = (TextView) activity.findViewById(R.id.toolbar_title);
+             if (title != null) {
+//                 title.setText(mCommodityName);
+                 activity.setTitle(mCommodityName);
              }
-//             mCommodityAdapter = new CommodityAdapter(this, mSearchQuery);
              mCommodityDetailAdapter = new CommodityDetailAdapter(getActivity());
              getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
              getLoaderManager().enableDebugLogging(true);
@@ -102,9 +103,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.commodity_detail, container, false);
 
-        if (mCommodityName != null) {
-            ((TextView) rootView.findViewById(R.id.commodity_detail_name)).setText(mCommodityName);
-        }
+//        if (mCommodityName != null) {
+//            ((TextView) rootView.findViewById(R.id.commodity_detail_name)).setText(mCommodityName);
+//        }
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.commodity_detail_list);
         recyclerView.setAdapter(mCommodityDetailAdapter);
 
@@ -172,6 +173,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             public final TextView mState;
             public final TextView mMarket;
             public final ImageView mFav;
+            public final ImageView mShare;
 
             public ViewHolder(View view) {
                 super(view);
@@ -181,6 +183,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
                 this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
                 this.mFav = (ImageView) view.findViewById(R.id.favorite_icon);
+                this.mShare = (ImageView) view.findViewById(R.id.share_icon);
             }
         }
 
@@ -202,7 +205,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         @Override
         public void onBindViewHolder(final CommodityDetailAdapter.ViewHolder holder, final int position) {
             mCursor.moveToPosition(position);
-            Resources res = mContext.getResources();
+            final Resources res = mContext.getResources();
 
             // Read from cursor
 
@@ -214,7 +217,10 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             final String district = mCursor.getString(CommodityDetailFragment.COL_DISTRICT_NAME);
             final String market = mCursor.getString(CommodityDetailFragment.COL_MARKET_NAME);
             final String state = mCursor.getString(CommodityDetailFragment.COL_STATE_NAME);
-            final String variety = mCursor.getString(CommodityDetailFragment.COL_VARIETY);
+            // variety name given is same as commodityName, then replace it as Normal
+            final String variety = mCursor.getString(CommodityDetailFragment.COL_VARIETY)
+                    .equalsIgnoreCase(commodityName)? "Normal": mCursor.getString(CommodityDetailFragment.COL_VARIETY);
+
 
             String modal_price_text = String.format(res.getString(R.string.modal_price), modalPrice);
             String market_text = String.format(res.getString(R.string.market), market, district);
@@ -229,6 +235,20 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 @Override
                 public void onClick(View v) {
                     v.setSelected(!v.isSelected());
+                }
+            });
+
+            holder.mShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    String share = String.format(res.getString(R.string.share_data),
+                            commodityName, variety, modalPrice, market, district, state);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, share);
+                    sendIntent.setType("text/plain");
+                    startActivity(Intent.createChooser(sendIntent,
+                            res.getString(R.string.share_heading)));
                 }
             });
         }

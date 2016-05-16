@@ -26,7 +26,6 @@
         </activity>
         <activity
             android:name=".CommodityDetailActivity"
-            android:label="@string/title_commodity_detail"
             android:parentActivityName=".CommodityListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

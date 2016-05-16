@@ -8,11 +8,12 @@
     android:orientation="vertical">
     <TextView
         android:id="@+id/commodity_detail_name"
-        style="?android:attr/textAppearanceLarge"
+        style="@style/TextAppearance.AppCompat.Body2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        tools:text="Basmati"
+        android:text="@string/price_unit"
+        tools:text="@string/price_unit"
         android:textIsSelectable="true"
         tools:context="info.santhosh.evlo.CommodityDetailFragment" />
 

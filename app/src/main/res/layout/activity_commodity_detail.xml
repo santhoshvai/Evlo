@@ -3,40 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="info.santhosh.evlo.CommodityDetailActivity"
     tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
+        android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/toolbar">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
+                android:minHeight="?attr/actionBarSize"
                 android:layout_width="match_parent"
-                android:maxLines="2"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-            </android.support.v7.widget.Toolbar>
+                android:layout_height="wrap_content"
+                app:titleTextColor="@android:color/white"
+                android:background="?attr/colorPrimary">
 
-        </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
+                <TextView
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Toolbar Title"
+                    android:textColor="@android:color/white"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_gravity="center"
+                    />
+            </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.NestedScrollView
+
+    <FrameLayout
         android:id="@+id/commodity_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -45,3 +43,4 @@
 
 
 </android.support.design.widget.CoordinatorLayout>
+
