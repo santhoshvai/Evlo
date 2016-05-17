@@ -67,8 +67,15 @@ public class CommodityDetailActivity extends AppCompatActivity {
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
             NavUtils.navigateUpTo(this, new Intent(this, CommodityListActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.slide_out_right);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.slide_out_right);
     }
 }

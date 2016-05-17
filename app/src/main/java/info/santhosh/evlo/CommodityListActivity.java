@@ -411,6 +411,7 @@ public class CommodityListActivity extends AppCompatActivity
                         intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
 
                         context.startActivity(intent);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     }
                 }
             });
