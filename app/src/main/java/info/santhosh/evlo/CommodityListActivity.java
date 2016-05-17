@@ -81,12 +81,12 @@ public class CommodityListActivity extends AppCompatActivity
 
     private String mSearchQuery = "";
     private boolean mSearchViewExpanded = false;
+    private int mSelectedItem = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_commodity_list);
-        launchXmlService();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -104,7 +104,7 @@ public class CommodityListActivity extends AppCompatActivity
 
         mCommodityAdapter = new CommodityAdapter(this, mSearchQuery);
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
-//        getSupportLoaderManager().enableDebugLogging(true);
+        getSupportLoaderManager().enableDebugLogging(true);
 
         View recyclerView = findViewById(R.id.commodity_list);
         assert recyclerView != null;
@@ -124,11 +124,12 @@ public class CommodityListActivity extends AppCompatActivity
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
         // Save whether the service has already been started
         outState.putBoolean("mServiceStarted", mServiceStarted);
-
         outState.putString("mSearchQuery", mSearchQuery);
         outState.putBoolean("mSearchViewExpanded", mSearchViewExpanded);
+        outState.putInt("mSelectedItem", mSelectedItem);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
@@ -142,11 +143,17 @@ public class CommodityListActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
 
         mServiceStarted = savedInstanceState.getBoolean("mServiceStarted");
+        launchXmlService();
+
         mSearchQuery = savedInstanceState.getString("mSearchQuery","");
         mSearchViewExpanded = savedInstanceState.getBoolean("mSearchViewExpanded");
         Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
         recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+
+        mSelectedItem = savedInstanceState.getInt("mSelectedItem", -1);
+        mCommodityAdapter.mSelectedPos = mSelectedItem;
+        recyclerView.getLayoutManager().scrollToPosition(mSelectedItem);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -306,8 +313,7 @@ public class CommodityListActivity extends AppCompatActivity
         private Cursor mCursor;
         final private Context mContext;
         private String mFilterSearch;
-        private int mSelectedPos; // keep track of the selected row item
-        private boolean mSelectedState;
+        private int mSelectedPos = -1;
 
         /**
          * Cache of the children views for a commodity list item.
@@ -322,6 +328,14 @@ public class CommodityListActivity extends AppCompatActivity
                 mView = view;
                 mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
                 mLinearLayout = (LinearLayout) view.findViewById(R.id.commodity_row);
+
+                // Handle item click and set the selection
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
             }
 
         }
@@ -366,25 +380,27 @@ public class CommodityListActivity extends AppCompatActivity
                 holder.mCommodityNameView.setText(commodityName);
             }
 
-            if(mSelectedPos == position) {
-                if(mSelectedState) {
-                    holder.mLinearLayout.setBackgroundColor(
-                            ContextCompat.getColor(mContext, R.color.colorListRowSelect));
-                }
+            // highlight selected item of the recyclerview for tablets
+            if(mTwoPane && (mSelectedPos == position)) {
+                mSelectedItem = position; // to remember upon rotation
+                holder.mLinearLayout.setBackgroundColor(
+                        ContextCompat.getColor(mContext, R.color.colorListRowSelect));
             } else {
                 holder.mLinearLayout.setBackgroundColor(Color.TRANSPARENT);
             }
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mSelectedPos = position;
-                    mSelectedState = true;
                     if (mTwoPane) {
+                        // Redraw the old selection and the new
+                        notifyItemChanged(mSelectedPos);
+                        mSelectedPos = position;
+                        notifyItemChanged(mSelectedPos);
+
                         Bundle arguments = new Bundle();
                         arguments.putString(CommodityDetailFragment.COMMODITY_NAME, commodityName);
                         CommodityDetailFragment fragment = new CommodityDetailFragment();
                         fragment.setArguments(arguments);
-                        notifyDataSetChanged(); // for background color of commodityList
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.commodity_detail_container, fragment)
                                 .commit();

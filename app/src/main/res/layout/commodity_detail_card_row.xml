@@ -83,7 +83,7 @@
                 android:layout_margin="@dimen/card_action_button_margin"
                 android:padding="@dimen/card_action_button_padding"
                 android:clickable="true"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:layout_height="wrap_content"
                 android:src="@drawable/favorite_state_list"
                 android:contentDescription="@string/favorite_content"

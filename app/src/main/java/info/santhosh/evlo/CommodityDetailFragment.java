@@ -92,7 +92,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
              }
              mCommodityDetailAdapter = new CommodityDetailAdapter(getActivity());
              getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
-             getLoaderManager().enableDebugLogging(true);
+//             getLoaderManager().enableDebugLogging(true);
 
          }
 
