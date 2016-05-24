@@ -106,9 +106,9 @@ public class CommodityListActivity extends AppCompatActivity
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
         getSupportLoaderManager().enableDebugLogging(true);
 
-        View recyclerView = findViewById(R.id.commodity_list);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
         assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView(recyclerView);
 
         if (findViewById(R.id.commodity_detail_container) != null) {
             // The detail container view will be present only in the
@@ -120,6 +120,20 @@ public class CommodityListActivity extends AppCompatActivity
 
         // we set the background for viewgroup in xml, no need for window background
         getWindow().setBackgroundDrawable(null);
+
+        if (savedInstanceState != null) {
+            mServiceStarted = savedInstanceState.getBoolean("mServiceStarted");
+
+            mSearchQuery = savedInstanceState.getString("mSearchQuery","");
+            mSearchViewExpanded = savedInstanceState.getBoolean("mSearchViewExpanded");
+            Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+
+            mSelectedItem = savedInstanceState.getInt("mSelectedItem", -1);
+            mCommodityAdapter.mSelectedPos = mSelectedItem;
+            recyclerView.getLayoutManager().scrollToPosition(mSelectedItem);
+        }
+        launchXmlService();
     }
 
     @Override
@@ -136,24 +150,6 @@ public class CommodityListActivity extends AppCompatActivity
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(outState);
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        // Always call the superclass so it can restore the view hierarchy
-        super.onRestoreInstanceState(savedInstanceState);
-
-        mServiceStarted = savedInstanceState.getBoolean("mServiceStarted");
-        launchXmlService();
-
-        mSearchQuery = savedInstanceState.getString("mSearchQuery","");
-        mSearchViewExpanded = savedInstanceState.getBoolean("mSearchViewExpanded");
-        Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
-        recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
-
-        mSelectedItem = savedInstanceState.getInt("mSelectedItem", -1);
-        mCommodityAdapter.mSelectedPos = mSelectedItem;
-        recyclerView.getLayoutManager().scrollToPosition(mSelectedItem);
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
