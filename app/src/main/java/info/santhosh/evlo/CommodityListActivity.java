@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
@@ -38,7 +37,12 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 
 import info.santhosh.evlo.Services.GetXmlService;
+import info.santhosh.evlo.common.EmptyRecyclerView;
+import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * An activity representing a list of Commodities. This activity
@@ -57,6 +61,7 @@ public class CommodityListActivity extends AppCompatActivity
      */
     private boolean mTwoPane;
     private CommodityAdapter mCommodityAdapter;
+    private EmptyRecyclerView mRecyclerView;
 
     private static final int COMMODITY_NAME_LOADER = 0;
     private static final String LOG_TAG = "Main_Activity";
@@ -106,9 +111,9 @@ public class CommodityListActivity extends AppCompatActivity
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
         getSupportLoaderManager().enableDebugLogging(true);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
-        assert recyclerView != null;
-        setupRecyclerView(recyclerView);
+        mRecyclerView = (EmptyRecyclerView) findViewById(R.id.commodity_list);
+        mRecyclerView.setEmptyView(findViewById(R.id.empty_view)); // get empty_view for recycler view
+        setupRecyclerView();
 
         if (findViewById(R.id.commodity_detail_container) != null) {
             // The detail container view will be present only in the
@@ -127,11 +132,11 @@ public class CommodityListActivity extends AppCompatActivity
             mSearchQuery = savedInstanceState.getString("mSearchQuery","");
             mSearchViewExpanded = savedInstanceState.getBoolean("mSearchViewExpanded");
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
-            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
 
             mSelectedItem = savedInstanceState.getInt("mSelectedItem", -1);
             mCommodityAdapter.mSelectedPos = mSelectedItem;
-            recyclerView.getLayoutManager().scrollToPosition(mSelectedItem);
+            mRecyclerView.getLayoutManager().scrollToPosition(mSelectedItem);
         }
         launchXmlService();
     }
@@ -145,15 +150,14 @@ public class CommodityListActivity extends AppCompatActivity
         outState.putBoolean("mSearchViewExpanded", mSearchViewExpanded);
         outState.putInt("mSelectedItem", mSelectedItem);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.commodity_list);
-        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(outState);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(mCommodityAdapter);
+    private void setupRecyclerView() {
+        mRecyclerView.setAdapter(mCommodityAdapter);
     }
 
     // to startup the service
@@ -239,7 +243,7 @@ public class CommodityListActivity extends AppCompatActivity
         if (mSearchViewExpanded) {
             searchItem.expandActionView();
             searchView.setQuery(mSearchQuery, false);
-            ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
+            ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(GONE); // hide fab
             if(mSearchQuery.length() >0) {
                 // preserve the highlight
                 mCommodityAdapter.setmFilterSearch(mSearchQuery);
@@ -270,7 +274,7 @@ public class CommodityListActivity extends AppCompatActivity
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         // hide FAB
-                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.GONE);
+                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(GONE);
                         mSearchViewExpanded = true;
                         return true; //true if item should expand
                     }
@@ -278,7 +282,7 @@ public class CommodityListActivity extends AppCompatActivity
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
                         // FAB should re-appear
-                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.VISIBLE);
+                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(VISIBLE);
                         mSearchQuery = "";
                         mSearchViewExpanded = false;
                         return true; //true if item should collapse
@@ -432,6 +436,7 @@ public class CommodityListActivity extends AppCompatActivity
         public void setmFilterSearch(String query) {
             mFilterSearch = query;
         }
+
     }
 
 }
