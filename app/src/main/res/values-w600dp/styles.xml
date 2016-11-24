@@ -1,0 +1,8 @@
+<resources>
+
+    <style name="main_recycler_view_style">
+        <item name="android:layout_width">@dimen/recyclerview_width</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+</resources>

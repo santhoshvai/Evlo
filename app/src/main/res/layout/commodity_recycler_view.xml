@@ -1,0 +1,22 @@
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <info.santhosh.evlo.common.EmptyRecyclerView
+        android:id="@+id/commodity_list"
+        android:name="info.santhosh.evlo.CommodityListFragment"
+        style="@style/main_recycler_view_style"
+        app:layoutManager="LinearLayoutManager"
+        tools:context="info.santhosh.evlo.CommodityListActivity"
+        tools:listitem="@layout/commodity_list_content" />
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="?android:attr/textAppearanceMedium"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:text="Price list not loaded yet" />
+</merge>
