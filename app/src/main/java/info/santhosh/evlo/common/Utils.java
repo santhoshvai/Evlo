@@ -48,12 +48,13 @@ public class Utils {
      * @param searchFilter the search filter used
      */
     public static void setEmptyViewText(Context context, TextView mEmptyView, String searchFilter) {
-        if(! isNetworkAvailable(context)) {
-            mEmptyView.setText("Please connect to the internet");
-            return;
-        }
-        if(searchFilter.isEmpty()) { // not a search thing
+        if(searchFilter.isEmpty()) { // not a search thing ( this will occur only once during app lifetime )
             mEmptyView.setText("Data is being loaded");
+
+            if(! isNetworkAvailable(context)) {
+                mEmptyView.setText("Please connect to the internet");
+                return;
+            }
         } else { // search did not yield results
             mEmptyView.setText("No search results for " + searchFilter);
         }

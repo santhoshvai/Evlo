@@ -37,7 +37,7 @@ import java.lang.reflect.Field;
 
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.Services.GetXmlService;
+import info.santhosh.evlo.service.GetXmlService;
 import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;

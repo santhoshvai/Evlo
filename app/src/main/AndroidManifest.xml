@@ -3,6 +3,7 @@
     package="info.santhosh.evlo">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".EvloApplication"
@@ -34,7 +35,7 @@
                 android:value="info.santhosh.evlo.ui.CommodityListActivity" />
         </activity>
         <service
-            android:name=".Services.GetXmlService"
+            android:name=".service.GetXmlService"
             android:exported="false"/>
         <provider
             android:authorities="@string/content_authority"
