@@ -1,4 +1,4 @@
-package info.santhosh.evlo.Services.SOAP;
+package info.santhosh.evlo.service.SOAP;
 
 import android.util.Log;
 

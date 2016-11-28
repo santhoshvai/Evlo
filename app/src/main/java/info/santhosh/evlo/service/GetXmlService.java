@@ -1,4 +1,4 @@
-package info.santhosh.evlo.Services;
+package info.santhosh.evlo.service;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -13,8 +13,8 @@ import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.Services.SOAP.SOAPEnvelope;
-import info.santhosh.evlo.Services.SOAP.WriteDb;
+import info.santhosh.evlo.service.SOAP.SOAPEnvelope;
+import info.santhosh.evlo.service.SOAP.WriteDb;
 
 /**
  * Created by santhoshvai on 12/03/16.
