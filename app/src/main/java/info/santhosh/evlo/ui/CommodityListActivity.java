@@ -1,5 +1,8 @@
 package info.santhosh.evlo.ui;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -42,9 +45,6 @@ import info.santhosh.evlo.Services.GetXmlService;
 import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
 /**
  * An activity representing a list of Commodities. This activity

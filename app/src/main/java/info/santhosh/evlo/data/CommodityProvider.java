@@ -1,17 +1,23 @@
 package info.santhosh.evlo.data;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 /**
  * Created by santhoshvai on 16/03/16.
  */
 public class CommodityProvider extends ContentProvider {
+
+    private final static String TAG = CommodityProvider.class.getSimpleName();
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -44,7 +50,7 @@ public class CommodityProvider extends ContentProvider {
     private static final String sCommodityNameSearchSelection =
             CommodityContract.CommodityDataEntry.TABLE_NAME +
                     "." + CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME + " LIKE ?";
-
+    /* Stetho: SELECT DISTINCT commodity_name FROM commodity_data WHERE commodity_name LIKE "%apple%" */
 
 
     static UriMatcher buildUriMatcher() {
@@ -106,7 +112,7 @@ public class CommodityProvider extends ContentProvider {
             case SEARCH_FOR_COMMODITY_NAME: {
                 String commodityName =  CommodityContract.CommodityDataEntry.getCommodityNameFromUri(uri);
                 retCursor = mOpenHelper.getReadableDatabase().query(
-                        true,
+                        true, // each row must be unique
                         CommodityContract.CommodityDataEntry.TABLE_NAME,
                         projection,
                         sCommodityNameSearchSelection,
@@ -140,6 +146,7 @@ public class CommodityProvider extends ContentProvider {
         // to register a content observer, to watch for changes that happen to that URI and any of
         // its descendants. This allows the content provider to easily tell the UI when the
         // cursor changes, on operations like database insert or update.
+
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
@@ -167,7 +174,7 @@ public class CommodityProvider extends ContentProvider {
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
@@ -184,12 +191,12 @@ public class CommodityProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        notifyChange(getContext(), uri);
         return returnUri;
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
@@ -204,13 +211,13 @@ public class CommodityProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            notifyChange(getContext(), uri);
         }
         return rowsDeleted;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
@@ -225,13 +232,13 @@ public class CommodityProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            notifyChange(getContext(), uri);
         }
         return rowsUpdated;
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         switch (match) {
@@ -249,10 +256,19 @@ public class CommodityProvider extends ContentProvider {
                 } finally {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(uri, null);
+                notifyChange(getContext(), uri);
                 return returnCount;
             default:
                 return super.bulkInsert(uri, values);
+        }
+    }
+
+    private void notifyChange(Context context, Uri uri) {
+        try {
+            ContentResolver contentResolver = context.getContentResolver();
+            contentResolver.notifyChange(uri, null);
+        } catch (NullPointerException e) {
+            Log.e(TAG, "notifyChange: nullpointerException");
         }
     }
 }

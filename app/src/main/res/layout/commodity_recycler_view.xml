@@ -7,7 +7,7 @@
         android:name="info.santhosh.evlo.CommodityListFragment"
         style="@style/main_recycler_view_style"
         app:layoutManager="LinearLayoutManager"
-        tools:context="info.santhosh.evlo.CommodityListActivity"
+        tools:context="info.santhosh.evlo.ui.CommodityListActivity"
         tools:listitem="@layout/commodity_list_content" />
     <TextView
         android:id="@+id/empty_view"

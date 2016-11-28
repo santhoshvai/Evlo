@@ -10,13 +10,13 @@ import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
  * Manages a local database for commodity data
  * Created by santhoshvai on 13/03/16.
  */
-public class CommodityDbHelper  extends SQLiteOpenHelper {
+class CommodityDbHelper  extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     private static final int DATABASE_VERSION = 4;
 
-    static final String DATABASE_NAME = "commodities.db";
+    private static final String DATABASE_NAME = "commodities.db";
 
-    public CommodityDbHelper(Context context) {
+    CommodityDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
