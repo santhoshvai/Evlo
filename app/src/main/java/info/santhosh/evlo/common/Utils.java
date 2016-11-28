@@ -12,6 +12,9 @@ import android.widget.TextView;
  * Created by santhoshvai on 09/05/16.
  */
 public class Utils {
+
+    private Utils() {}
+
     /**
      * hides the keyboard
      * */

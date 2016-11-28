@@ -10,6 +10,7 @@ import com.facebook.stetho.Stetho;
 
 public class EvloApplication extends Application {
 
+    @Override
     public void onCreate() {
         super.onCreate();
 

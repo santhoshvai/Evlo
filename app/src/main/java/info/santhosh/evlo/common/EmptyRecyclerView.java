@@ -66,6 +66,7 @@ public class EmptyRecyclerView extends RecyclerView {
             mEmptyView.setVisibility(showEmptyView ? VISIBLE : GONE);
             setVisibility(showEmptyView ? GONE : VISIBLE);
 
+            // set the empty view text
             if(getAdapter() instanceof CommodityListActivity.CommodityAdapter) {
                 CommodityListActivity.CommodityAdapter adapter = (CommodityListActivity.CommodityAdapter) getAdapter();
                 String searchFilter = adapter.getFilterSearch();
