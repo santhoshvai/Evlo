@@ -4,6 +4,9 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
+
+import info.santhosh.evlo.ui.CommodityListActivity;
 
 /**
  * Created by santhoshvai on 24/11/2016.
@@ -62,6 +65,12 @@ public class EmptyRecyclerView extends RecyclerView {
             boolean showEmptyView = getAdapter().getItemCount() == 0;
             mEmptyView.setVisibility(showEmptyView ? VISIBLE : GONE);
             setVisibility(showEmptyView ? GONE : VISIBLE);
+
+            if(getAdapter() instanceof CommodityListActivity.CommodityAdapter) {
+                CommodityListActivity.CommodityAdapter adapter = (CommodityListActivity.CommodityAdapter) getAdapter();
+                String searchFilter = adapter.getFilterSearch();
+                Utils.setEmptyViewText(getContext(), (TextView) mEmptyView, searchFilter);
+            }
         }
     }
 }

@@ -1,8 +1,5 @@
 package info.santhosh.evlo.ui;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +22,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -186,8 +182,8 @@ public class CommodityListActivity extends AppCompatActivity
         Uri commodityNameUri = CommodityContract.CommodityDataEntry.buildAllCommodityNames();
 
         if(args != null) {
+            //  search
             String name = args.getString("name","");
-            Log.d(LOG_TAG, "onCreateLoader: "+ name);
             return new CursorLoader(this,
                     CommodityContract.CommodityDataEntry.buildCommodityNameSearchUri(name),
                     COMMODITY_NAME_COLUMNS,
@@ -236,16 +232,17 @@ public class CommodityListActivity extends AppCompatActivity
         // This sets the cursor blink to be White
         final EditText searchTextView = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         try {
+            // setting textCursorDrawable attribute to @null should result in the use of android:textColor as the cursor color.
             Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
             mCursorDrawableRes.setAccessible(true);
-            mCursorDrawableRes.set(searchTextView, 0);
+            mCursorDrawableRes.set(searchTextView, null); // search text view is used here
         } catch (Exception e) {}
 
         // if previous searchQuery is present - due to configuration changes
         if (mSearchViewExpanded) {
             searchItem.expandActionView();
             searchView.setQuery(mSearchQuery, false);
-            ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(GONE); // hide fab
+            (findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
             if(mSearchQuery.length() >0) {
                 // preserve the highlight
                 mCommodityAdapter.setmFilterSearch(mSearchQuery);
@@ -276,7 +273,7 @@ public class CommodityListActivity extends AppCompatActivity
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         // hide FAB
-                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(GONE);
+                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.GONE);
                         mSearchViewExpanded = true;
                         return true; //true if item should expand
                     }
@@ -284,7 +281,7 @@ public class CommodityListActivity extends AppCompatActivity
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
                         // FAB should re-appear
-                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(VISIBLE);
+                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.VISIBLE);
                         mSearchQuery = "";
                         mSearchViewExpanded = false;
                         return true; //true if item should collapse
@@ -310,6 +307,9 @@ public class CommodityListActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+    The adapter used for recycler view
+     */
     public class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.ViewHolder> {
 
         private Cursor mCursor;
@@ -320,12 +320,12 @@ public class CommodityListActivity extends AppCompatActivity
         /**
          * Cache of the children views for a commodity list item.
          */
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mCommodityNameView;
-            public final LinearLayout mLinearLayout;
+        class ViewHolder extends RecyclerView.ViewHolder {
+            final View mView;
+            final TextView mCommodityNameView;
+            final LinearLayout mLinearLayout;
 
-            public ViewHolder(View view) {
+            ViewHolder(View view) {
                 super(view);
                 mView = view;
                 mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
@@ -342,7 +342,7 @@ public class CommodityListActivity extends AppCompatActivity
 
         }
 
-        public CommodityAdapter(Context context, String filter) {
+        CommodityAdapter(Context context, String filter) {
             mContext = context;
             mFilterSearch = filter;
         }
@@ -359,7 +359,8 @@ public class CommodityListActivity extends AppCompatActivity
         }
 
         @Override
-        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, int pos) {
+            final int position = holder.getAdapterPosition();
             mCursor.moveToPosition(position);
             // Read from cursor
 
@@ -395,7 +396,7 @@ public class CommodityListActivity extends AppCompatActivity
                 public void onClick(View v) {
                     if (mTwoPane) {
                         // Redraw the old selection and the new
-                        notifyItemChanged(mSelectedPos);
+//                        notifyItemChanged(mSelectedPos);
                         mSelectedPos = position;
                         notifyItemChanged(mSelectedPos);
 
@@ -413,7 +414,7 @@ public class CommodityListActivity extends AppCompatActivity
                         intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
 
                         context.startActivity(intent);
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     }
                 }
             });
@@ -426,7 +427,7 @@ public class CommodityListActivity extends AppCompatActivity
         }
 
 
-        public void swapCursor(Cursor newCursor) {
+        void swapCursor(Cursor newCursor) {
             mCursor = newCursor;
             notifyDataSetChanged();
         }
@@ -435,10 +436,13 @@ public class CommodityListActivity extends AppCompatActivity
             return mCursor;
         }
 
-        public void setmFilterSearch(String query) {
+        void setmFilterSearch(String query) {
             mFilterSearch = query;
         }
 
+        public String getFilterSearch() {
+            return mFilterSearch;
+        }
     }
 
 }
