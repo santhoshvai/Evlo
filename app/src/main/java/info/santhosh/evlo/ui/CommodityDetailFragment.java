@@ -1,4 +1,4 @@
-package info.santhosh.evlo;
+package info.santhosh.evlo.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import info.santhosh.evlo.R;
 import info.santhosh.evlo.data.CommodityContract;
 
 /**

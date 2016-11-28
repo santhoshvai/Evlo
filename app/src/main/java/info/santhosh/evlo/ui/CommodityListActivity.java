@@ -1,4 +1,4 @@
-package info.santhosh.evlo;
+package info.santhosh.evlo.ui;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -36,6 +36,8 @@ import android.widget.Toast;
 
 import java.lang.reflect.Field;
 
+import info.santhosh.evlo.BuildConfig;
+import info.santhosh.evlo.R;
 import info.santhosh.evlo.Services.GetXmlService;
 import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
