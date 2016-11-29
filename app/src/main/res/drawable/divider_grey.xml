@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--https://github.com/GigaDroid/Decompiled-Whatsapp/blob/master/res/drawable/conversations_list_divider.xml-->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="12dp"
+    android:insetRight="12dp">
+    <shape >
+        <size android:height="0.5dp" />
+        <solid android:color="@color/dividerGrey" />
+    </shape>
+</inset>

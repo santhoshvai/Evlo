@@ -16,6 +16,8 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -37,10 +39,10 @@ import java.lang.reflect.Field;
 
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.service.GetXmlService;
 import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
+import info.santhosh.evlo.service.GetXmlService;
 
 /**
  * An activity representing a list of Commodities. This activity
@@ -156,6 +158,12 @@ public class CommodityListActivity extends AppCompatActivity
 
     private void setupRecyclerView() {
         mRecyclerView.setAdapter(mCommodityAdapter);
+        // set item decoration
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(mRecyclerView.getContext(), R.drawable.divider_grey));
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     // to startup the service
@@ -395,8 +403,8 @@ public class CommodityListActivity extends AppCompatActivity
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
-                        // Redraw the old selection and the new
-//                        notifyItemChanged(mSelectedPos);
+                        // Redraw the old selection and the new --> for tablets this eliminates two backgrounds
+                        notifyItemChanged(mSelectedPos);
                         mSelectedPos = position;
                         notifyItemChanged(mSelectedPos);
 
