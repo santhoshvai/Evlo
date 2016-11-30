@@ -7,4 +7,5 @@
     <color name="colorListRowSelect">#E9EBEB</color>
     <color name="lightGray">#EEEEEE</color>
     <color name="dividerGrey">#DDD</color>
+    <color name="searchHighlight">#4fc3f7</color>
 </resources>
