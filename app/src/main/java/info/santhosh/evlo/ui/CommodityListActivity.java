@@ -55,6 +55,8 @@ import info.santhosh.evlo.service.GetXmlService;
 public class CommodityListActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String TAG = CommodityListActivity.class.getSimpleName();
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -440,7 +442,7 @@ public class CommodityListActivity extends AppCompatActivity
     }
 
     private class ItemClickListener {
-        public void onClick(String commodityName, Context context) {
+        void onClick(String commodityName, Context context) {
             // move to the detail activity/fragment
             if (mTwoPane) {
                 Bundle arguments = new Bundle();
