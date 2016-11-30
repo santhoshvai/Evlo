@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -39,6 +38,7 @@ import java.lang.reflect.Field;
 
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.ColorUtil;
 import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
@@ -64,7 +64,6 @@ public class CommodityListActivity extends AppCompatActivity
     private EmptyRecyclerView mRecyclerView;
 
     private static final int COMMODITY_NAME_LOADER = 0;
-    private static final String LOG_TAG = "Main_Activity";
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
 
     // Specify the columns we need.
@@ -148,6 +147,8 @@ public class CommodityListActivity extends AppCompatActivity
         outState.putBoolean("mServiceStarted", mServiceStarted);
         outState.putString("mSearchQuery", mSearchQuery);
         outState.putBoolean("mSearchViewExpanded", mSearchViewExpanded);
+        // retain the selected position in the recyclerview (for tablets)
+        mSelectedItem = mCommodityAdapter.mSelectedPos;
         outState.putInt("mSelectedItem", mSelectedItem);
 
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
@@ -322,8 +323,10 @@ public class CommodityListActivity extends AppCompatActivity
 
         private Cursor mCursor;
         final private Context mContext;
+        final int mSearchHighlightColor;
         private String mFilterSearch;
         private int mSelectedPos = -1;
+        private final ItemClickListener mItemClickListener;
 
         /**
          * Cache of the children views for a commodity list item.
@@ -338,14 +341,6 @@ public class CommodityListActivity extends AppCompatActivity
                 mView = view;
                 mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
                 mLinearLayout = (LinearLayout) view.findViewById(R.id.commodity_row);
-
-                // Handle item click and set the selection
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                });
             }
 
         }
@@ -353,14 +348,36 @@ public class CommodityListActivity extends AppCompatActivity
         CommodityAdapter(Context context, String filter) {
             mContext = context;
             mFilterSearch = filter;
+            mSearchHighlightColor = ContextCompat.getColor(context, R.color.searchHighlight);
+            mItemClickListener = new ItemClickListener();
         }
+
+
 
         @Override
         public CommodityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if ( parent instanceof RecyclerView ) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.commodity_list_content, parent, false);
-                return new ViewHolder(view);
+                final CommodityAdapter.ViewHolder vh = new ViewHolder(view);
+                vh.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int position = vh.getAdapterPosition();
+                        if (mTwoPane) {
+                            // set the greyish background indicating that this was clicked
+                            ColorUtil.setListRowSelectionBackgroundColor(mContext, vh.mLinearLayout);
+                            // reset the old selected position background
+                            notifyItemChanged(mSelectedPos);
+                            // change the selected position
+                            mSelectedPos = position;
+                        }
+                        mCursor.moveToPosition(position);
+                        final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
+                        mItemClickListener.onClick(commodityName, mContext);
+                    }
+                });
+                return vh;
             } else {
                 throw new RuntimeException("Not bound to RecyclerViewSelection");
             }
@@ -374,7 +391,7 @@ public class CommodityListActivity extends AppCompatActivity
 
             final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
 
-            if(mFilterSearch.length() > 0 ) {
+            if(mFilterSearch.length() > 0 ) { // this is while searching
                 // highlight searched text - http://stackoverflow.com/a/23967561/3394023
                 int startPos = commodityName.toLowerCase().indexOf(mFilterSearch.toLowerCase());
                 int endPos = startPos + mFilterSearch.length();
@@ -382,50 +399,19 @@ public class CommodityListActivity extends AppCompatActivity
                 if (startPos != -1) // This should always be true, just a sanity check
                 {
                     Spannable spannable = new SpannableString(commodityName);
-                    // #4fc3f7 Color
-                    spannable.setSpan(new ForegroundColorSpan(Color.rgb(79,195,247)), startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    spannable.setSpan(new ForegroundColorSpan(mSearchHighlightColor), startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     holder.mCommodityNameView.setText(spannable);
                 }
 
             } else {
                 holder.mCommodityNameView.setText(commodityName);
             }
-
-            // highlight selected item of the recyclerview for tablets
-            if(mTwoPane && (mSelectedPos == position)) {
-                mSelectedItem = position; // to remember upon rotation
-                holder.mLinearLayout.setBackgroundColor(
-                        ContextCompat.getColor(mContext, R.color.colorListRowSelect));
+            if (mTwoPane && (mSelectedPos == position)) { // on tablet rotation, we must retain the clicked color
+                // set the greyish background indicating that this was clicked
+                ColorUtil.setListRowSelectionBackgroundColor(mContext, holder.mLinearLayout);
             } else {
-                holder.mLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+                ColorUtil.setTransparentBackgroundColor(holder.mLinearLayout);
             }
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mTwoPane) {
-                        // Redraw the old selection and the new --> for tablets this eliminates two backgrounds
-                        notifyItemChanged(mSelectedPos);
-                        mSelectedPos = position;
-                        notifyItemChanged(mSelectedPos);
-
-                        Bundle arguments = new Bundle();
-                        arguments.putString(CommodityDetailFragment.COMMODITY_NAME, commodityName);
-                        CommodityDetailFragment fragment = new CommodityDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.commodity_detail_container, fragment)
-                                .commit();
-                        Utils.hideSoftKeyboard(CommodityListActivity.this);
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, CommodityDetailActivity.class);
-                        intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
-
-                        context.startActivity(intent);
-//                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    }
-                }
-            });
         }
 
         @Override
@@ -450,6 +436,26 @@ public class CommodityListActivity extends AppCompatActivity
 
         public String getFilterSearch() {
             return mFilterSearch;
+        }
+    }
+
+    private class ItemClickListener {
+        public void onClick(String commodityName, Context context) {
+            // move to the detail activity/fragment
+            if (mTwoPane) {
+                Bundle arguments = new Bundle();
+                arguments.putString(CommodityDetailFragment.COMMODITY_NAME, commodityName);
+                CommodityDetailFragment fragment = new CommodityDetailFragment();
+                fragment.setArguments(arguments);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.commodity_detail_container, fragment)
+                        .commit();
+                Utils.hideSoftKeyboard(CommodityListActivity.this);
+            } else {
+                Intent intent = new Intent(context, CommodityDetailActivity.class);
+                intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
+                context.startActivity(intent);
+            }
         }
     }
 
