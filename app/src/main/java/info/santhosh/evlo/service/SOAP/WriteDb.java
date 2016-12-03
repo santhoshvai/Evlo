@@ -7,6 +7,7 @@ import android.util.Log;
 import java.util.List;
 import java.util.Vector;
 
+import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
 
 /**
@@ -26,7 +27,7 @@ public class WriteDb {
     // commodity_name -> get Id
     // use both id to build commodityData table
     public void usingCommoditiesList(List<Commodity> commodities) {
-        // Insert the new weather information into the database
+        // Insert the new commodity information into the database
         Vector<ContentValues> cVVector = new Vector<ContentValues>(commodities.size());
 
         for(Commodity commodity : commodities) {
@@ -50,7 +51,15 @@ public class WriteDb {
             cVVector.toArray(cvArray);
             inserted = mContext.getContentResolver().bulkInsert(CommodityDataEntry.CONTENT_URI, cvArray);
         }
-        Log.d(TAG, "WriteDb Complete. " + inserted + " Inserted");
+        Log.d(TAG, "WriteDb List Complete. " + inserted + " Inserted");
+    }
+
+    public void usingCommoditiesFavId(int favId) {
+        ContentValues commodityFavValues = new ContentValues();
+        commodityFavValues.put(CommodityContract.CommodityFavEntry.COLUMN_FAV_ID, favId);
+
+        mContext.getContentResolver().insert(CommodityContract.CommodityFavEntry.CONTENT_URI, commodityFavValues);
+        Log.d(TAG, "WriteDb Favs Complete. ");
     }
 
 }

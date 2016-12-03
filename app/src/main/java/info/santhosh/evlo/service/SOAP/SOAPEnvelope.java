@@ -70,7 +70,7 @@ public class SOAPEnvelope {
             InputNode next;
 
             while( ( next = rootNode.getNext() ) != null ) {
-                if( next.getName().equals("NewDataSet") == true ) {
+                if(next.getName().equals("NewDataSet")) {
                     Log.d("TAG", "Found the tag that contains all commodities");
                     return next;
                 }

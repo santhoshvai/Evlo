@@ -75,6 +75,7 @@ public class CommodityListActivity extends AppCompatActivity
             CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME
     };
 
+
     // These indices are tied to COMMODITY_NAME_COLUMNS.  If COMMODITY_NAME_COLUMNS change, these must change.
     static final int COL_COMMODITY_ID = 0;
     static final int COL_VARIETY = 1;
@@ -100,6 +101,7 @@ public class CommodityListActivity extends AppCompatActivity
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         final String apiKey = BuildConfig.DATA_GOV_IN_API_KEY;
+        // TODO: open favs on fab click
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -204,7 +206,7 @@ public class CommodityListActivity extends AppCompatActivity
 
         return new CursorLoader(this,
                 commodityNameUri,
-                COMMODITY_NAME_COLUMNS,
+                null,
                 null,
                 null,
                 sortOrder);
@@ -389,7 +391,6 @@ public class CommodityListActivity extends AppCompatActivity
             final int position = holder.getAdapterPosition();
             mCursor.moveToPosition(position);
             // Read from cursor
-
             final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
 
             if(mFilterSearch.length() > 0 ) { // this is while searching

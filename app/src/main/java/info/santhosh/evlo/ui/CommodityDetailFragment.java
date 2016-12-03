@@ -15,6 +15,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.data.CommodityContract;
+import info.santhosh.evlo.service.SOAP.WriteDb;
 
 /**
  * A fragment representing a single Commodity detail screen.
@@ -31,6 +33,9 @@ import info.santhosh.evlo.data.CommodityContract;
  * on handsets.
  */
 public class CommodityDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    public static final String TAG = "CommodityDetailFragment";
+
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -68,7 +73,6 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     private String mCommodityName;
     private CommodityDetailAdapter mCommodityDetailAdapter;
 
-    public static final String LOG_TAG = "CommodityDetailFragment";
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityDetailFragment.recycler.layout";
 
     /**
@@ -210,6 +214,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
             // Read from cursor
 
+            final int columnId = mCursor.getInt(CommodityDetailFragment.COL_COMMODITY_DETAIL_ID);
             final String commodityName = mCursor.getString(CommodityDetailFragment.COL_COMMODITY_NAME);
             final String modalPrice = mCursor.getString(CommodityDetailFragment.COL_MODAL_PRICE);
             final String date = mCursor.getString(CommodityDetailFragment.COL_ARRIVAL_DATE);
@@ -231,10 +236,13 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             holder.mVariety.setText(variety);
 
 
-
+            // TODO: add to fav database here
             holder.mFav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG, Integer.toString(columnId));
+                    WriteDb writeDb = new WriteDb(v.getContext().getApplicationContext());
+                    writeDb.usingCommoditiesFavId(columnId);
                     v.setSelected(!v.isSelected());
                 }
             });

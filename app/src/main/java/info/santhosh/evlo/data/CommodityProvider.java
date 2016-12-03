@@ -28,17 +28,31 @@ public class CommodityProvider extends ContentProvider {
     static final int COMMODITY_NAME = 102;
     static final int SEARCH_FOR_COMMODITY_NAME = 103;
 
+    static final int COMMODITY_FAV = 200;
+
     private static final SQLiteQueryBuilder sCommodityByMarketQueryBuilder;
+    private static final SQLiteQueryBuilder sCommodityByFavouriteQueryBuilder;
 
     static{
         sCommodityByMarketQueryBuilder = new SQLiteQueryBuilder();
-
+        sCommodityByFavouriteQueryBuilder = new SQLiteQueryBuilder();
         /*
         from commodity_data
          */
         sCommodityByMarketQueryBuilder.setTables(
                 CommodityContract.CommodityDataEntry.TABLE_NAME
         );
+
+        /*
+        commodity_data INNER JOIN commodity_fav ON commodity_fav.fav_id = commodity_data._id
+         */
+        sCommodityByFavouriteQueryBuilder.setTables(
+                CommodityContract.CommodityDataEntry.TABLE_NAME + " INNER JOIN " +
+                        CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        " ON " + CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID +
+                        " = " + CommodityContract.CommodityDataEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityDataEntry._ID);
     }
 
     // commodity_data.commodity_name = ?
@@ -78,6 +92,9 @@ public class CommodityProvider extends ContentProvider {
                 + "/"
                 + CommodityContract.PATH_COMMODITY_VARIETY,
                 COMMODITY_NAME);
+        //commodity_fav
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_FAV,
+                COMMODITY_FAV);
         return matcher;
     }
 
@@ -139,6 +156,19 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
+            case COMMODITY_FAV: {
+                retCursor = sCommodityByFavouriteQueryBuilder.query(
+                        mOpenHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME, //groupBy
+                        null, //having
+                        sortOrder,
+                        null
+                );
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -168,6 +198,8 @@ public class CommodityProvider extends ContentProvider {
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
             case COMMODITY_NAME:
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
+            case COMMODITY_FAV:
+                return CommodityContract.CommodityFavEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -184,6 +216,14 @@ public class CommodityProvider extends ContentProvider {
                 long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = CommodityContract.CommodityDataEntry.buildCommodityDataUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case COMMODITY_FAV: {
+                long _id = db.insert(CommodityContract.CommodityFavEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = CommodityContract.CommodityFavEntry.buildCommodityFavUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
