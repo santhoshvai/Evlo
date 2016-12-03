@@ -110,7 +110,6 @@ public class CommodityListActivity extends AppCompatActivity
 
         mCommodityAdapter = new CommodityAdapter(this, mSearchQuery);
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
-        getSupportLoaderManager().enableDebugLogging(true);
 
         mRecyclerView = (EmptyRecyclerView) findViewById(R.id.commodity_list);
         mRecyclerView.setEmptyView(findViewById(R.id.empty_view)); // get empty_view for recycler view
@@ -118,7 +117,7 @@ public class CommodityListActivity extends AppCompatActivity
 
         if (findViewById(R.id.commodity_detail_container) != null) {
             // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
+            // large-screen layouts (res/values-sw600dp).
             // If this view is present, then the
             // activity should be in two-pane mode.
             mTwoPane = true;
@@ -284,7 +283,7 @@ public class CommodityListActivity extends AppCompatActivity
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         // hide FAB
-                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.GONE);
+                        (findViewById(R.id.fab)).setVisibility(View.GONE);
                         mSearchViewExpanded = true;
                         return true; //true if item should expand
                     }
@@ -292,7 +291,7 @@ public class CommodityListActivity extends AppCompatActivity
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
                         // FAB should re-appear
-                        ((FloatingActionButton) findViewById(R.id.fab)).setVisibility(View.VISIBLE);
+                        (findViewById(R.id.fab)).setVisibility(View.VISIBLE);
                         mSearchQuery = "";
                         mSearchViewExpanded = false;
                         return true; //true if item should collapse
@@ -441,6 +440,9 @@ public class CommodityListActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * The click listener for the recycler view items
+     */
     private class ItemClickListener {
         void onClick(String commodityName, Context context) {
             // move to the detail activity/fragment
