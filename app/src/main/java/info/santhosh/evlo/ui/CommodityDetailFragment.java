@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.data.CommodityContract;
-import info.santhosh.evlo.service.SOAP.WriteDb;
+import info.santhosh.evlo.common.WriteDb;
 
 /**
  * A fragment representing a single Commodity detail screen.
@@ -240,7 +240,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, Integer.toString(columnId));
-                    WriteDb writeDb = new WriteDb(v.getContext().getApplicationContext());
+                    WriteDb writeDb = new WriteDb(v.getContext());
                     writeDb.usingCommoditiesFavId(columnId);
                     // TODO: replace by avd
                     v.setSelected(!v.isSelected());

@@ -1,4 +1,4 @@
-package info.santhosh.evlo.service.SOAP;
+package info.santhosh.evlo.common;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +9,7 @@ import java.util.Vector;
 
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
+import info.santhosh.evlo.service.SOAP.Commodity;
 
 /**
  * Created by santhoshvai on 09/04/16.
@@ -20,7 +21,7 @@ public class WriteDb {
     private final Context mContext;
 
     public WriteDb(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
     // INSERT VALUES TO TABLE HERE
 
