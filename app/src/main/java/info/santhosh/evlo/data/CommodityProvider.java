@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -284,15 +285,33 @@ public class CommodityProvider extends ContentProvider {
         switch (match) {
             case COMMODITY_DATA:
                 db.beginTransaction();
+                String selection = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME +
+                        "=? AND " +
+                        CommodityContract.CommodityDataEntry.COLUMN_VARIETY +
+                        "=? AND " +
+                        CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME +
+                        "=?";
+                String[] selectionArgs;
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
+                        selectionArgs = new String[] {
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME),
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY),
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME)};
+                        // the row is updated if the above three values are same
+                        int affected = db.update(
+                                CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
+                        if (affected == 0) { // only if no row was updated do the insert
+                            long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
+                            if (_id != -1) {
+                                returnCount++;
+                            }
                         }
                     }
                     db.setTransactionSuccessful();
+                } catch (SQLException e) {
+                    Log.e(TAG, "BulkInsert", e);
                 } finally {
                     db.endTransaction();
                 }

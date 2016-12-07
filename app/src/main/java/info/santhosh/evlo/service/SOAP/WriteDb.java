@@ -59,7 +59,6 @@ public class WriteDb {
         commodityFavValues.put(CommodityContract.CommodityFavEntry.COLUMN_FAV_ID, favId);
 
         mContext.getContentResolver().insert(CommodityContract.CommodityFavEntry.CONTENT_URI, commodityFavValues);
-        Log.d(TAG, "WriteDb Favs Complete. ");
     }
 
 }

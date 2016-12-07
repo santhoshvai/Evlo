@@ -35,12 +35,7 @@ class CommodityDbHelper  extends SQLiteOpenHelper {
                 CommodityDataEntry.COLUMN_MIN_PRICE + " INTEGER NOT NULL," +
                 CommodityDataEntry.COLUMN_MARKET_NAME + " TEXT NOT NULL, " +
                 CommodityDataEntry.COLUMN_DISTRICT_NAME + " TEXT NOT NULL, " +
-                CommodityDataEntry.COLUMN_STATE_NAME + " TEXT NOT NULL, " +
-                // one commodity/market combo
-                " UNIQUE (" +
-                CommodityDataEntry.COLUMN_COMMODITY_NAME + ", " +
-                CommodityDataEntry.COLUMN_VARIETY + ", " +
-                CommodityDataEntry.COLUMN_MARKET_NAME + ") ON CONFLICT REPLACE);";
+                CommodityDataEntry.COLUMN_STATE_NAME + " TEXT NOT NULL); ";
 
         //create a table to hold commodity favs info -- just the id
         final String SQL_CREATE_COMMODITY_FAV_TABLE = "CREATE TABLE "
