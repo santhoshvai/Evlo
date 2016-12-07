@@ -206,7 +206,7 @@ public class CommodityListActivity extends AppCompatActivity
 
         return new CursorLoader(this,
                 commodityNameUri,
-                null,
+                COMMODITY_NAME_COLUMNS,
                 null,
                 null,
                 sortOrder);
