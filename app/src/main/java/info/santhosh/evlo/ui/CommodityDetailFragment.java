@@ -171,16 +171,16 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         /**
          * Cache of the children views for a commodity list item.
          */
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mVariety;
-            public final TextView mModalPrice;
-            public final TextView mState;
-            public final TextView mMarket;
-            public final ImageView mFav;
-            public final ImageView mShare;
+        class ViewHolder extends RecyclerView.ViewHolder {
+            final View mView;
+            final TextView mVariety;
+            final TextView mModalPrice;
+            final TextView mState;
+            final TextView mMarket;
+            final ImageView mFav;
+            final ImageView mShare;
 
-            public ViewHolder(View view) {
+            ViewHolder(View view) {
                 super(view);
                 this.mView = view;
                 this.mVariety = (TextView) view.findViewById(R.id.text_variety);
@@ -192,7 +192,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             }
         }
 
-        public CommodityDetailAdapter(Context context) {
+        CommodityDetailAdapter(Context context) {
             mContext = context;
         }
 
@@ -236,13 +236,13 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             holder.mVariety.setText(variety);
 
 
-            // TODO: add to fav database here
             holder.mFav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d(TAG, Integer.toString(columnId));
                     WriteDb writeDb = new WriteDb(v.getContext().getApplicationContext());
                     writeDb.usingCommoditiesFavId(columnId);
+                    // TODO: replace by avd
                     v.setSelected(!v.isSelected());
                 }
             });
