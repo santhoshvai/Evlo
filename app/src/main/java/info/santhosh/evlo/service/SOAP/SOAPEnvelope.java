@@ -1,7 +1,5 @@
 package info.santhosh.evlo.service.SOAP;
 
-import android.util.Log;
-
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -28,7 +26,6 @@ public class SOAPEnvelope {
 
 
     public Commodities getCommodities() {
-        Log.d(TAG, "getCommodities");
         return commodities;
     }
 
@@ -41,10 +38,10 @@ public class SOAPEnvelope {
         @Override
         public SOAPEnvelope read(InputNode node) throws Exception {
             SOAPEnvelope envelope = new SOAPEnvelope();
-            InputNode commoditiesNode = findCommoditiesNode(node); // Search the Vehicles list element
+            InputNode commoditiesNode = findCommoditiesNode(node); // Search the Commodities list element
 
             if( commoditiesNode == null ) {
-                // This is bad - do something useful here
+                // TODO: This is bad - do something useful here
                 throw new Exception("No commodities node!");
             }
             /*
@@ -71,7 +68,6 @@ public class SOAPEnvelope {
 
             while( ( next = rootNode.getNext() ) != null ) {
                 if(next.getName().equals("NewDataSet")) {
-                    Log.d("TAG", "Found the tag that contains all commodities");
                     return next;
                 }
             }

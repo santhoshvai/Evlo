@@ -285,11 +285,14 @@ public class CommodityProvider extends ContentProvider {
         switch (match) {
             case COMMODITY_DATA:
                 db.beginTransaction();
+                // TODO: when arrival date is the same, dont update or insert
                 String selection = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME +
                         "=? AND " +
                         CommodityContract.CommodityDataEntry.COLUMN_VARIETY +
                         "=? AND " +
                         CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME +
+                        "=? AND " +
+                        CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME +
                         "=?";
                 String[] selectionArgs;
                 int returnCount = 0;
@@ -298,8 +301,9 @@ public class CommodityProvider extends ContentProvider {
                         selectionArgs = new String[] {
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME),
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY),
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME)};
-                        // the row is updated if the above three values are same
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME),
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME)};
+                        // the row is updated if the above four values are same
                         int affected = db.update(
                                 CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
                         if (affected == 0) { // only if no row was updated do the insert
