@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "info.santhosh.evlo"
@@ -26,7 +26,7 @@ android {
 ext{
     //version numbers
     junitVersion = '4.12'
-    supportLibVersion = '25.0.1'
+    supportLibVersion = '25.1.0'
     okhttpVersion = '2.2.0'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.1'
@@ -48,4 +48,5 @@ dependencies {
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
 }
