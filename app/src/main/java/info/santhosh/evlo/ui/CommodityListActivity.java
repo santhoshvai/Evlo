@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
@@ -23,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +43,7 @@ import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.service.GetXmlService;
+import info.santhosh.evlo.ui.favorites.FavoritesActivity;
 
 /**
  * An activity representing a list of Commodities. This activity
@@ -64,6 +65,8 @@ public class CommodityListActivity extends AppCompatActivity
     private boolean mTwoPane;
     private CommodityAdapter mCommodityAdapter;
     private EmptyRecyclerView mRecyclerView;
+    private MenuItem mSearchMenuItem;
+    private boolean mBackFromUpButton;
 
     private static final int COMMODITY_NAME_LOADER = 0;
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
@@ -105,8 +108,10 @@ public class CommodityListActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "ApiKey: " + apiKey, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(view.getContext(), FavoritesActivity.class);
+                view.getContext().startActivity(intent);
+//                Snackbar.make(view, "ApiKey: " + apiKey, Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
             }
         });
 
@@ -227,6 +232,7 @@ public class CommodityListActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // http://developer.android.com/training/search/setup.html
+        Log.d(TAG, "onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
 
@@ -235,6 +241,7 @@ public class CommodityListActivity extends AppCompatActivity
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
         MenuItem searchItem = menu.findItem(R.id.search_commodities);
+        mSearchMenuItem = searchItem; // used in onNewIntent, which is called when we are back from up button
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE); // occupy full width
         // The call to getSearchableInfo() obtains a SearchableInfo object that is created from the searchable configuration XML file.
@@ -251,7 +258,7 @@ public class CommodityListActivity extends AppCompatActivity
         } catch (Exception e) {}
 
         // if previous searchQuery is present - due to configuration changes
-        if (mSearchViewExpanded) {
+        if (mSearchViewExpanded && !mBackFromUpButton) {
             searchItem.expandActionView();
             searchView.setQuery(mSearchQuery, false);
             (findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
@@ -261,6 +268,11 @@ public class CommodityListActivity extends AppCompatActivity
                 mCommodityAdapter.notifyDataSetChanged();
             }
             // searchView.clearFocus(); // hide keyboard
+        }
+
+        if(mBackFromUpButton) {
+            // reset the value
+            mBackFromUpButton = false;
         }
 
         searchView.setOnQueryTextListener(
@@ -462,6 +474,19 @@ public class CommodityListActivity extends AppCompatActivity
                 context.startActivity(intent);
             }
         }
+    }
+
+    // called when we come back through up button, as we are in "singleTop" mode.
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Logic to make search go away if we were searching before
+        if (mSearchViewExpanded && mSearchMenuItem != null) {
+            SearchView searchView = (SearchView) mSearchMenuItem.getActionView();
+            mSearchMenuItem.collapseActionView(); // collapse the search bar
+            searchView.clearFocus(); // hide keyboard
+        }
+        mBackFromUpButton = true; // onCreateOptionsMenu will be called when the phone was rotated, hence dont make the restore to be called
     }
 
 }
