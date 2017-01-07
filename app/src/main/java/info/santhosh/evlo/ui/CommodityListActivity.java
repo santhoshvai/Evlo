@@ -22,7 +22,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,7 +65,6 @@ public class CommodityListActivity extends AppCompatActivity
     private CommodityAdapter mCommodityAdapter;
     private EmptyRecyclerView mRecyclerView;
     private MenuItem mSearchMenuItem;
-    private boolean mBackFromUpButton;
 
     private static final int COMMODITY_NAME_LOADER = 0;
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
@@ -110,8 +108,6 @@ public class CommodityListActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), FavoritesActivity.class);
                 view.getContext().startActivity(intent);
-//                Snackbar.make(view, "ApiKey: " + apiKey, Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
             }
         });
 
@@ -232,7 +228,6 @@ public class CommodityListActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // http://developer.android.com/training/search/setup.html
-        Log.d(TAG, "onCreateOptionsMenu");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu, menu);
 
@@ -258,21 +253,16 @@ public class CommodityListActivity extends AppCompatActivity
         } catch (Exception e) {}
 
         // if previous searchQuery is present - due to configuration changes
-        if (mSearchViewExpanded && !mBackFromUpButton) {
+        if (mSearchViewExpanded) {
             searchItem.expandActionView();
             searchView.setQuery(mSearchQuery, false);
             (findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
-            if(mSearchQuery.length() >0) {
+            if(mSearchQuery.length() > 0) {
                 // preserve the highlight
                 mCommodityAdapter.setmFilterSearch(mSearchQuery);
                 mCommodityAdapter.notifyDataSetChanged();
             }
             // searchView.clearFocus(); // hide keyboard
-        }
-
-        if(mBackFromUpButton) {
-            // reset the value
-            mBackFromUpButton = false;
         }
 
         searchView.setOnQueryTextListener(
@@ -481,12 +471,21 @@ public class CommodityListActivity extends AppCompatActivity
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         // Logic to make search go away if we were searching before
-        if (mSearchViewExpanded && mSearchMenuItem != null) {
-            SearchView searchView = (SearchView) mSearchMenuItem.getActionView();
-            mSearchMenuItem.collapseActionView(); // collapse the search bar
-            searchView.clearFocus(); // hide keyboard
+        if (mSearchViewExpanded) {
+            // onCreateOptionsMenu will be called when the phone was rotated,
+            // hence dont make the restore to be called by resetting below values
+            mSearchViewExpanded = false;
+            mSearchQuery = "";
+            if(mSearchMenuItem != null) {
+                // phone was not rotated in this case, hence onCreateOptionsMenu wont be called
+                // collapse the search view manually now
+                SearchView searchView = (SearchView) mSearchMenuItem.getActionView();
+                mSearchMenuItem.collapseActionView(); // collapse the search bar
+                searchView.clearFocus(); // hide keyboard
+            }
+            // in any case, reset the list
+            getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, null, this);
         }
-        mBackFromUpButton = true; // onCreateOptionsMenu will be called when the phone was rotated, hence dont make the restore to be called
     }
 
 }
