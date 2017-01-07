@@ -22,9 +22,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.common.WriteDb;
+import info.santhosh.evlo.data.CommodityContract;
 
 /**
  * A fragment representing a single Commodity detail screen.
@@ -34,7 +36,8 @@ import info.santhosh.evlo.common.WriteDb;
  */
 public class CommodityDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String TAG = "CommodityDetailFragment";
+    private static final String TAG = "CommodityDetailFragment";
+    private static final DecimalFormat IndianCurrencyFormat = new DecimalFormat("##,##,###");
 
     /**
      * The fragment argument representing the item ID that this fragment
@@ -216,7 +219,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
             final int columnId = mCursor.getInt(CommodityDetailFragment.COL_COMMODITY_DETAIL_ID);
             final String commodityName = mCursor.getString(CommodityDetailFragment.COL_COMMODITY_NAME);
-            final String modalPrice = mCursor.getString(CommodityDetailFragment.COL_MODAL_PRICE);
+            Double modalPriceDouble = Double.valueOf(mCursor.getString(CommodityDetailFragment.COL_MODAL_PRICE));
+
+            final String modalPrice = IndianCurrencyFormat.format(modalPriceDouble);
             final String date = mCursor.getString(CommodityDetailFragment.COL_ARRIVAL_DATE);
             final String maxPrice = mCursor.getString(CommodityDetailFragment.COL_MAX_PRICE);
             final String minPrice = mCursor.getString(CommodityDetailFragment.COL_MIN_PRICE);
@@ -226,7 +231,6 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             // variety name given is same as commodityName, then replace it as Normal
             final String variety = mCursor.getString(CommodityDetailFragment.COL_VARIETY)
                     .equalsIgnoreCase(commodityName)? "Normal": mCursor.getString(CommodityDetailFragment.COL_VARIETY);
-
 
             String modal_price_text = String.format(res.getString(R.string.modal_price), modalPrice);
             String market_text = String.format(res.getString(R.string.market), market, district);
