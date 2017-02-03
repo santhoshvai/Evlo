@@ -26,7 +26,7 @@ android {
 ext{
     //version numbers
     junitVersion = '4.12'
-    supportLibVersion = '25.1.0'
+    supportLibVersion = '25.1.1'
     okhttpVersion = '2.2.0'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.1'
@@ -35,7 +35,6 @@ ext{
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile "junit:junit:${junitVersion}"
-    compile 'net.opacapp:multiline-collapsingtoolbar:1.0.0'
     compile "com.android.support:appcompat-v7:${supportLibVersion}"
     compile "com.android.support:support-v4:${supportLibVersion}"
     compile "com.android.support:recyclerview-v7:${supportLibVersion}"
@@ -49,4 +48,7 @@ dependencies {
         exclude module: 'xpp3'
     }
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }
