@@ -2,6 +2,8 @@ package info.santhosh.evlo.common;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.List;
@@ -55,11 +57,17 @@ public class WriteDb {
         Log.d(TAG, "WriteDb List Complete. " + inserted + " Inserted");
     }
 
-    public void usingCommoditiesFavId(int favId) {
+    public @Nullable Uri addUsingCommoditiesFavId(int favId) {
         ContentValues commodityFavValues = new ContentValues();
         commodityFavValues.put(CommodityContract.CommodityFavEntry.COLUMN_FAV_ID, favId);
 
-        mContext.getContentResolver().insert(CommodityContract.CommodityFavEntry.CONTENT_URI, commodityFavValues);
+        return mContext.getContentResolver().insert(CommodityContract.CommodityFavEntry.CONTENT_URI, commodityFavValues);
+    }
+
+    public int removeUsingCommoditiesFavId(int favId) {
+        return mContext.getContentResolver().delete(CommodityContract.CommodityFavEntry.CONTENT_URI,
+                CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + "=?",
+                new String[] { Integer.toString(favId) });
     }
 
 }

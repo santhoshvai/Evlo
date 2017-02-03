@@ -25,8 +25,8 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.common.WriteDb;
 import info.santhosh.evlo.data.CommodityContract;
+import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
 
 /**
  * A fragment representing a single Commodity detail screen.
@@ -216,6 +216,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             final Resources res = mContext.getResources();
 
             // Read from cursor
+            // TODO: read if an entry is already stored as a favorite from cursor, cursor needs to give this info
 
             final int columnId = mCursor.getInt(CommodityDetailFragment.COL_COMMODITY_DETAIL_ID);
             final String commodityName = mCursor.getString(CommodityDetailFragment.COL_COMMODITY_NAME);
@@ -243,17 +244,15 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             holder.mFav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, Integer.toString(columnId));
-                    WriteDb writeDb = new WriteDb(v.getContext());
-                    writeDb.usingCommoditiesFavId(columnId);
-                    // TODO: replace by avd
                     v.setSelected(!v.isSelected());
+                    new FavoriteAddorRemoveAsyncTask(v.getContext(), v.isSelected()).execute(columnId);
                 }
             });
 
             holder.mShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // TODO: share an image if you can
                     Intent sendIntent = new Intent();
                     sendIntent.setAction(Intent.ACTION_SEND);
                     String share = String.format(res.getString(R.string.share_data),

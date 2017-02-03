@@ -248,6 +248,9 @@ public class CommodityProvider extends ContentProvider {
                 rowsDeleted = db.delete(
                         CommodityContract.CommodityDataEntry.TABLE_NAME, selection, selectionArgs);
                 break;
+            case COMMODITY_FAV:
+                rowsDeleted = db.delete(CommodityContract.CommodityFavEntry.TABLE_NAME, selection, selectionArgs);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -285,7 +288,7 @@ public class CommodityProvider extends ContentProvider {
         switch (match) {
             case COMMODITY_DATA:
                 db.beginTransaction();
-                // TODO: when arrival date is the same, dont update or insert
+                // TODO: when arrival date is the same, dont update or insert (Logic must be in writeDb to send only needed ones)
                 String selection = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME +
                         "=? AND " +
                         CommodityContract.CommodityDataEntry.COLUMN_VARIETY +
