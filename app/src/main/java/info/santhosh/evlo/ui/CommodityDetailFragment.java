@@ -15,7 +15,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +27,18 @@ import info.santhosh.evlo.R;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
 
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_ARRIVAL_DATE;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_COMMODITY_DETAIL_ID;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_COMMODITY_NAME;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_DISTRICT_NAME;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_MARKET_NAME;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_MAX_PRICE;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_MIN_PRICE;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_MODAL_PRICE;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_STATE_NAME;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COL_VARIETY;
+import static info.santhosh.evlo.common.DetailCommodityColumnConstants.COMMODITY_DETAIL_COLUMNS;
+
 /**
  * A fragment representing a single Commodity detail screen.
  * This fragment is either contained in a {@link CommodityListActivity}
@@ -37,7 +48,6 @@ import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
 public class CommodityDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "CommodityDetailFragment";
-    private static final DecimalFormat IndianCurrencyFormat = new DecimalFormat("##,##,###");
 
     /**
      * The fragment argument representing the item ID that this fragment
@@ -46,32 +56,8 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     public static final String COMMODITY_NAME = "commodity_name";
 
     private static final int COMMODITY_DETAIL_LOADER = 1;
+    private static final DecimalFormat IndianCurrencyFormat = new DecimalFormat("##,##,###");
 
-    // Specify the columns we need.
-    private static final String[] COMMODITY_DETAIL_COLUMNS = {
-            CommodityContract.CommodityDataEntry.TABLE_NAME + "." + CommodityContract.CommodityDataEntry._ID,
-            CommodityContract.CommodityDataEntry.COLUMN_ARRIVAL_DATE,
-            CommodityContract.CommodityDataEntry.COLUMN_MAX_PRICE,
-            CommodityContract.CommodityDataEntry.COLUMN_MIN_PRICE,
-            CommodityContract.CommodityDataEntry.COLUMN_MODAL_PRICE,
-            CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME,
-            CommodityContract.CommodityDataEntry.COLUMN_VARIETY,
-            CommodityContract.CommodityDataEntry.COLUMN_STATE_NAME,
-            CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME,
-            CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME
-    };
-
-    // These indices are tied to COMMODITY_DETAIL_COLUMNS.  If COMMODITY_DETAIL_COLUMNS change, these must change.
-    static final int COL_COMMODITY_DETAIL_ID = 0;
-    static final int COL_ARRIVAL_DATE = 1;
-    static final int COL_MAX_PRICE = 2;
-    static final int COL_MIN_PRICE = 3;
-    static final int COL_MODAL_PRICE = 4;
-    static final int COL_COMMODITY_NAME = 5;
-    static final int COL_VARIETY = 6;
-    static final int COL_STATE_NAME = 7;
-    static final int COL_DISTRICT_NAME = 8;
-    static final int COL_MARKET_NAME = 9;
 
     private String mCommodityName;
     private CommodityDetailAdapter mCommodityDetailAdapter;
@@ -166,7 +152,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mCommodityDetailAdapter.swapCursor(null);
     }
 
-    public class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> {
+    class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> {
 
         private Cursor mCursor;
         final private Context mContext;
@@ -218,20 +204,20 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             // Read from cursor
             // TODO: read if an entry is already stored as a favorite from cursor, cursor needs to give this info
 
-            final int columnId = mCursor.getInt(CommodityDetailFragment.COL_COMMODITY_DETAIL_ID);
-            final String commodityName = mCursor.getString(CommodityDetailFragment.COL_COMMODITY_NAME);
-            Double modalPriceDouble = Double.valueOf(mCursor.getString(CommodityDetailFragment.COL_MODAL_PRICE));
+            final int columnId = mCursor.getInt(COL_COMMODITY_DETAIL_ID);
+            final String commodityName = mCursor.getString(COL_COMMODITY_NAME);
+            Double modalPriceDouble = Double.valueOf(mCursor.getString(COL_MODAL_PRICE));
 
             final String modalPrice = IndianCurrencyFormat.format(modalPriceDouble);
-            final String date = mCursor.getString(CommodityDetailFragment.COL_ARRIVAL_DATE);
-            final String maxPrice = mCursor.getString(CommodityDetailFragment.COL_MAX_PRICE);
-            final String minPrice = mCursor.getString(CommodityDetailFragment.COL_MIN_PRICE);
-            final String district = mCursor.getString(CommodityDetailFragment.COL_DISTRICT_NAME);
-            final String market = mCursor.getString(CommodityDetailFragment.COL_MARKET_NAME);
-            final String state = mCursor.getString(CommodityDetailFragment.COL_STATE_NAME);
+            final String date = mCursor.getString(COL_ARRIVAL_DATE);
+            final String maxPrice = mCursor.getString(COL_MAX_PRICE);
+            final String minPrice = mCursor.getString(COL_MIN_PRICE);
+            final String district = mCursor.getString(COL_DISTRICT_NAME);
+            final String market = mCursor.getString(COL_MARKET_NAME);
+            final String state = mCursor.getString(COL_STATE_NAME);
             // variety name given is same as commodityName, then replace it as Normal
-            final String variety = mCursor.getString(CommodityDetailFragment.COL_VARIETY)
-                    .equalsIgnoreCase(commodityName)? "Normal": mCursor.getString(CommodityDetailFragment.COL_VARIETY);
+            final String variety = mCursor.getString(COL_VARIETY)
+                    .equalsIgnoreCase(commodityName)? "Normal": mCursor.getString(COL_VARIETY);
 
             String modal_price_text = String.format(res.getString(R.string.modal_price), modalPrice);
             String market_text = String.format(res.getString(R.string.market), market, district);
