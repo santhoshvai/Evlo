@@ -10,6 +10,7 @@
     <string name="modal_price">\u20B9 %1$s</string>
     <string name="market">%1$s market, %2$s district</string>
     <string name="share_data">%1$s,\n%2$s variety,\n\u20B9 %3$s per 100kg,\n%4$s market, %5$s district,\n %6$s </string>
+    <string name="favorite_name_data">%1$s, %2$s variety</string>
     <string name="favorite_content">Favorite</string>
     <string name="share_content">Share</string>
     <string name="share_heading">Share the price detail...</string>

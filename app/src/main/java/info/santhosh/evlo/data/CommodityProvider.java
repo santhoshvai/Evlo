@@ -163,7 +163,7 @@ public class CommodityProvider extends ContentProvider {
                         projection,
                         selection,
                         selectionArgs,
-                        CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME, //groupBy
+                        null, //groupBy
                         null, //having
                         sortOrder,
                         null
