@@ -17,7 +17,7 @@ import info.santhosh.evlo.ui.CommodityListActivity;
  * is displayed when the adapter has no data and hidden otherwise).
  */
 public class EmptyRecyclerView extends RecyclerView {
-    private View mEmptyView;
+    public View mEmptyView;
 
     private AdapterDataObserver mDataObserver = new AdapterDataObserver() {
         @Override
@@ -65,13 +65,16 @@ public class EmptyRecyclerView extends RecyclerView {
             boolean showEmptyView = getAdapter().getItemCount() == 0;
             mEmptyView.setVisibility(showEmptyView ? VISIBLE : GONE);
             setVisibility(showEmptyView ? GONE : VISIBLE);
+            setEmptyViewText();
+        }
+    }
 
-            // set the empty view text
-            if(getAdapter() instanceof CommodityListActivity.CommodityAdapter) {
-                CommodityListActivity.CommodityAdapter adapter = (CommodityListActivity.CommodityAdapter) getAdapter();
-                String searchFilter = adapter.getFilterSearch();
-                Utils.setEmptyViewText(getContext(), (TextView) mEmptyView, searchFilter);
-            }
+    public void setEmptyViewText() {
+        // set the empty view text
+        if(getAdapter() instanceof CommodityListActivity.CommodityAdapter) {
+            CommodityListActivity.CommodityAdapter adapter = (CommodityListActivity.CommodityAdapter) getAdapter();
+            String searchFilter = adapter.getFilterSearch();
+            Utils.setEmptyViewText(getContext(), (TextView) mEmptyView, searchFilter);
         }
     }
 }
