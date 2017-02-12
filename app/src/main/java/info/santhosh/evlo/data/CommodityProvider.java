@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -28,16 +29,34 @@ public class CommodityProvider extends ContentProvider {
     static final int COMMODITY_NAME = 102;
     static final int SEARCH_FOR_COMMODITY_NAME = 103;
 
-    private static final SQLiteQueryBuilder sCommodityByMarketQueryBuilder;
+    static final int COMMODITY_FAV = 200;
+
+    private static final SQLiteQueryBuilder sCommodityByVarietyQueryBuilder;
+    private static final SQLiteQueryBuilder sCommodityByFavouriteQueryBuilder;
 
     static{
-        sCommodityByMarketQueryBuilder = new SQLiteQueryBuilder();
+        sCommodityByVarietyQueryBuilder = new SQLiteQueryBuilder();
+        sCommodityByFavouriteQueryBuilder = new SQLiteQueryBuilder();
+
+        sCommodityByVarietyQueryBuilder.setTables(
+                CommodityContract.CommodityDataEntry.TABLE_NAME + " LEFT JOIN " +
+                        CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        " ON " + CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID +
+                        " = " + CommodityContract.CommodityDataEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityDataEntry._ID
+        );
 
         /*
-        from commodity_data
+        commodity_data INNER JOIN commodity_fav ON commodity_fav.fav_id = commodity_data._id
          */
-        sCommodityByMarketQueryBuilder.setTables(
-                CommodityContract.CommodityDataEntry.TABLE_NAME
+        sCommodityByFavouriteQueryBuilder.setTables(
+                CommodityContract.CommodityDataEntry.TABLE_NAME + " INNER JOIN " +
+                        CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        " ON " + CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID +
+                        " = " + CommodityContract.CommodityDataEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityDataEntry._ID
         );
     }
 
@@ -78,6 +97,9 @@ public class CommodityProvider extends ContentProvider {
                 + "/"
                 + CommodityContract.PATH_COMMODITY_VARIETY,
                 COMMODITY_NAME);
+        //commodity_fav
+        matcher.addURI(authority, CommodityContract.PATH_COMMODITY_FAV,
+                COMMODITY_FAV);
         return matcher;
     }
 
@@ -94,10 +116,11 @@ public class CommodityProvider extends ContentProvider {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             // "commodity_data/*"
+            // used for the detail fragment
             case COMMODITY_DATA_WITH_NAME:
             {
                 String commodity = CommodityContract.CommodityDataEntry.getCommodityNameFromUri(uri);
-                retCursor = sCommodityByMarketQueryBuilder.query(
+                retCursor = sCommodityByVarietyQueryBuilder.query(
                         mOpenHelper.getReadableDatabase(),
                         projection,
                         sCommodityNameSelection, // selection
@@ -139,6 +162,20 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
+            // used for the favorites fragment
+            case COMMODITY_FAV: {
+                retCursor = sCommodityByFavouriteQueryBuilder.query(
+                        mOpenHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null, //groupBy
+                        null, //having
+                        sortOrder,
+                        null
+                );
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -168,6 +205,8 @@ public class CommodityProvider extends ContentProvider {
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
             case COMMODITY_NAME:
                 return CommodityContract.CommodityDataEntry.CONTENT_TYPE;
+            case COMMODITY_FAV:
+                return CommodityContract.CommodityFavEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -184,6 +223,14 @@ public class CommodityProvider extends ContentProvider {
                 long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, values);
                 if ( _id > 0 )
                     returnUri = CommodityContract.CommodityDataEntry.buildCommodityDataUri(_id);
+                else
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                break;
+            }
+            case COMMODITY_FAV: {
+                long _id = db.insert(CommodityContract.CommodityFavEntry.TABLE_NAME, null, values);
+                if ( _id > 0 )
+                    returnUri = CommodityContract.CommodityFavEntry.buildCommodityFavUri(_id);
                 else
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
@@ -206,6 +253,9 @@ public class CommodityProvider extends ContentProvider {
             case COMMODITY_DATA:
                 rowsDeleted = db.delete(
                         CommodityContract.CommodityDataEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case COMMODITY_FAV:
+                rowsDeleted = db.delete(CommodityContract.CommodityFavEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -244,15 +294,37 @@ public class CommodityProvider extends ContentProvider {
         switch (match) {
             case COMMODITY_DATA:
                 db.beginTransaction();
+                // TODO: when arrival date is the same, dont update or insert (Logic must be in writeDb to send only needed ones)
+                String selection = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME +
+                        "=? AND " +
+                        CommodityContract.CommodityDataEntry.COLUMN_VARIETY +
+                        "=? AND " +
+                        CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME +
+                        "=? AND " +
+                        CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME +
+                        "=?";
+                String[] selectionArgs;
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
-                        if (_id != -1) {
-                            returnCount++;
+                        selectionArgs = new String[] {
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME),
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY),
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME),
+                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME)};
+                        // the row is updated if the above four values are same
+                        int affected = db.update(
+                                CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
+                        if (affected == 0) { // only if no row was updated do the insert
+                            long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
+                            if (_id != -1) {
+                                returnCount++;
+                            }
                         }
                     }
                     db.setTransactionSuccessful();
+                } catch (SQLException e) {
+                    Log.e(TAG, "BulkInsert", e);
                 } finally {
                     db.endTransaction();
                 }

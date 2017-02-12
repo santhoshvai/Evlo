@@ -15,6 +15,7 @@
         <activity
             android:name=".ui.CommodityListActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
@@ -27,7 +28,18 @@
         </activity>
         <activity
             android:name=".ui.CommodityDetailActivity"
+            android:parentActivityName=".ui.CommodityListActivity"
             android:theme="@style/AppTheme.NoActionBar">
+            <!-- Parent activity meta-data to support 4.0 (15) and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="info.santhosh.evlo.ui.CommodityListActivity" />
+        </activity>
+        <activity
+            android:name=".ui.favorites.FavoritesActivity"
+            android:parentActivityName=".ui.CommodityListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <!-- Parent activity meta-data to support 4.0 (15) and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="info.santhosh.evlo.ui.CommodityListActivity" />

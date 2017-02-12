@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Evlo</string>
-    <string name="price_unit">Price displayed is per 100 kilograms</string>
     <string name="title_commodity_detail">Commodity Detail</string>
     <string name="price_xml_url">http://data.gov.in/sites/default/files/Date-Wise-Prices-all-Commodity.xml</string>
     <string name="content_authority">info.santhosh.evlo</string>
@@ -10,6 +9,8 @@
     <string name="modal_price">\u20B9 %1$s</string>
     <string name="market">%1$s market, %2$s district</string>
     <string name="share_data">%1$s,\n%2$s variety,\n\u20B9 %3$s per 100kg,\n%4$s market, %5$s district,\n %6$s </string>
+    <string name="variety">%1$s variety</string>
+    <string name="commodity_name_and_variety">%1$s, %2$s variety</string>
     <string name="favorite_content">Favorite</string>
     <string name="share_content">Share</string>
     <string name="share_heading">Share the price detail...</string>

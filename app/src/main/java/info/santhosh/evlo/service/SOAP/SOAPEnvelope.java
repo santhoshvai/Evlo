@@ -1,7 +1,5 @@
 package info.santhosh.evlo.service.SOAP;
 
-import android.util.Log;
-
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
@@ -10,6 +8,8 @@ import org.simpleframework.xml.convert.Converter;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.stream.InputNode;
 import org.simpleframework.xml.stream.OutputNode;
+
+import info.santhosh.evlo.service.SOAP.xmlModels.Commodities;
 
 /**
  * Created by santhoshvai on 12/03/16.
@@ -28,7 +28,6 @@ public class SOAPEnvelope {
 
 
     public Commodities getCommodities() {
-        Log.d(TAG, "getCommodities");
         return commodities;
     }
 
@@ -41,10 +40,10 @@ public class SOAPEnvelope {
         @Override
         public SOAPEnvelope read(InputNode node) throws Exception {
             SOAPEnvelope envelope = new SOAPEnvelope();
-            InputNode commoditiesNode = findCommoditiesNode(node); // Search the Vehicles list element
+            InputNode commoditiesNode = findCommoditiesNode(node); // Search the Commodities list element
 
             if( commoditiesNode == null ) {
-                // This is bad - do something useful here
+                // TODO: This is bad - do something useful here
                 throw new Exception("No commodities node!");
             }
             /*
@@ -70,8 +69,7 @@ public class SOAPEnvelope {
             InputNode next;
 
             while( ( next = rootNode.getNext() ) != null ) {
-                if( next.getName().equals("NewDataSet") == true ) {
-                    Log.d("TAG", "Found the tag that contains all commodities");
+                if(next.getName().equals("NewDataSet")) {
                     return next;
                 }
             }

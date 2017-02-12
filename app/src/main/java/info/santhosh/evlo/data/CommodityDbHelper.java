@@ -12,7 +12,7 @@ import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
  */
 class CommodityDbHelper  extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     private static final String DATABASE_NAME = "commodities.db";
 
@@ -28,20 +28,26 @@ class CommodityDbHelper  extends SQLiteOpenHelper {
         final String SQL_CREATE_COMMODITY_DATA_TABLE = "CREATE TABLE " + CommodityDataEntry.TABLE_NAME + " ( " +
                 CommodityDataEntry._ID + " INTEGER PRIMARY KEY," +
                 CommodityDataEntry.COLUMN_COMMODITY_NAME + " TEXT NOT NULL, " +
-                CommodityDataEntry.COLUMN_VARIETY + " INTEGER NOT NULL, " +
+                CommodityDataEntry.COLUMN_VARIETY + " TEXT NOT NULL, " +
                 CommodityDataEntry.COLUMN_ARRIVAL_DATE + " TEXT NOT NULL, " +
                 CommodityDataEntry.COLUMN_MAX_PRICE + " INTEGER NOT NULL, " +
                 CommodityDataEntry.COLUMN_MODAL_PRICE + " INTEGER NOT NULL, " +
                 CommodityDataEntry.COLUMN_MIN_PRICE + " INTEGER NOT NULL," +
                 CommodityDataEntry.COLUMN_MARKET_NAME + " TEXT NOT NULL, " +
                 CommodityDataEntry.COLUMN_DISTRICT_NAME + " TEXT NOT NULL, " +
-                CommodityDataEntry.COLUMN_STATE_NAME + " TEXT NOT NULL, " +
-                // one commodity/market combo
-                " UNIQUE (" +
-                CommodityDataEntry.COLUMN_COMMODITY_NAME + ", " +
-                CommodityDataEntry.COLUMN_VARIETY + ", " +
-                CommodityDataEntry.COLUMN_MARKET_NAME + ") ON CONFLICT REPLACE);";
+                CommodityDataEntry.COLUMN_STATE_NAME + " TEXT NOT NULL); ";
+
+        //create a table to hold commodity favs info -- just the id
+        final String SQL_CREATE_COMMODITY_FAV_TABLE = "CREATE TABLE "
+                + CommodityContract.CommodityFavEntry.TABLE_NAME + " ( "
+                + CommodityContract.CommodityFavEntry._ID + " INTEGER PRIMARY KEY, "
+                + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + " INTEGER NOT NULL, "
+                + "FOREIGN KEY("  + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + ") "
+                + "REFERENCES " + CommodityDataEntry.TABLE_NAME + "(" + CommodityDataEntry._ID + ")"
+                + ");";
+
         db.execSQL(SQL_CREATE_COMMODITY_DATA_TABLE);
+        db.execSQL(SQL_CREATE_COMMODITY_FAV_TABLE);
     }
 
     @Override

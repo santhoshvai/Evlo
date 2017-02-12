@@ -1,13 +1,17 @@
-package info.santhosh.evlo.service.SOAP;
+package info.santhosh.evlo.common;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.List;
 import java.util.Vector;
 
+import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
+import info.santhosh.evlo.service.SOAP.xmlModels.Commodity;
 
 /**
  * Created by santhoshvai on 09/04/16.
@@ -19,14 +23,14 @@ public class WriteDb {
     private final Context mContext;
 
     public WriteDb(Context context) {
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
     // INSERT VALUES TO TABLE HERE
 
     // commodity_name -> get Id
     // use both id to build commodityData table
     public void usingCommoditiesList(List<Commodity> commodities) {
-        // Insert the new weather information into the database
+        // Insert the new commodity information into the database
         Vector<ContentValues> cVVector = new Vector<ContentValues>(commodities.size());
 
         for(Commodity commodity : commodities) {
@@ -50,7 +54,19 @@ public class WriteDb {
             cVVector.toArray(cvArray);
             inserted = mContext.getContentResolver().bulkInsert(CommodityDataEntry.CONTENT_URI, cvArray);
         }
-        Log.d(TAG, "WriteDb Complete. " + inserted + " Inserted");
+        Log.d(TAG, "WriteDb List Complete. " + inserted + " Inserted");
+    }
+
+    public @Nullable Uri addUsingCommoditiesFavId(int favId) {
+        ContentValues commodityFavValues = new ContentValues();
+        commodityFavValues.put(CommodityContract.CommodityFavEntry.COLUMN_FAV_ID, favId);
+        return mContext.getContentResolver().insert(CommodityContract.CommodityFavEntry.CONTENT_URI, commodityFavValues);
+    }
+
+    public int removeUsingCommoditiesFavId(int favId) {
+        return mContext.getContentResolver().delete(CommodityContract.CommodityFavEntry.CONTENT_URI,
+                CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + "=?",
+                new String[] { Integer.toString(favId) });
     }
 
 }

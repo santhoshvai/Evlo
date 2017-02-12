@@ -5,7 +5,8 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="colorListRowSelect">#E9EBEB</color>
+    <color name="almostWhite">#FFFAFAFA</color>
     <color name="lightGray">#EEEEEE</color>
-    <color name="dividerGrey">#DDD</color>
+    <color name="dividerGrey">#FFE0E0E0</color>
     <color name="searchHighlight">#4fc3f7</color>
 </resources>

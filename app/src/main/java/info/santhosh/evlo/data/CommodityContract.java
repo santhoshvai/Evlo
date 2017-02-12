@@ -23,6 +23,7 @@ public class CommodityContract {
     public static final String PATH_COMMODITY_DATA = "commodity_data";
     public static final String PATH_COMMODITY_VARIETY = "commodity_variety";
     public static final String PATH_COMMODITY_VARIETY_DETAIL = "commodity_variety_detail";
+    public static final String PATH_COMMODITY_FAV = "commodity_fav";
 
     public static final class CommodityDataEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
@@ -76,6 +77,29 @@ public class CommodityContract {
 
         public static String getCommodityNameFromUri(Uri uri) {
             return uri.getLastPathSegment();
+        }
+
+    }
+
+    public static final class CommodityFavEntry implements BaseColumns {
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_COMMODITY_FAV).build();
+        public static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_FAV;
+        public static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_COMMODITY_FAV;
+
+        public static final String TABLE_NAME = "commodity_fav";
+
+        public static final String COLUMN_FAV_ID = "fav_id";
+
+        public static Uri buildCommodityFavUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        // content://{package_name}/commodity_fav
+        public static Uri buildAllFavsCommodityDetails() {
+            return CONTENT_URI;
         }
 
     }

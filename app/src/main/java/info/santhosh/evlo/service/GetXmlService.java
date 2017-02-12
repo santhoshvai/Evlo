@@ -14,7 +14,7 @@ import org.simpleframework.xml.core.Persister;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.service.SOAP.SOAPEnvelope;
-import info.santhosh.evlo.service.SOAP.WriteDb;
+import info.santhosh.evlo.common.WriteDb;
 
 /**
  * Created by santhoshvai on 12/03/16.

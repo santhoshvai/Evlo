@@ -6,37 +6,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_variety"
-        style="@style/TextAppearance.AppCompat.Subhead"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:paddingEnd="4dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="4dp"
-        android:paddingStart="0dp"
-        android:layout_marginTop="8dp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Arecal betlanut long text faking, Normal Variety long text I want to ellipsise"
-        app:layout_constraintHorizontal_bias="0.0" />
+        <TextView
+            android:id="@+id/text_variety"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingEnd="4dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="4dp"
+            android:paddingStart="0dp"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="@+id/guideline"
+            app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Arecal betlanut long text faking, Normal Variety long text I want to ellipsise"
+            app:layout_constraintHorizontal_bias="0.0" />
 
-    <TextView
-        android:id="@+id/text_modal_price"
-        style="@style/TextAppearance.AppCompat.Subhead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="\u20B9 3950" />
+        <TextView
+            android:id="@+id/text_modal_price"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="\u20B9 3950" />
 
     <TextView
         android:id="@+id/text_market_district"

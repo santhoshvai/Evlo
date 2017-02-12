@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
@@ -43,6 +42,9 @@ import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.service.GetXmlService;
+import info.santhosh.evlo.ui.favorites.FavoritesActivity;
+
+import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
 /**
  * An activity representing a list of Commodities. This activity
@@ -64,6 +66,7 @@ public class CommodityListActivity extends AppCompatActivity
     private boolean mTwoPane;
     private CommodityAdapter mCommodityAdapter;
     private EmptyRecyclerView mRecyclerView;
+    private MenuItem mSearchMenuItem;
 
     private static final int COMMODITY_NAME_LOADER = 0;
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
@@ -74,6 +77,7 @@ public class CommodityListActivity extends AppCompatActivity
             CommodityContract.CommodityDataEntry.COLUMN_VARIETY,
             CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME
     };
+
 
     // These indices are tied to COMMODITY_NAME_COLUMNS.  If COMMODITY_NAME_COLUMNS change, these must change.
     static final int COL_COMMODITY_ID = 0;
@@ -100,11 +104,12 @@ public class CommodityListActivity extends AppCompatActivity
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         final String apiKey = BuildConfig.DATA_GOV_IN_API_KEY;
+        // TODO: open favs on fab click
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "ApiKey: " + apiKey, Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(view.getContext(), FavoritesActivity.class);
+                view.getContext().startActivity(intent);
             }
         });
 
@@ -233,6 +238,7 @@ public class CommodityListActivity extends AppCompatActivity
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 
         MenuItem searchItem = menu.findItem(R.id.search_commodities);
+        mSearchMenuItem = searchItem; // used in onNewIntent, which is called when we are back from up button
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE); // occupy full width
         // The call to getSearchableInfo() obtains a SearchableInfo object that is created from the searchable configuration XML file.
@@ -253,7 +259,7 @@ public class CommodityListActivity extends AppCompatActivity
             searchItem.expandActionView();
             searchView.setQuery(mSearchQuery, false);
             (findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
-            if(mSearchQuery.length() >0) {
+            if(mSearchQuery.length() > 0) {
                 // preserve the highlight
                 mCommodityAdapter.setmFilterSearch(mSearchQuery);
                 mCommodityAdapter.notifyDataSetChanged();
@@ -333,13 +339,11 @@ public class CommodityListActivity extends AppCompatActivity
          * Cache of the children views for a commodity list item.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            final View mView;
             final TextView mCommodityNameView;
             final LinearLayout mLinearLayout;
 
             ViewHolder(View view) {
                 super(view);
-                mView = view;
                 mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
                 mLinearLayout = (LinearLayout) view.findViewById(R.id.commodity_row);
             }
@@ -361,21 +365,23 @@ public class CommodityListActivity extends AppCompatActivity
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.commodity_list_content, parent, false);
                 final CommodityAdapter.ViewHolder vh = new ViewHolder(view);
-                vh.mView.setOnClickListener(new View.OnClickListener() {
+                vh.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         int position = vh.getAdapterPosition();
-                        if (mTwoPane) {
-                            // set the greyish background indicating that this was clicked
-                            ColorUtil.setListRowSelectionBackgroundColor(mContext, vh.mLinearLayout);
-                            // reset the old selected position background
-                            notifyItemChanged(mSelectedPos);
-                            // change the selected position
-                            mSelectedPos = position;
+                        if (position != NO_POSITION) {
+                            if (mTwoPane) {
+                                // set the greyish background indicating that this was clicked
+                                ColorUtil.setListRowSelectionBackgroundColor(mContext, vh.mLinearLayout);
+                                // reset the old selected position background
+                                notifyItemChanged(mSelectedPos);
+                                // change the selected position
+                                mSelectedPos = position;
+                            }
+                            mCursor.moveToPosition(position);
+                            final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
+                            mItemClickListener.onClick(commodityName, mContext);
                         }
-                        mCursor.moveToPosition(position);
-                        final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
-                        mItemClickListener.onClick(commodityName, mContext);
                     }
                 });
                 return vh;
@@ -385,11 +391,9 @@ public class CommodityListActivity extends AppCompatActivity
         }
 
         @Override
-        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, int pos) {
-            final int position = holder.getAdapterPosition();
+        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             // Read from cursor
-
             final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
 
             if(mFilterSearch.length() > 0 ) { // this is while searching
@@ -438,6 +442,16 @@ public class CommodityListActivity extends AppCompatActivity
         public String getFilterSearch() {
             return mFilterSearch;
         }
+
+        @Override
+        public void setHasStableIds(boolean hasStableIds) {
+            super.setHasStableIds(hasStableIds);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mCursor.getInt(COL_COMMODITY_ID);
+        }
     }
 
     /**
@@ -460,6 +474,28 @@ public class CommodityListActivity extends AppCompatActivity
                 intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
                 context.startActivity(intent);
             }
+        }
+    }
+
+    // called when we come back through up button, as we are in "singleTop" mode.
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        // Logic to make search go away if we were searching before
+        if (mSearchViewExpanded) {
+            // onCreateOptionsMenu will be called when the phone was rotated,
+            // hence dont make the restore to be called by resetting below values
+            mSearchViewExpanded = false;
+            mSearchQuery = "";
+            if(mSearchMenuItem != null) {
+                // phone was not rotated in this case, hence onCreateOptionsMenu wont be called
+                // collapse the search view manually now
+                SearchView searchView = (SearchView) mSearchMenuItem.getActionView();
+                mSearchMenuItem.collapseActionView(); // collapse the search bar
+                searchView.clearFocus(); // hide keyboard
+            }
+            // in any case, reset the list
+            getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, null, this);
         }
     }
 
