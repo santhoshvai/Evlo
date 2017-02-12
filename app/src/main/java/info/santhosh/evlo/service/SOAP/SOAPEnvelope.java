@@ -9,6 +9,8 @@ import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.stream.InputNode;
 import org.simpleframework.xml.stream.OutputNode;
 
+import info.santhosh.evlo.service.SOAP.xmlModels.Commodities;
+
 /**
  * Created by santhoshvai on 12/03/16.
  */

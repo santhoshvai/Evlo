@@ -1,6 +1,8 @@
 package info.santhosh.evlo.data;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import info.santhosh.evlo.common.WriteDb;
@@ -13,10 +15,17 @@ public class FavoriteAddorRemoveAsyncTask extends AsyncTask<Integer, Void, Boole
 
     Context mContext;
     boolean mIsAdd;
+    Uri mUri = null; // uri for which change should be notified
 
     public FavoriteAddorRemoveAsyncTask(Context context, boolean isAdd) {
         mContext = context.getApplicationContext();
         mIsAdd = isAdd;
+    }
+
+    public FavoriteAddorRemoveAsyncTask(Context context, boolean isAdd, Uri uri) {
+        mContext = context.getApplicationContext();
+        mIsAdd = isAdd;
+        mUri = uri;
     }
 
     @Override
@@ -26,6 +35,14 @@ public class FavoriteAddorRemoveAsyncTask extends AsyncTask<Integer, Void, Boole
             return ( writeDb.addUsingCommoditiesFavId(params[0]) != null );
         } else {
            return ( writeDb.removeUsingCommoditiesFavId(params[0]) != 0 );
+        }
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        if(mUri != null) {
+            ContentResolver contentResolver = mContext.getContentResolver();
+            contentResolver.notifyChange(mUri, null);
         }
     }
 }

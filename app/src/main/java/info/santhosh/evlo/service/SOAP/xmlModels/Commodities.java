@@ -1,4 +1,4 @@
-package info.santhosh.evlo.service.SOAP;
+package info.santhosh.evlo.service.SOAP.xmlModels;
 
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;

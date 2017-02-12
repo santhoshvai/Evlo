@@ -44,6 +44,8 @@ import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.service.GetXmlService;
 import info.santhosh.evlo.ui.favorites.FavoritesActivity;
 
+import static android.support.v7.widget.RecyclerView.NO_POSITION;
+
 /**
  * An activity representing a list of Commodities. This activity
  * has different presentations for handset and tablet-size devices. On
@@ -337,13 +339,11 @@ public class CommodityListActivity extends AppCompatActivity
          * Cache of the children views for a commodity list item.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            final View mView;
             final TextView mCommodityNameView;
             final LinearLayout mLinearLayout;
 
             ViewHolder(View view) {
                 super(view);
-                mView = view;
                 mCommodityNameView = (TextView) view.findViewById(R.id.commodity_name);
                 mLinearLayout = (LinearLayout) view.findViewById(R.id.commodity_row);
             }
@@ -365,21 +365,23 @@ public class CommodityListActivity extends AppCompatActivity
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.commodity_list_content, parent, false);
                 final CommodityAdapter.ViewHolder vh = new ViewHolder(view);
-                vh.mView.setOnClickListener(new View.OnClickListener() {
+                vh.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         int position = vh.getAdapterPosition();
-                        if (mTwoPane) {
-                            // set the greyish background indicating that this was clicked
-                            ColorUtil.setListRowSelectionBackgroundColor(mContext, vh.mLinearLayout);
-                            // reset the old selected position background
-                            notifyItemChanged(mSelectedPos);
-                            // change the selected position
-                            mSelectedPos = position;
+                        if (position != NO_POSITION) {
+                            if (mTwoPane) {
+                                // set the greyish background indicating that this was clicked
+                                ColorUtil.setListRowSelectionBackgroundColor(mContext, vh.mLinearLayout);
+                                // reset the old selected position background
+                                notifyItemChanged(mSelectedPos);
+                                // change the selected position
+                                mSelectedPos = position;
+                            }
+                            mCursor.moveToPosition(position);
+                            final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
+                            mItemClickListener.onClick(commodityName, mContext);
                         }
-                        mCursor.moveToPosition(position);
-                        final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
-                        mItemClickListener.onClick(commodityName, mContext);
                     }
                 });
                 return vh;
@@ -389,8 +391,7 @@ public class CommodityListActivity extends AppCompatActivity
         }
 
         @Override
-        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, int pos) {
-            final int position = holder.getAdapterPosition();
+        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, int position) {
             mCursor.moveToPosition(position);
             // Read from cursor
             final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
@@ -440,6 +441,16 @@ public class CommodityListActivity extends AppCompatActivity
 
         public String getFilterSearch() {
             return mFilterSearch;
+        }
+
+        @Override
+        public void setHasStableIds(boolean hasStableIds) {
+            super.setHasStableIds(hasStableIds);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return mCursor.getInt(COL_COMMODITY_ID);
         }
     }
 

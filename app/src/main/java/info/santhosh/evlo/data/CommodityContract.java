@@ -97,7 +97,7 @@ public class CommodityContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        // commodity_fav/commodity_fav
+        // content://{package_name}/commodity_fav
         public static Uri buildAllFavsCommodityDetails() {
             return CONTENT_URI;
         }

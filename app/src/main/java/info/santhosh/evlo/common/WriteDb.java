@@ -11,7 +11,7 @@ import java.util.Vector;
 
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.CommodityContract.CommodityDataEntry;
-import info.santhosh.evlo.service.SOAP.Commodity;
+import info.santhosh.evlo.service.SOAP.xmlModels.Commodity;
 
 /**
  * Created by santhoshvai on 09/04/16.
@@ -60,7 +60,6 @@ public class WriteDb {
     public @Nullable Uri addUsingCommoditiesFavId(int favId) {
         ContentValues commodityFavValues = new ContentValues();
         commodityFavValues.put(CommodityContract.CommodityFavEntry.COLUMN_FAV_ID, favId);
-
         return mContext.getContentResolver().insert(CommodityContract.CommodityFavEntry.CONTENT_URI, commodityFavValues);
     }
 

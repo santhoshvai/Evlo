@@ -28,7 +28,7 @@ class CommodityDbHelper  extends SQLiteOpenHelper {
         final String SQL_CREATE_COMMODITY_DATA_TABLE = "CREATE TABLE " + CommodityDataEntry.TABLE_NAME + " ( " +
                 CommodityDataEntry._ID + " INTEGER PRIMARY KEY," +
                 CommodityDataEntry.COLUMN_COMMODITY_NAME + " TEXT NOT NULL, " +
-                CommodityDataEntry.COLUMN_VARIETY + " INTEGER NOT NULL, " +
+                CommodityDataEntry.COLUMN_VARIETY + " TEXT NOT NULL, " +
                 CommodityDataEntry.COLUMN_ARRIVAL_DATE + " TEXT NOT NULL, " +
                 CommodityDataEntry.COLUMN_MAX_PRICE + " INTEGER NOT NULL, " +
                 CommodityDataEntry.COLUMN_MODAL_PRICE + " INTEGER NOT NULL, " +

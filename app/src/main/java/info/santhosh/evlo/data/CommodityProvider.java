@@ -31,17 +31,20 @@ public class CommodityProvider extends ContentProvider {
 
     static final int COMMODITY_FAV = 200;
 
-    private static final SQLiteQueryBuilder sCommodityByMarketQueryBuilder;
+    private static final SQLiteQueryBuilder sCommodityByVarietyQueryBuilder;
     private static final SQLiteQueryBuilder sCommodityByFavouriteQueryBuilder;
 
     static{
-        sCommodityByMarketQueryBuilder = new SQLiteQueryBuilder();
+        sCommodityByVarietyQueryBuilder = new SQLiteQueryBuilder();
         sCommodityByFavouriteQueryBuilder = new SQLiteQueryBuilder();
-        /*
-        from commodity_data
-         */
-        sCommodityByMarketQueryBuilder.setTables(
-                CommodityContract.CommodityDataEntry.TABLE_NAME
+
+        sCommodityByVarietyQueryBuilder.setTables(
+                CommodityContract.CommodityDataEntry.TABLE_NAME + " LEFT JOIN " +
+                        CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        " ON " + CommodityContract.CommodityFavEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID +
+                        " = " + CommodityContract.CommodityDataEntry.TABLE_NAME +
+                        "." + CommodityContract.CommodityDataEntry._ID
         );
 
         /*
@@ -53,7 +56,8 @@ public class CommodityProvider extends ContentProvider {
                         " ON " + CommodityContract.CommodityFavEntry.TABLE_NAME +
                         "." + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID +
                         " = " + CommodityContract.CommodityDataEntry.TABLE_NAME +
-                        "." + CommodityContract.CommodityDataEntry._ID);
+                        "." + CommodityContract.CommodityDataEntry._ID
+        );
     }
 
     // commodity_data.commodity_name = ?
@@ -112,10 +116,11 @@ public class CommodityProvider extends ContentProvider {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             // "commodity_data/*"
+            // used for the detail fragment
             case COMMODITY_DATA_WITH_NAME:
             {
                 String commodity = CommodityContract.CommodityDataEntry.getCommodityNameFromUri(uri);
-                retCursor = sCommodityByMarketQueryBuilder.query(
+                retCursor = sCommodityByVarietyQueryBuilder.query(
                         mOpenHelper.getReadableDatabase(),
                         projection,
                         sCommodityNameSelection, // selection
@@ -157,6 +162,7 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
+            // used for the favorites fragment
             case COMMODITY_FAV: {
                 retCursor = sCommodityByFavouriteQueryBuilder.query(
                         mOpenHelper.getReadableDatabase(),
