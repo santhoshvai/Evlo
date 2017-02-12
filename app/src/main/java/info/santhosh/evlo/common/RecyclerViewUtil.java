@@ -97,7 +97,8 @@ public class RecyclerViewUtil {
                     int pos = vh.getAdapterPosition();
                     if (pos != NO_POSITION) {
                         Commodity commodity = mCommodityList.get(pos);
-                        new FavoriteAddorRemoveAsyncTask(v.getContext(), false).execute(commodity.getId());
+                        v.setSelected(!v.isSelected());
+                        new FavoriteAddorRemoveAsyncTask(v.getContext(), v.isSelected()).execute(commodity.getId());
                     }
                 }
             });
