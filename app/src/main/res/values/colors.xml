@@ -10,5 +10,8 @@
     <color name="lightGray">#EEEEEE</color>
     <color name="dividerGrey">#FFE0E0E0</color>
     <color name="searchHighlight">#4fc3f7</color>
+
+    <!--bottom bar colors-->
     <color name="inactive_bottombar">#757575</color>
+    <color name="ripple_bottombar">#A7FFEB</color> <!--Teal: A100-->
 </resources>
