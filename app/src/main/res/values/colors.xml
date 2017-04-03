@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Material palette: Teal-->
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#FF4081</color>
@@ -9,4 +10,5 @@
     <color name="lightGray">#EEEEEE</color>
     <color name="dividerGrey">#FFE0E0E0</color>
     <color name="searchHighlight">#4fc3f7</color>
+    <color name="inactive_bottombar">#757575</color>
 </resources>

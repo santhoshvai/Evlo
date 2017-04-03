@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -231,18 +232,18 @@ public class RecyclerViewUtil {
         }
     }
 
-    public static class CursorToListAsyncTask extends AsyncTask<String, Void, DiffUtil.DiffResult> {
+    public static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<Commodity>>> {
 
         Cursor mCursor;
         WeakReference<CommodityDetailAdapter> commodityAdapterWeakReference;
 
         public CursorToListAsyncTask(Cursor cursor, CommodityDetailAdapter commodityDetailAdapter) {
             mCursor = cursor;
-            commodityAdapterWeakReference = new WeakReference<CommodityDetailAdapter>(commodityDetailAdapter);
+            commodityAdapterWeakReference = new WeakReference<>(commodityDetailAdapter);
         }
 
         @Override
-        protected DiffUtil.DiffResult doInBackground(String... params) {
+        protected Pair<DiffUtil.DiffResult, ArrayList<Commodity>> doInBackground(String... params) {
             ArrayList<Commodity> commodities = new ArrayList<>(mCursor.getCount());
             while (mCursor.moveToNext()) {
                 commodities.add(Commodity.fromCursor(mCursor));
@@ -251,15 +252,16 @@ public class RecyclerViewUtil {
             if(commodityDetailAdapter == null) return null;
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CommodityDiffCallback(commodityDetailAdapter.getList(), commodities), false);
             commodityDetailAdapter.setList(commodities);
-            return diffResult;
+            return new Pair<>(diffResult, commodities);
             // cursor close is handled by the cursor loader
         }
 
         @Override
-        protected void onPostExecute(DiffUtil.DiffResult diffResult) {
+        protected void onPostExecute(Pair<DiffUtil.DiffResult, ArrayList<Commodity>> pair) {
             CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
             if(commodityDetailAdapter == null) return;
-            diffResult.dispatchUpdatesTo(commodityDetailAdapter);
+            commodityDetailAdapter.setList(pair.second);
+            pair.first.dispatchUpdatesTo(commodityDetailAdapter);
         }
     }
 }

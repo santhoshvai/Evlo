@@ -26,10 +26,12 @@ android {
 ext{
     //version numbers
     junitVersion = '4.12'
-    supportLibVersion = '25.1.1'
+    supportLibVersion = '25.3.1'
     okhttpVersion = '2.2.0'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.1'
+    ahbottomnavVersion = '2.0.6'
+    fbdeviceyearclassVersion = '2.0.0'
 }
 
 dependencies {
@@ -47,8 +49,11 @@ dependencies {
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    compile "com.aurelhubert:ahbottomnavigation:${ahbottomnavVersion}"
+    compile "com.facebook.device.yearclass:yearclass:${fbdeviceyearclassVersion}"
+
 }

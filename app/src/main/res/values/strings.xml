@@ -14,4 +14,7 @@
     <string name="favorite_content">Favorite</string>
     <string name="share_content">Share</string>
     <string name="share_heading">Share the price detail...</string>
+    <string name="menu_bottom_commodities">Commodities</string>
+    <string name="menu_bottom_markets">Markets</string>
+    <string name="menu_bottom_favourites">Favourites</string>
 </resources>
