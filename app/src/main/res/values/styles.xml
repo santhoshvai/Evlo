@@ -3,14 +3,14 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/teal_500</item>
+        <item name="colorPrimaryDark">@color/teal_700</item>
+        <item name="colorAccent">@color/pink_A200</item>
     </style>
 
     <style name="bottomBarTheme" parent="AppTheme">
         <!--ripple color of bottom bar-->
-        <item name="colorControlHighlight">@color/ripple_bottombar</item>
+        <item name="colorControlHighlight">@color/teal_A100</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -25,6 +25,12 @@
     <style name="main_recycler_view_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="SearchToolbar.TitleText"
+        parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#a0000000</item>
     </style>
 
 </resources>

@@ -17,4 +17,7 @@
     <string name="menu_bottom_commodities">Commodities</string>
     <string name="menu_bottom_markets">Markets</string>
     <string name="menu_bottom_favourites">Favourites</string>
+    <string name="settings">Settings</string>
+    <string name="search_commodities">Search Commodities</string>
+    <string name="search_markets">Search Markets</string>
 </resources>
