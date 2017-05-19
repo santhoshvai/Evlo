@@ -2,6 +2,12 @@
   xmlns:app="http://schemas.android.com/apk/res-auto/android">
 
   <item
+      android:id="@+id/bookmarks"
+      android:icon="@drawable/ic_bookmark_grey"
+      android:title="@string/bookmarks"
+      app:showAsAction="always" />
+
+  <item android:id="@+id/settings"
     android:title="@string/settings"
     app:showAsAction="never" />
 

@@ -1,48 +1,32 @@
 apply plugin: 'com.android.application'
+apply from: "$project.rootDir/tools/script-git-version.gradle"
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "info.santhosh.evlo"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode gitVersionCode
+        versionName gitVersionName
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         debug {
             minifyEnabled true
-            // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             useProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
         }
 
         release {
+            shrinkResources true
             minifyEnabled true
             useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            testProguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguardTest-rules.pro'
-        }
-    }
-
-    // If you need to add more flavors, consider using flavor dimensions.
-    productFlavors {
-        mock {
-            applicationIdSuffix = ".mock"
-        }
-        prod {
-
-        }
-    }
-
-    // Remove mockRelease as it's not needed.
-    android.variantFilter { variant ->
-        if(variant.buildType.name.equals('release')
-                && variant.getFlavors().get(0).name.equals('mock')) {
-            variant.setIgnore(true);
         }
     }
 
@@ -66,7 +50,6 @@ ext{
     okhttpVersion = '2.2.0'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.1'
-    ahbottomnavVersion = '2.0.6'
     fbdeviceyearclassVersion = '2.0.0'
     leakCanaryVersion = '1.5'
 }
@@ -84,7 +67,6 @@ dependencies {
 
     // ui
     compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
-    compile "com.aurelhubert:ahbottomnavigation:${ahbottomnavVersion}"
 
     // okhttp
     compile "com.squareup.okhttp:okhttp:${okhttpVersion}"

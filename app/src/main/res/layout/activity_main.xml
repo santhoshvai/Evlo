@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:menu="bookmarks"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
+        android:id="@+id/main_holder"
+        android:layout_gravity="top"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/search_toolbar_height"
+        android:elevation="4dp"
+        android:background="?colorPrimary">
 
         <info.santhosh.evlo.ui.search.SearchToolbar
             android:id="@+id/main_toolbar"
+            app:title="@string/search_hint"
             app:titleTextAppearance="@style/SearchToolbar.TitleText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_margin="@dimen/search_toolbar_margin"
             android:elevation="8dp" />
 
-        <com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </LinearLayout>
-
-    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-        android:id="@+id/bottom_bar"
-        app:theme="@style/bottomBarTheme"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:selectedBackgroundVisible="false"/>
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
