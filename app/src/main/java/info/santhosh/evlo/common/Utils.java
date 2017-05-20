@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -18,12 +19,20 @@ public class Utils {
     /**
      * hides the keyboard
      * */
-    public static void hideSoftKeyboard(Activity activity) {
+    public static void hideSoftKeyboard(@NonNull Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View currentFocus = activity.getCurrentFocus();
         if(currentFocus != null) {
             inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
         }
+    }
+
+    /**
+     * shows the keyboard
+     * */
+    public static void showKeyboard(@NonNull Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
     }
 
     /**

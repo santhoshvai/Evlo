@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "info.santhosh.evlo"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode gitVersionCode
         versionName gitVersionName
@@ -50,8 +50,7 @@ ext{
     okhttpVersion = '2.2.0'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.1'
-    fbdeviceyearclassVersion = '2.0.0'
-    leakCanaryVersion = '1.5'
+    leakCanaryVersion = '1.5.1'
 }
 
 dependencies {
@@ -78,13 +77,8 @@ dependencies {
         exclude module: 'xpp3'
     }
 
-    // db device year class - switch off animations for older phones
-    compile "com.facebook.device.yearclass:yearclass:${fbdeviceyearclassVersion}"
-
     // leak canary
     debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
-    testCompile "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
 
     // stetho - for inspecting networks and sqlite dbs
     debugCompile "com.facebook.stetho:stetho:${stethoVersion}"

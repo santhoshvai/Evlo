@@ -1,6 +1,7 @@
-package info.santhosh.evlo.ui.search;
+package info.santhosh.evlo.ui;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 
@@ -12,6 +13,14 @@ public class TransformingToolbar extends Toolbar {
 
     public TransformingToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public TransformingToolbar(Context context) {
+        super(context);
+    }
+
+    public TransformingToolbar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     /**
