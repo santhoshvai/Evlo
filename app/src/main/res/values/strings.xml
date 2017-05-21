@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Evlo</string>
     <string name="title_commodity_detail">Commodity Detail</string>
-    <string name="price_xml_url">http://data.gov.in/sites/default/files/Date-Wise-Prices-all-Commodity.xml</string>
+    <string name="price_xml_url">https://data.gov.in/sites/default/files/Date-Wise-Prices-all-Commodity.xml</string>
     <string name="content_authority">info.santhosh.evlo</string>
     <string name="search_hint">Search Commodities</string>
     <string name="action_refresh">Refresh data</string>
