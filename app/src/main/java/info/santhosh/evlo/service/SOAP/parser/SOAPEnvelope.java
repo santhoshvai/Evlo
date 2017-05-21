@@ -68,11 +68,14 @@ public class SOAPEnvelope {
 
 
         private InputNode findCommoditiesNode(InputNode rootNode) throws Exception {
-            while (rootNode.getNext() != null ) {
-                if(rootNode.getNext().getName().equals("NewDataSet")) {
-                    return rootNode.getNext();
+            InputNode next;
+
+            while ( (next = rootNode.getNext()) != null ) {
+                if(next.getName().equals("NewDataSet")) {
+                    return next;
                 }
             }
+
             return null;
         }
     }
