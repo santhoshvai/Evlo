@@ -10,15 +10,15 @@ import java.util.List;
  */
 @Root(name = "NewDataSet")
 public class Commodities {
-    // Maps the list of vehicles
+
     @ElementList(name = "NewDataSet", inline = true)
     private List<Commodity> commodities;
 
-    public List<Commodity> getCommodities() {
+    public List<Commodity> getList() {
         return commodities;
     }
 
-    public Commodities() { }
+//    public Commodities() { }
 
     @Override
     public String toString() {

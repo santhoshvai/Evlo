@@ -13,8 +13,8 @@ import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.service.SOAP.SOAPEnvelope;
 import info.santhosh.evlo.common.WriteDb;
+import info.santhosh.evlo.service.SOAP.parser.SOAPEnvelope;
 
 /**
  * Created by santhoshvai on 12/03/16.
@@ -23,16 +23,12 @@ public class GetXmlService  extends IntentService {
 
     static final String TAG = "GetXmlService";
 
-    // Must create a default constructor
     public GetXmlService() {
-        // Used to name the worker thread, important only for debugging.
         super("xml-service");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        // This describes what will happen when service is triggered
-        // should be a singleton
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -50,20 +46,14 @@ public class GetXmlService  extends IntentService {
             startTime = System.currentTimeMillis();
             Serializer serializer = new Persister(new AnnotationStrategy());
             SOAPEnvelope envelope = serializer.read(SOAPEnvelope.class, responseXml);
-//            Log.d(TAG, envelope.getCommodities().getCommodities().get(0).toString());
+//            Log.d(TAG, envelope.getList().getList().get(0).toString());
             stopTime = System.currentTimeMillis();
             elapsedTime = stopTime - startTime;
             Log.d(TAG, "elapsedTime to parse data: " + Long.toString(elapsedTime) );
-
-            // INSERT VALUES TO TABLE HERE
-            // STATE -> DISTRICT -> MARKET -> get Id
-            // commodity_name -> get Id
-            // use both id to build commodityData table
-            // see https://github.com/udacity/Sunshine-Version-2/blob/5.19_accessibility/app/src/main/java/com/example/android/sunshine/app/FetchWeatherTask.java
             startTime = System.currentTimeMillis();
 
             WriteDb writeDb = new WriteDb(getApplicationContext());
-            writeDb.usingCommoditiesList(envelope.getCommodities().getCommodities());
+            writeDb.usingCommoditiesList(envelope.getCommodities().getList());
 
             stopTime = System.currentTimeMillis();
             elapsedTime = stopTime - startTime;

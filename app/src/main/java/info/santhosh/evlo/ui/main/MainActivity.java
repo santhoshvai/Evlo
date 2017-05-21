@@ -100,15 +100,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // let the TransitionManager do the heavy work for us!
         // all we have to do is change the attributes of the toolbar and the TransitionManager animates the changes
-        // in this case I am removing the bounds of the toolbar (to hide the blue padding on the screen) and
-        // I am hiding the contents of the Toolbar (Navigation icon, Title and Option Items)
         TransitionManager.beginDelayedTransition(mSearchToolbar, transition);
         FrameLayout.LayoutParams frameLP = (FrameLayout.LayoutParams) mSearchToolbar.getLayoutParams();
         frameLP.setMargins(0, 0, 0, 0);
         mSearchToolbar.setLayoutParams(frameLP);
         mSearchToolbar.hideContent();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // when you are back from the SearchActivity animate the 'shrinking' of the Toolbar and
+        // fade its contents back in
+        fadeToolbarIn();
+
+        // in case we are not coming here from the SearchActivity the Toolbar would have been already visible
+        // so the above method has no effect
+    }
+
+    private void fadeToolbarIn() {
+        final int toolbarMargin = getResources().getDimensionPixelSize(R.dimen.search_toolbar_margin);
+        Transition transition = new AutoTransition();
+        transition.setDuration(SEARCH_BAR_TRANSITION_DURATION);
+        TransitionManager.beginDelayedTransition(mSearchToolbar, transition);
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) mSearchToolbar.getLayoutParams();
+        layoutParams.setMargins(toolbarMargin, toolbarMargin, toolbarMargin, toolbarMargin);
+        mSearchToolbar.showContent();
+        mSearchToolbar.setLayoutParams(layoutParams);
     }
 
     // Menu icons are inflated just as they were with actionbar

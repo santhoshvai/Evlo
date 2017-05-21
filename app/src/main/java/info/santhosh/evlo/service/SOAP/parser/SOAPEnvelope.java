@@ -1,4 +1,4 @@
-package info.santhosh.evlo.service.SOAP;
+package info.santhosh.evlo.service.SOAP.parser;
 
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
@@ -15,6 +15,8 @@ import info.santhosh.evlo.service.SOAP.xmlModels.Commodities;
  * Created by santhoshvai on 12/03/16.
  */
 
+// http://stackoverflow.com/questions/24102741/simple-framework-skip-soap-envelope-and-body/24225297#24225297
+
 @Root(name = "Envelope")
 @Namespace(prefix = "soap")
 // Set the converter that's used for serialization
@@ -26,23 +28,23 @@ public class SOAPEnvelope {
     // Keep the content of vehicles list here
     private Commodities commodities;
 
-
     public Commodities getCommodities() {
         return commodities;
     }
 
-    protected void setCommodities(Commodities commodities) {
+    public void setCommodities(Commodities commodities) {
         this.commodities = commodities;
     }
 
     // The converter implementation for SOAPEnvelope
     public static class SOAPEnvelopeConverter implements Converter<SOAPEnvelope> {
+
         @Override
         public SOAPEnvelope read(InputNode node) throws Exception {
             SOAPEnvelope envelope = new SOAPEnvelope();
             InputNode commoditiesNode = findCommoditiesNode(node); // Search the Commodities list element
 
-            if( commoditiesNode == null ) {
+            if (commoditiesNode == null) {
                 // TODO: This is bad - do something useful here
                 throw new Exception("No commodities node!");
             }
@@ -66,14 +68,11 @@ public class SOAPEnvelope {
 
 
         private InputNode findCommoditiesNode(InputNode rootNode) throws Exception {
-            InputNode next;
-
-            while( ( next = rootNode.getNext() ) != null ) {
-                if(next.getName().equals("NewDataSet")) {
-                    return next;
+            while (rootNode.getNext() != null ) {
+                if(rootNode.getNext().getName().equals("NewDataSet")) {
+                    return rootNode.getNext();
                 }
             }
-
             return null;
         }
     }

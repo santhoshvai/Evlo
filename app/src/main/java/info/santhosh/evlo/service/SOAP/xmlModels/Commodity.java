@@ -9,7 +9,7 @@ import org.simpleframework.xml.Root;
  */
 @Root(name = "Table")
 public class Commodity {
-    public Commodity() {}
+//    public Commodity() {}
 
     @Attribute(name="id")
     private String Id;

@@ -1,7 +1,6 @@
 package info.santhosh.evlo.ui.search;
 
 import android.content.Context;
-import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -20,9 +19,6 @@ public class Searchbar extends TransformingToolbar {
     public Searchbar(Context context, AttributeSet attrs) {
         super(context, attrs);
         setBackgroundColor(ContextCompat.getColor(context, android.R.color.white));
-        final VectorDrawableCompat drawable =
-                VectorDrawableCompat.create(getResources(), R.drawable.ic_arrow_back_black_24dp, null);
-        setNavigationIcon(drawable);
     }
 
         @Override
