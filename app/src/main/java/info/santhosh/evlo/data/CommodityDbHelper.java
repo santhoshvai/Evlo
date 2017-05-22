@@ -57,4 +57,10 @@ class CommodityDbHelper  extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + CommodityDataEntry.TABLE_NAME);
         onCreate(db);
     }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.enableWriteAheadLogging();
+    }
 }
