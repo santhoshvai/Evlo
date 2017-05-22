@@ -61,7 +61,7 @@ public class RecyclerViewUtil {
             final TextView mState;
             final TextView mMarket;
             final ImageView mFav;
-            final ImageView mShare;
+            final TextView mShare;
 
             ViewHolder(View view) {
                 super(view);
@@ -70,7 +70,7 @@ public class RecyclerViewUtil {
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
                 this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
                 this.mFav = (ImageView) view.findViewById(R.id.favorite_icon);
-                this.mShare = (ImageView) view.findViewById(R.id.share_icon);
+                this.mShare = (TextView) view.findViewById(R.id.share_icon);
             }
         }
 

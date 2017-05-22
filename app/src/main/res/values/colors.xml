@@ -5,13 +5,19 @@
     <color name="teal_700">#00796B</color>  <!-- Primary Dark -->
     <color name="teal_A100">#A7FFEB</color> <!-- Bottom bar ripple -->
 
+    <!--Material palette: Green-->
+    <color name="green_A200">#69F0AE</color> <!-- Accent -->
+
     <!--Material palette: Pink-->
-    <color name="pink_A200">#FF4081</color>  <!-- Accent -->
+    <color name="pink_A200">#FF4081</color>
+
+    <!--Normal card Button color - used from facebook-->
+    <color name="dark_grey">#4b4f56</color>
 
     <color name="colorListRowSelect">#E9EBEB</color>
     <color name="almostWhite">#FFFAFAFA</color>
     <color name="lightGray">#EEEEEE</color>
-    <color name="dividerGrey">#FFE0E0E0</color>
+    <color name="dividerGrey">#FFE5E5E5</color>
     <color name="searchHighlight">#4fc3f7</color>
 
     <!--bottom bar colors-->
