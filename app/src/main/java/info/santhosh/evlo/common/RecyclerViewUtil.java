@@ -136,8 +136,6 @@ public class RecyclerViewUtil {
             Commodity commodity = mCommodityList.get(position);
             final Resources res = mContext.getResources();
 
-            // Read from cursor
-
             final String commodityName = commodity.getCommodity();
             final String modalPrice = commodity.getModal_Price();
             final String district = commodity.getDistrict();
@@ -251,7 +249,6 @@ public class RecyclerViewUtil {
             CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
             if(commodityDetailAdapter == null) return null;
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CommodityDiffCallback(commodityDetailAdapter.getList(), commodities), false);
-            commodityDetailAdapter.setList(commodities);
             return new Pair<>(diffResult, commodities);
             // cursor close is handled by the cursor loader
         }

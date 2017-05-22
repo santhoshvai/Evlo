@@ -9,6 +9,7 @@
     <info.santhosh.evlo.ui.search.Searchbar
       android:id="@+id/search_toolbar"
       android:layout_width="match_parent"
+        android:elevation="8dp"
       android:layout_height="@dimen/search_toolbar_height"
       android:gravity="top" />
 
