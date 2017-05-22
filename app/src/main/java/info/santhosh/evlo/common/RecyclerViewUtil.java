@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
 import info.santhosh.evlo.data.dbModels.Commodity;
 
@@ -95,11 +99,33 @@ public class RecyclerViewUtil {
             vh.mFav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = vh.getAdapterPosition();
+                    final int pos = vh.getAdapterPosition();
                     if (pos != NO_POSITION) {
-                        Commodity commodity = mCommodityList.get(pos);
-                        v.setSelected(!v.isSelected());
-                        new FavoriteAddorRemoveAsyncTask(v.getContext(), v.isSelected()).execute(commodity.getId());
+                        final Commodity commodity = mCommodityList.get(pos);
+                        final boolean shouldAdd = !v.isSelected();
+                        final Uri detailUri = CommodityContract.CommodityDataEntry.buildCommodityNameDetailUri(commodity.getCommodity());
+                        new FavoriteAddorRemoveAsyncTask(v.getContext(), shouldAdd, detailUri).execute(commodity.getId());
+                        if (!shouldAdd) {
+                            Snackbar.make(v, R.string.fav_removed, Snackbar.LENGTH_LONG)
+                                    .setAction(R.string.undo, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            new FavoriteAddorRemoveAsyncTask(v.getContext(),
+                                                    true, detailUri)
+                                                    .execute(commodity.getId());
+                                        }
+                                    }).show();
+                        } else {
+                            Snackbar.make(v, R.string.fav_added, Snackbar.LENGTH_SHORT)
+                                    .setAction(R.string.undo, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            new FavoriteAddorRemoveAsyncTask(v.getContext(),
+                                                    false, detailUri)
+                                                    .execute(commodity.getId());
+                                        }
+                                    }).show();
+                        }
                     }
                 }
             });
@@ -129,6 +155,32 @@ public class RecyclerViewUtil {
                 }
             });
             return vh;
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+            if (payloads.isEmpty()) {
+                onBindViewHolder(holder, position);
+            } else {
+                Commodity commodity = mCommodityList.get(position);
+                final Resources res = mContext.getResources();
+                if (payloads.contains(CommodityDiffCallback.FAVORITE_PAYLOAD)) {
+                    // TODO: animate the icon fill
+                    if(commodity.getFav_row_id() < 0) holder.mFav.setSelected(false);
+                    else holder.mFav.setSelected(true);
+                }
+
+                if (payloads.contains(CommodityDiffCallback.ARRIVAL_DATE_PAYLOAD)) {
+                    // TODO, currently we dont show date, so dont bind anything
+                }
+
+                if (payloads.contains(CommodityDiffCallback.PRICE_PAYLOAD)) {
+                    String modal_price_text = res.getString(
+                            R.string.modal_price,
+                            commodity.getModal_Price());
+                    holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
+                }
+            }
         }
 
         @Override
@@ -191,6 +243,9 @@ public class RecyclerViewUtil {
     private static class CommodityDiffCallback extends DiffUtil.Callback {
         private List<Commodity> mOld;
         private List<Commodity> mNew;
+        static final int FAVORITE_PAYLOAD = 1;
+        static final int ARRIVAL_DATE_PAYLOAD = 2;
+        static final int PRICE_PAYLOAD = 3;
 
         CommodityDiffCallback(List<Commodity> oldList, List<Commodity> newList) {
             mOld = oldList;
@@ -226,7 +281,18 @@ public class RecyclerViewUtil {
         @Override
         public Object getChangePayload(int oldItemPosition, int newItemPosition) {
             // TODO: add arrival date, price to equals and show arrival date in the UI (and use payload to update the arrival data and price)
-            return super.getChangePayload(oldItemPosition, newItemPosition);
+            Commodity oldItem = mOld.get(oldItemPosition);
+            Commodity newItem = mNew.get(newItemPosition);
+            if (oldItem.getFav_row_id() != newItem.getFav_row_id()) {
+                return FAVORITE_PAYLOAD;
+            }
+            if (!TextUtils.equals(oldItem.getArrival_Date(), newItem.getArrival_Date())) {
+                return ARRIVAL_DATE_PAYLOAD;
+            }
+            if (!TextUtils.equals(oldItem.getModal_Price(), newItem.getModal_Price())) {
+                return PRICE_PAYLOAD;
+            }
+            return null;
         }
     }
 

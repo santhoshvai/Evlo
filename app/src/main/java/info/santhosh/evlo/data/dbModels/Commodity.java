@@ -134,6 +134,7 @@ public class Commodity {
         this.fav_row_id = fav_row_id;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -141,21 +142,27 @@ public class Commodity {
 
         Commodity commodity1 = (Commodity) o;
 
+        if (id != commodity1.id) return false;
+        if (fav_row_id != commodity1.fav_row_id) return false;
         if (!state.equals(commodity1.state)) return false;
         if (!variety.equals(commodity1.variety)) return false;
         if (!district.equals(commodity1.district)) return false;
         if (!commodity.equals(commodity1.commodity)) return false;
-        return market.equals(commodity1.market);
-
+        if (!market.equals(commodity1.market)) return false;
+        if (!modal_Price.equals(commodity1.modal_Price)) return false;
+        return arrival_Date.equals(commodity1.arrival_Date);
     }
 
     @Override
     public int hashCode() {
-        int result = state.hashCode();
+        int result = id;
+        result = 31 * result + state.hashCode();
         result = 31 * result + variety.hashCode();
         result = 31 * result + district.hashCode();
         result = 31 * result + commodity.hashCode();
         result = 31 * result + market.hashCode();
+        result = 31 * result + arrival_Date.hashCode();
+        result = 31 * result + fav_row_id;
         return result;
     }
 }

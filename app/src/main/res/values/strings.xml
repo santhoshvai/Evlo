@@ -21,4 +21,7 @@
     <string name="search_commodities">Search Commodities</string>
     <string name="search_markets">Search Markets</string>
     <string name="bookmarks">Bookmarks</string>
+    <string name="fav_added">Item added to bookmarks</string>
+    <string name="fav_removed">Item removed from bookmarks</string>
+    <string name="undo">Undo</string>
 </resources>
