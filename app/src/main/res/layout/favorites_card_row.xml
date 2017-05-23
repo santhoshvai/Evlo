@@ -85,7 +85,6 @@
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-
     <TextView
         android:id="@+id/share_icon"
         android:clickable="true"
@@ -94,16 +93,16 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
+        android:padding="@dimen/card_action_button_padding"
         android:drawableLeft="@drawable/ic_share_grey600_24dp"
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/ic_share_grey600_24dp"
-        android:drawableTint="@color/dark_grey"
         android:gravity="center"
         android:text="@string/share_content"
         android:textColor="@color/dark_grey"
         android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_state_name" />
 
 

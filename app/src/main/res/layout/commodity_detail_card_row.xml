@@ -104,7 +104,6 @@
         <!--app:layout_constraintTop_toBottomOf="@+id/text_state_name"-->
         <!--app:layout_constraintVertical_bias="1.0" />-->
 
-
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -116,17 +115,16 @@
 
     <TextView
         android:id="@+id/share_icon"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
         android:layout_marginTop="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:drawableLeft="@drawable/ic_share_grey600_24dp"
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/ic_share_grey600_24dp"
-        android:drawableTint="@color/dark_grey"
         android:gravity="center"
         android:text="@string/share_content"
         android:textColor="@color/dark_grey"
