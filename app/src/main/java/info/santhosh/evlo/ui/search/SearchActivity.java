@@ -428,7 +428,6 @@ public class SearchActivity extends AppCompatActivity
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                     new CommodityDiffCallback(commodityAdapter.getList(), commodities,
                             commodityAdapter.getFilterSearch(), mFilterSearch), false);
-            commodityAdapter.setList(commodities);
             return new Pair<>(diffResult, commodities);
             // cursor close is handled by the cursor loader
         }
