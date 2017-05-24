@@ -23,6 +23,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -476,15 +477,21 @@ public class SearchActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
+        } else if (item.getItemId() == R.id.action_clear) {
+            mSearchBar.clearText();
+            mRecyclerView.smoothScrollToPosition(0);
+            return true;
         }
-//        else if (item.getItemId() == R.id.action_clear) {
-//            searchbar.clearText();
-//            return true;
-//        }
         return super.onOptionsItemSelected(item);
     }
 }

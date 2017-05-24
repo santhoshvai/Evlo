@@ -47,11 +47,7 @@
             android:parentActivityName=".ui.CommodityListActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity
-            android:name=".ui.favorites.FavoritesActivity"
-            android:parentActivityName=".ui.CommodityListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+
         <service
             android:name=".service.GetXmlService"
             android:exported="false"/>

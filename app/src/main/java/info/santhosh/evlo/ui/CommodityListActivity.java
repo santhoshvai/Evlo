@@ -42,7 +42,6 @@ import info.santhosh.evlo.common.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.service.GetXmlService;
-import info.santhosh.evlo.ui.favorites.FavoritesActivity;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
@@ -104,14 +103,6 @@ public class CommodityListActivity extends AppCompatActivity
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         final String apiKey = BuildConfig.DATA_GOV_IN_API_KEY;
-        // TODO: open favs on fab click
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), FavoritesActivity.class);
-                view.getContext().startActivity(intent);
-            }
-        });
 
         mCommodityAdapter = new CommodityAdapter(this, mSearchQuery);
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
