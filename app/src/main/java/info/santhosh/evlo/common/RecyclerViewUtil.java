@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.IntDef;
@@ -17,7 +18,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.lang.annotation.Retention;
@@ -60,7 +60,7 @@ public class RecyclerViewUtil {
             final TextView mModalPrice;
             final TextView mState;
             final TextView mMarket;
-            final ImageView mFav;
+            final TextView mFav;
             final TextView mShare;
 
             ViewHolder(View view) {
@@ -69,7 +69,7 @@ public class RecyclerViewUtil {
                 this.mModalPrice = (TextView) view.findViewById(R.id.text_modal_price);
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
                 this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
-                this.mFav = (ImageView) view.findViewById(R.id.favorite_icon);
+                this.mFav = (TextView) view.findViewById(R.id.favorite_icon);
                 this.mShare = (TextView) view.findViewById(R.id.share_icon);
             }
         }
@@ -166,8 +166,15 @@ public class RecyclerViewUtil {
                 final Resources res = mContext.getResources();
                 if (payloads.contains(CommodityDiffCallback.FAVORITE_PAYLOAD)) {
                     // TODO: animate the icon fill
-                    if(commodity.getFav_row_id() < 0) holder.mFav.setSelected(false);
-                    else holder.mFav.setSelected(true);
+                    if(commodity.getFav_row_id() < 0) {
+                        holder.mFav.setSelected(false);
+                        holder.mFav.setText(R.string.favorite_content);
+                    }
+                    else {
+                        holder.mFav.setSelected(true);
+                        holder.mFav.setTextColor(Color.RED);
+                        holder.mFav.setText("Done");
+                    }
                 }
 
                 if (payloads.contains(CommodityDiffCallback.ARRIVAL_DATE_PAYLOAD)) {
