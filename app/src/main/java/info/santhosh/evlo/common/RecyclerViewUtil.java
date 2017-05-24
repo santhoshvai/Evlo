@@ -213,6 +213,8 @@ public class RecyclerViewUtil {
             holder.mMarket.setText(market_text);
             holder.mState.setText(state);
 
+            // TODO: (More Button to show details) https://stackoverflow.com/questions/41464629/expand-collapse-animation-in-cardview
+
             switch (mCardFragmentType){
                 case COMMODITY_VARIETY_DETAIL:
                     holder.mVariety.setText(res.getString(R.string.variety, variety));
