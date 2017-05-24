@@ -49,7 +49,7 @@ import static info.santhosh.evlo.ui.search.SearchActivity.CommodityName.COMMODIT
  */
 
 public class SearchActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, Searchbar.onTextChanged {
 
     private Searchbar mSearchBar;
     private boolean mTwoPane;
@@ -68,17 +68,7 @@ public class SearchActivity extends AppCompatActivity
         setContentView(R.layout.activity_search);
 
         mSearchBar = (Searchbar) findViewById(R.id.search_toolbar);
-        mSearchBar.setTextChanged(new Searchbar.onTextChanged() {
-            @Override
-            public void onSearchChange(CharSequence s) {
-                String query = s.toString().trim();
-//                mCommodityAdapter.setmFilterSearch(query);
-                Bundle args = new Bundle();
-                args.putString("name", query);
-                getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, SearchActivity.this);
-                mFilterSearch = query;
-            }
-        });
+        mSearchBar.setTextChangedListener(this);
         setSupportActionBar(mSearchBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -92,6 +82,15 @@ public class SearchActivity extends AppCompatActivity
 
         setupRecyclerView();
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
+    }
+
+    @Override
+    public void onSearchChange(CharSequence s) {
+        String query = s.toString().trim();
+        Bundle args = new Bundle();
+        args.putString("name", query);
+        getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, SearchActivity.this);
+        mFilterSearch = query;
     }
 
     private void setupRecyclerView() {
