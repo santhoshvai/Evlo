@@ -52,7 +52,7 @@ public class Commodity {
     private String max_Price;
     private String modal_Price;
     private String min_Price;
-    private int fav_row_id;
+    private boolean isFavorite;
 
     public int getId() {
         return id;
@@ -94,18 +94,15 @@ public class Commodity {
         return min_Price;
     }
 
-    public int getFav_row_id() {
-        return fav_row_id;
+    public boolean isFavorite() {
+        return isFavorite;
     }
 
     public static Commodity fromCursor(Cursor cursor) {
         Double maxPriceDouble = Double.valueOf(cursor.getString(COL_MAX_PRICE));
         Double modalPriceDouble = Double.valueOf(cursor.getString(COL_MODAL_PRICE));
         Double minPriceDouble = Double.valueOf(cursor.getString(COL_MIN_PRICE));
-        int fav_row_id = -1;
-        if (!cursor.isNull(COL_COMMODITY_FAV_ROW_ID)) {
-            fav_row_id = cursor.getInt(COL_COMMODITY_FAV_ROW_ID);
-        }
+
         return new Commodity(
                 cursor.getInt(COL_COMMODITY_DETAIL_ID),
                 cursor.getString(COL_STATE_NAME),
@@ -117,10 +114,10 @@ public class Commodity {
                 IndianCurrencyFormat.format(maxPriceDouble),
                 IndianCurrencyFormat.format(modalPriceDouble),
                 IndianCurrencyFormat.format(minPriceDouble),
-                fav_row_id);
+                !cursor.isNull(COL_COMMODITY_FAV_ROW_ID));
     }
 
-    private Commodity(int id, String state, String variety, String district, String commodity, String market, String arrival_Date, String max_Price, String modal_Price, String min_Price, int fav_row_id) {
+    public Commodity(int id, String state, String variety, String district, String commodity, String market, String arrival_Date, String max_Price, String modal_Price, String min_Price, boolean isFavorite) {
         this.id = id;
         this.state = state;
         this.variety = variety;
@@ -131,9 +128,8 @@ public class Commodity {
         this.max_Price = max_Price;
         this.modal_Price = modal_Price;
         this.min_Price = min_Price;
-        this.fav_row_id = fav_row_id;
+        this.isFavorite = isFavorite;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -143,14 +139,17 @@ public class Commodity {
         Commodity commodity1 = (Commodity) o;
 
         if (id != commodity1.id) return false;
-        if (fav_row_id != commodity1.fav_row_id) return false;
+        if (isFavorite != commodity1.isFavorite) return false;
         if (!state.equals(commodity1.state)) return false;
         if (!variety.equals(commodity1.variety)) return false;
         if (!district.equals(commodity1.district)) return false;
         if (!commodity.equals(commodity1.commodity)) return false;
         if (!market.equals(commodity1.market)) return false;
+        if (!arrival_Date.equals(commodity1.arrival_Date)) return false;
+        if (!max_Price.equals(commodity1.max_Price)) return false;
         if (!modal_Price.equals(commodity1.modal_Price)) return false;
-        return arrival_Date.equals(commodity1.arrival_Date);
+        return min_Price.equals(commodity1.min_Price);
+
     }
 
     @Override
@@ -162,7 +161,10 @@ public class Commodity {
         result = 31 * result + commodity.hashCode();
         result = 31 * result + market.hashCode();
         result = 31 * result + arrival_Date.hashCode();
-        result = 31 * result + fav_row_id;
+        result = 31 * result + max_Price.hashCode();
+        result = 31 * result + modal_Price.hashCode();
+        result = 31 * result + min_Price.hashCode();
+        result = 31 * result + (isFavorite ? 1 : 0);
         return result;
     }
 }

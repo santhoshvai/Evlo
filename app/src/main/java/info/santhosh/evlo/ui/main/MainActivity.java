@@ -7,6 +7,7 @@ import android.support.transition.AutoTransition;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
     SearchToolbar mSearchToolbar;
 
     private static final int SEARCH_BAR_TRANSITION_DURATION = 250;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

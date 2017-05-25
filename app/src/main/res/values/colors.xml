@@ -14,12 +14,14 @@
     <!--Normal card Button color - used from facebook-->
     <color name="dark_grey">#4b4f56</color>
 
+    <!--icon colors-->
+    <color name="light_grey">#757575</color>
+    <color name="bookmark_yellow">#ffa500</color>c
+
     <color name="colorListRowSelect">#E9EBEB</color>
     <color name="almostWhite">#FFFAFAFA</color>
     <color name="lightGray">#EEEEEE</color>
     <color name="dividerGrey">#FFE5E5E5</color>
     <color name="searchHighlight">#4fc3f7</color>
 
-    <!--bottom bar colors-->
-    <color name="inactive_bottombar">#757575</color>
 </resources>

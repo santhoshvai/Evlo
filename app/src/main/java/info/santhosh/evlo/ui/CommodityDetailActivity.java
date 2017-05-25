@@ -3,6 +3,7 @@ package info.santhosh.evlo.ui;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
 import info.santhosh.evlo.R;
@@ -14,6 +15,10 @@ import info.santhosh.evlo.R;
  * in a {@link CommodityListActivity}.
  */
 public class CommodityDetailActivity extends AppCompatActivity {
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -87,7 +87,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // sort by last added
         String sortOrder = CommodityContract.CommodityFavEntry.TABLE_NAME +
-                "." + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + " DESC";
+                "." + CommodityContract.CommodityFavEntry._ID + " DESC";
 
         Uri commodityDataUri = CommodityContract.CommodityFavEntry.buildAllFavsCommodityDetails();
 

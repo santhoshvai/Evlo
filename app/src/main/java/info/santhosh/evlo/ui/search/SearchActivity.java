@@ -14,6 +14,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,6 +62,10 @@ public class SearchActivity extends AppCompatActivity
 
     private String mFilterSearch = null;
     private int mSelectedItem = -1;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,8 +277,7 @@ public class SearchActivity extends AppCompatActivity
 
         @Override
         public long getItemId(int position) {
-            final CommodityName commodityName = mCommodityList.get(position);
-            return commodityName.getId();
+            return mCommodityList.get(position).getId();
         }
 
         void setList(List<CommodityName> commodityList) {
