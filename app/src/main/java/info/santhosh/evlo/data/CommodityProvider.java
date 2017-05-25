@@ -38,6 +38,9 @@ public class CommodityProvider extends ContentProvider {
         sCommodityByVarietyQueryBuilder = new SQLiteQueryBuilder();
         sCommodityByFavouriteQueryBuilder = new SQLiteQueryBuilder();
 
+        /*
+        commodity_data LEFT JOIN commodity_fav ON commodity_fav.fav_id = commodity_data._id
+         */
         sCommodityByVarietyQueryBuilder.setTables(
                 CommodityContract.CommodityDataEntry.TABLE_NAME + " LEFT JOIN " +
                         CommodityContract.CommodityFavEntry.TABLE_NAME +
@@ -131,6 +134,7 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
+            // used for searching
             // commodity_data/commodity_variety/*
             case SEARCH_FOR_COMMODITY_NAME: {
                 String commodityName =  CommodityContract.CommodityDataEntry.getCommodityNameFromUri(uri);
@@ -147,6 +151,7 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
+            // search activity, start list of all commodities
             // "commodity_data/commodity_variety" - DISTINCT: http://stackoverflow.com/a/13879436/3394023
             case COMMODITY_NAME: {
                 retCursor = mOpenHelper.getReadableDatabase().query(

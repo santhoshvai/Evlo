@@ -58,9 +58,9 @@ class CommodityDbHelper  extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    @Override
-    public void onConfigure(SQLiteDatabase db) {
-        super.onConfigure(db);
-        db.enableWriteAheadLogging();
-    }
+//    @Override
+//    public void onConfigure(SQLiteDatabase db) {
+//        super.onConfigure(db);
+//        db.enableWriteAheadLogging();
+//    }
 }
