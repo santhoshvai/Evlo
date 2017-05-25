@@ -3,7 +3,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <item
-    android:icon="@drawable/ic_clear_black_24dp"
+    android:icon="@drawable/ic_clear_grey_24dp"
     android:id="@+id/action_clear"
     android:enabled="true"
     android:title="clear"

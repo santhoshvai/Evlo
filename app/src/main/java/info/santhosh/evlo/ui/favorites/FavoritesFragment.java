@@ -50,6 +50,16 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.favorites_list, container, false);
+        commodityFavAdapter = new RecyclerViewUtil.CommodityDetailAdapter(getActivity(), RecyclerViewUtil.FAVORITES);
+        getLoaderManager().initLoader(COMMODITY_FAV_LOADER, null, this);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_rv);
+        mRecyclerView.setAdapter(commodityFavAdapter);
+        // set item decoration
+        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                linearLayoutManager.getOrientation());
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_grey));
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
         return rootView;
     }
 
@@ -71,16 +81,6 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        commodityFavAdapter = new RecyclerViewUtil.CommodityDetailAdapter(getActivity(), RecyclerViewUtil.FAVORITES);
-        getLoaderManager().initLoader(COMMODITY_FAV_LOADER, null, this);
-        mRecyclerView = (RecyclerView) getView().findViewById(R.id.fav_rv);
-        mRecyclerView.setAdapter(commodityFavAdapter);
-        // set item decoration
-        LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                linearLayoutManager.getOrientation());
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(mRecyclerView.getContext(), R.drawable.divider_grey));
-        mRecyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override

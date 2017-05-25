@@ -1,6 +1,7 @@
 package info.santhosh.evlo.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -33,13 +34,13 @@ public class CommodityDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        if (savedInstanceState == null) {
+        if (getSupportFragmentManager().findFragmentById(R.id.commodity_detail_container) == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
             arguments.putString(CommodityDetailFragment.COMMODITY_NAME,
                     getIntent().getStringExtra(CommodityDetailFragment.COMMODITY_NAME));
-            CommodityDetailFragment fragment = new CommodityDetailFragment();
+            Fragment fragment = new CommodityDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.commodity_detail_container, fragment)

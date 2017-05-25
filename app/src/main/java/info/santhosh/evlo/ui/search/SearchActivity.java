@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -90,10 +91,25 @@ public class SearchActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        mSearchBar.setTextChangedListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        mSearchBar.setTextChangedListener(null);
+        super.onStop();
+    }
+
+    @Override
     public void onSearchChange(CharSequence s) {
         String query = s.toString().trim();
-        Bundle args = new Bundle();
-        args.putString("name", query);
+        Bundle args = null;
+        if(!TextUtils.isEmpty(s)) {
+            args = new Bundle();
+            args.putString("name", query);
+        }
         getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, SearchActivity.this);
         mFilterSearch = query;
     }
@@ -423,16 +439,18 @@ public class SearchActivity extends AppCompatActivity
 
         @Override
         protected Pair<DiffUtil.DiffResult, ArrayList<CommodityName>> doInBackground(String... params) {
-            ArrayList<CommodityName> commodities = new ArrayList<>(mCursor.getCount());
-            while (mCursor.moveToNext()) {
-                commodities.add(SearchActivity.CommodityName.fromCursor(mCursor));
-            }
             CommodityAdapter commodityAdapter = commodityAdapterWeakReference.get();
             if(commodityAdapter == null) return null;
+            final List<CommodityName> oldCommodities = commodityAdapter.getList();
+            ArrayList<CommodityName> newCommodities = new ArrayList<>(mCursor.getCount());
+            mCursor.moveToFirst();
+            while (mCursor.moveToNext()) {
+                newCommodities.add(SearchActivity.CommodityName.fromCursor(mCursor));
+            }
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
-                    new CommodityDiffCallback(commodityAdapter.getList(), commodities,
+                    new CommodityDiffCallback(oldCommodities, newCommodities,
                             commodityAdapter.getFilterSearch(), mFilterSearch), false);
-            return new Pair<>(diffResult, commodities);
+            return new Pair<>(diffResult, newCommodities);
             // cursor close is handled by the cursor loader
         }
 
@@ -470,12 +488,8 @@ public class SearchActivity extends AppCompatActivity
     }
 
     @Override
-    public void finish() {
-        // when the user tries to finish the activity we have to animate the exit
-        // let's start by hiding the keyboard so that the exit seems smooth
-        Utils.hideSoftKeyboard(this);
-        super.finish();
-        // override the system pending transition as we are handling ourselves
+    public void onBackPressed() {
+        super.onBackPressed();
         overridePendingTransition(0, 0);
     }
 
@@ -488,7 +502,8 @@ public class SearchActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            NavUtils.navigateUpFromSameTask(this);
+            overridePendingTransition(0, 0);
             return true;
         } else if (item.getItemId() == R.id.action_clear) {
             mSearchBar.clearText();

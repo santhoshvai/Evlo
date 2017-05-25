@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     SearchToolbar mSearchToolbar;
 
-    private static final int SEARCH_BAR_TRANSITION_DURATION = 250;
+    private static final int SEARCH_BAR_TRANSITION_DURATION = 200;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (savedInstanceState == null) {
+       if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
             FavoritesFragment favoritesFragment = FavoritesFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_fragment_container, favoritesFragment)
@@ -86,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
                 // we are handing the enter transitions ourselves
                 // this line overrides that
-                overridePendingTransition(0, 0);
+//                overridePendingTransition(0, 0);
+
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
 
             @Override

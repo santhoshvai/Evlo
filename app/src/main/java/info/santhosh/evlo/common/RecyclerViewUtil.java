@@ -307,6 +307,7 @@ public class RecyclerViewUtil {
 
             final List<Commodity> oldCommodityList = commodityDetailAdapter.getList();
             ArrayList<Commodity> newCommodityList = new ArrayList<>(mCursor.getCount());
+            mCursor.moveToFirst();
             while (mCursor.moveToNext()) {
                 newCommodityList.add(Commodity.fromCursor(mCursor));
             }

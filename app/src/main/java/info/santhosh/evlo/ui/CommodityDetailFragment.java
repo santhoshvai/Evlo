@@ -48,34 +48,21 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityDetailFragment.recycler.layout";
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    public CommodityDetailFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-         if (getArguments().containsKey(COMMODITY_NAME)) {
-             mCommodityName = getArguments().getString(COMMODITY_NAME);
-             Activity activity = this.getActivity();
-
-             TextView title = (TextView) activity.findViewById(R.id.toolbar_title);
-             if (title != null) {
-                 activity.setTitle(mCommodityName);
-             }
-             mCommodityDetailAdapter = new RecyclerViewUtil.CommodityDetailAdapter(getActivity(), RecyclerViewUtil.COMMODITY_VARIETY_DETAIL);
-             getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
-         }
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (getArguments().containsKey(COMMODITY_NAME)) {
+            mCommodityName = getArguments().getString(COMMODITY_NAME);
+            Activity activity = this.getActivity();
+
+            TextView title = (TextView) activity.findViewById(R.id.toolbar_title);
+            if (title != null) {
+                activity.setTitle(mCommodityName);
+            }
+            mCommodityDetailAdapter = new RecyclerViewUtil.CommodityDetailAdapter(getActivity(), RecyclerViewUtil.COMMODITY_VARIETY_DETAIL);
+            getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
+        }
+
         View rootView = inflater.inflate(R.layout.commodity_detail, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.commodity_detail_list);
         recyclerView.setAdapter(mCommodityDetailAdapter);
@@ -112,7 +99,6 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         String sortOrder = CommodityContract.CommodityDataEntry.COLUMN_VARIETY + " ASC";
 
         Uri commodityDataUri = CommodityContract.CommodityDataEntry.buildCommodityNameDetailUri(mCommodityName);
-
 
         return new CursorLoader(
                 getActivity(),
