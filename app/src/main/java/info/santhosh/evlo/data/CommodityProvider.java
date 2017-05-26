@@ -143,7 +143,7 @@ public class CommodityProvider extends ContentProvider {
                         CommodityContract.CommodityDataEntry.TABLE_NAME,
                         projection,
                         sCommodityNameSearchSelection,
-                        new String[]{"%"+commodityName+"%"}, // example LIKE %apple%
+                        new String[]{'%'+commodityName+'%'}, // example LIKE %apple%
                         CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME, // groupby
                         null,
                         sortOrder,
@@ -153,6 +153,8 @@ public class CommodityProvider extends ContentProvider {
             }
             // search activity, start list of all commodities
             // "commodity_data/commodity_variety" - DISTINCT: http://stackoverflow.com/a/13879436/3394023
+            // SELECT DISTINCT commodity_data._id, variety, commodity_name FROM commodity_data GROUP BY commodity_name ORDER BY commodity_name ASC
+            // TODO: SELECT DISTINCT commodity_data._id, variety, commodity_name, count(*) AS no_of_entries FROM commodity_data GROUP BY commodity_name ORDER BY commodity_name ASC
             case COMMODITY_NAME: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         true, // distinct
