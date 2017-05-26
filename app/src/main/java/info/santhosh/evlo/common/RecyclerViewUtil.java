@@ -1,6 +1,5 @@
 package info.santhosh.evlo.common;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -45,7 +44,6 @@ public class RecyclerViewUtil {
     public static class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> {
 
         private List<Commodity> mCommodityList = null;
-        final private Context mContext;
         @CardFragmentType int mCardFragmentType = COMMODITY_VARIETY_DETAIL;
 
         /**
@@ -70,8 +68,7 @@ public class RecyclerViewUtil {
             }
         }
 
-        public CommodityDetailAdapter(Context context, @CardFragmentType int cardFragmentType) {
-            mContext = context;
+        public CommodityDetailAdapter(@CardFragmentType int cardFragmentType) {
             mCardFragmentType = cardFragmentType;
         }
 
@@ -132,7 +129,7 @@ public class RecyclerViewUtil {
                 @Override
                 public void onClick(View v) {
                     // TODO: share an image if you can
-                    final Resources res = mContext.getResources();
+                    final Resources res = vh.itemView.getContext().getResources();
                     int pos = vh.getAdapterPosition();
                     if (pos != NO_POSITION) {
                         Commodity commodity = mCommodityList.get(pos);
@@ -148,7 +145,7 @@ public class RecyclerViewUtil {
                                 commodityName, variety, modalPrice, market, district, state);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, share);
                         sendIntent.setType("text/plain");
-                        mContext.startActivity(Intent.createChooser(sendIntent,
+                        vh.itemView.getContext().startActivity(Intent.createChooser(sendIntent,
                                 res.getString(R.string.share_heading)));
                     }
                 }
@@ -156,9 +153,18 @@ public class RecyclerViewUtil {
             return vh;
         }
 
-        private void animateFavoriteSelect(CommodityDetailAdapter.ViewHolder holder, boolean shouldSelect) {
-            // TODO: animate the icon fill
+        private void animateFavoriteSelect(final CommodityDetailAdapter.ViewHolder holder, boolean shouldSelect) {
+            // TODO: animate the icon fill instead of the zoom animation below
             holder.mFav.setSelected(shouldSelect);
+
+            if(shouldSelect) {
+                holder.mFav.animate().scaleX(1.3f).scaleY(1.3f).setDuration(100).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.mFav.animate().scaleX(1f).scaleY(1f).setDuration(100);
+                    }
+                });
+            }
         }
 
         @Override
@@ -174,9 +180,9 @@ public class RecyclerViewUtil {
         }
 
         @Override
-        public void onBindViewHolder(final CommodityDetailAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(final CommodityDetailAdapter.ViewHolder holder, int position) {
             Commodity commodity = mCommodityList.get(position);
-            final Resources res = mContext.getResources();
+            final Resources res = holder.itemView.getContext().getResources();
 
             final String commodityName = commodity.getCommodity();
             final String modalPrice = commodity.getModal_Price();
@@ -184,7 +190,9 @@ public class RecyclerViewUtil {
             final String market = commodity.getMarket();
             final String state = commodity.getState();
             // variety name given is same as commodityName, then replace it as Normal
-            final String variety = commodity.getVariety().equalsIgnoreCase(commodityName)? "Normal": commodity.getVariety();
+            final String variety = commodity.getVariety().equalsIgnoreCase(commodityName)?
+                    holder.itemView.getContext().getString(R.string.Normal_variety) :
+                    commodity.getVariety();
             final String nameAndVariety = res.getString(R.string.commodity_name_and_variety, commodityName, variety);
 
             holder.mFav.setSelected(commodity.isFavorite());
@@ -307,9 +315,11 @@ public class RecyclerViewUtil {
 
             final List<Commodity> oldCommodityList = commodityDetailAdapter.getList();
             ArrayList<Commodity> newCommodityList = new ArrayList<>(mCursor.getCount());
+
             mCursor.moveToFirst();
-            while (mCursor.moveToNext()) {
+            while(!mCursor.isAfterLast()) {
                 newCommodityList.add(Commodity.fromCursor(mCursor));
+                mCursor.moveToNext();
             }
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CommodityDiffCallback(oldCommodityList, newCommodityList), false);
             return new Pair<>(diffResult, newCommodityList);

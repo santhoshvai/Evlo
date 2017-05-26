@@ -59,7 +59,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             if (title != null) {
                 activity.setTitle(mCommodityName);
             }
-            mCommodityDetailAdapter = new RecyclerViewUtil.CommodityDetailAdapter(getActivity(), RecyclerViewUtil.COMMODITY_VARIETY_DETAIL);
+            mCommodityDetailAdapter = new RecyclerViewUtil.CommodityDetailAdapter(RecyclerViewUtil.COMMODITY_VARIETY_DETAIL);
             getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
         }
 

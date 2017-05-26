@@ -112,6 +112,7 @@ public class SearchActivity extends AppCompatActivity
         }
         getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, SearchActivity.this);
         mFilterSearch = query;
+        mRecyclerView.scrollToPosition(0);
     }
 
     private void setupRecyclerView() {
@@ -153,13 +154,12 @@ public class SearchActivity extends AppCompatActivity
                 sortOrder);
     }
 
-    // this is where the results you deliver appear
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         new CursorToListAsyncTask(data, mCommodityAdapter, mFilterSearch).execute();
     }
 
-    // your chance to clean up any references to the now reset Loader data
+    // clean up any references to the now reset Loader data
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mCommodityAdapter.setList(null);
@@ -444,8 +444,9 @@ public class SearchActivity extends AppCompatActivity
             final List<CommodityName> oldCommodities = commodityAdapter.getList();
             ArrayList<CommodityName> newCommodities = new ArrayList<>(mCursor.getCount());
             mCursor.moveToFirst();
-            while (mCursor.moveToNext()) {
+            while(!mCursor.isAfterLast()) {
                 newCommodities.add(SearchActivity.CommodityName.fromCursor(mCursor));
+                mCursor.moveToNext();
             }
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                     new CommodityDiffCallback(oldCommodities, newCommodities,
@@ -507,7 +508,6 @@ public class SearchActivity extends AppCompatActivity
             return true;
         } else if (item.getItemId() == R.id.action_clear) {
             mSearchBar.clearText();
-            mRecyclerView.smoothScrollToPosition(0);
             return true;
         }
         return super.onOptionsItemSelected(item);

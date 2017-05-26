@@ -50,7 +50,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.favorites_list, container, false);
-        commodityFavAdapter = new RecyclerViewUtil.CommodityDetailAdapter(getActivity(), RecyclerViewUtil.FAVORITES);
+        commodityFavAdapter = new RecyclerViewUtil.CommodityDetailAdapter(RecyclerViewUtil.FAVORITES);
         getLoaderManager().initLoader(COMMODITY_FAV_LOADER, null, this);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_rv);
         mRecyclerView.setAdapter(commodityFavAdapter);
