@@ -14,11 +14,9 @@ import info.santhosh.evlo.ui.TransformingToolbar;
 
 /**
  * A Toolbar with an EditText used for searching
- * <p>In a real life application you would hook up your TextWatcher to this method to track what the user is searching for</p>
  */
 public class Searchbar extends TransformingToolbar {
 
-    private EditText editText;
     WeakReference<onTextChanged> mOnTextChangedWeakReference;
 
     public Searchbar(Context context, AttributeSet attrs) {
@@ -30,7 +28,7 @@ public class Searchbar extends TransformingToolbar {
     protected void onFinishInflate() {
         super.onFinishInflate();
         inflate(getContext(), R.layout.merge_search, this);
-        editText = (EditText) findViewById(R.id.toolbar_search_edittext);
+        EditText editText = (EditText) findViewById(R.id.toolbar_search_edittext);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -53,11 +51,11 @@ public class Searchbar extends TransformingToolbar {
     @Override
     public void showContent() {
         super.showContent();
-        editText.requestFocus();
+        findViewById(R.id.toolbar_search_edittext).requestFocus();
     }
 
     public void clearText() {
-        editText.setText(null);
+        ((EditText) findViewById(R.id.toolbar_search_edittext)).setText(null);
     }
 
     public void setTextChangedListener(onTextChanged onTextChanged) {
