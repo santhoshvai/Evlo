@@ -12,7 +12,6 @@
     <string name="variety">%1$s variety</string>
     <string name="commodity_name_and_variety">%1$s, %2$s variety</string>
     <string name="favorite_content">Bookmark</string>
-    <string name="favorite_done_content">Bookmarked</string>
     <string name="share_content">Share</string>
     <string name="share_heading">Share the price detail</string>
     <string name="menu_bottom_commodities">Commodities</string>
@@ -21,10 +20,10 @@
     <string name="settings">Settings</string>
     <string name="search_commodities">Search Commodities</string>
     <string name="search_markets">Search Markets</string>
-    <string name="bookmarks">Bookmarks</string>
     <string name="fav_added">Item added to bookmarks</string>
     <string name="fav_removed">Item removed from bookmarks</string>
     <string name="undo">Undo</string>
     <string name="details_content">More</string>
     <string name="search_hint_detail">Search for commodities</string>
+    <string name="Normal_variety">Normal</string>
 </resources>

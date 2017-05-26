@@ -1,6 +1,5 @@
 package info.santhosh.evlo.ui;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,7 +11,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,17 +21,11 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.lang.reflect.Field;
 
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
@@ -218,86 +210,86 @@ public class CommodityListActivity extends AppCompatActivity
         mCommodityAdapter.swapCursor(null);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // http://developer.android.com/training/search/setup.html
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.options_menu, menu);
-
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-
-        MenuItem searchItem = menu.findItem(R.id.search_commodities);
-        mSearchMenuItem = searchItem; // used in onNewIntent, which is called when we are back from up button
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE); // occupy full width
-        // The call to getSearchableInfo() obtains a SearchableInfo object that is created from the searchable configuration XML file.
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-
-        // This sets the cursor blink to be White
-        final EditText searchTextView = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
-        try {
-            // setting textCursorDrawable attribute to @null should result in the use of android:textColor as the cursor color.
-            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
-            mCursorDrawableRes.setAccessible(true);
-            mCursorDrawableRes.set(searchTextView, null); // search text view is used here
-        } catch (Exception e) {}
-
-        // if previous searchQuery is present - due to configuration changes
-        if (mSearchViewExpanded) {
-            searchItem.expandActionView();
-            searchView.setQuery(mSearchQuery, false);
-            (findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
-            if(mSearchQuery.length() > 0) {
-                // preserve the highlight
-                mCommodityAdapter.setmFilterSearch(mSearchQuery);
-                mCommodityAdapter.notifyDataSetChanged();
-            }
-            // searchView.clearFocus(); // hide keyboard
-        }
-
-        searchView.setOnQueryTextListener(
-                new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextChange(String query) {
-                        Bundle args = new Bundle();
-                        query = query.trim();
-                        args.putString("name", query);
-                        mSearchQuery = query;
-                        getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, CommodityListActivity.this);
-                        mCommodityAdapter.setmFilterSearch(query);
-                        return false;
-                    }
-                    @Override
-                    public boolean onQueryTextSubmit(String query) { return false; }
-                }
-        );
-
-        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.search_commodities),
-                new MenuItemCompat.OnActionExpandListener() {
-                    @Override
-                    public boolean onMenuItemActionExpand(MenuItem item) {
-                        // hide FAB
-                        (findViewById(R.id.fab)).setVisibility(View.GONE);
-                        mSearchViewExpanded = true;
-                        return true; //true if item should expand
-                    }
-
-                    @Override
-                    public boolean onMenuItemActionCollapse(MenuItem item) {
-                        // FAB should re-appear
-                        (findViewById(R.id.fab)).setVisibility(View.VISIBLE);
-                        mSearchQuery = "";
-                        mSearchViewExpanded = false;
-                        return true; //true if item should collapse
-                    }
-                }
-        );
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // http://developer.android.com/training/search/setup.html
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.options_menu, menu);
+//
+//        // Associate searchable configuration with the SearchView
+//        SearchManager searchManager =
+//                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//
+//        MenuItem searchItem = menu.findItem(R.id.search_commodities);
+//        mSearchMenuItem = searchItem; // used in onNewIntent, which is called when we are back from up button
+//        SearchView searchView = (SearchView) searchItem.getActionView();
+//        searchView.setMaxWidth(Integer.MAX_VALUE); // occupy full width
+//        // The call to getSearchableInfo() obtains a SearchableInfo object that is created from the searchable configuration XML file.
+//        searchView.setSearchableInfo(
+//                searchManager.getSearchableInfo(getComponentName()));
+//
+//        // This sets the cursor blink to be White
+//        final EditText searchTextView = (EditText) searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
+//        try {
+//            // setting textCursorDrawable attribute to @null should result in the use of android:textColor as the cursor color.
+//            Field mCursorDrawableRes = TextView.class.getDeclaredField("mCursorDrawableRes");
+//            mCursorDrawableRes.setAccessible(true);
+//            mCursorDrawableRes.set(searchTextView, null); // search text view is used here
+//        } catch (Exception e) {}
+//
+//        // if previous searchQuery is present - due to configuration changes
+//        if (mSearchViewExpanded) {
+//            searchItem.expandActionView();
+//            searchView.setQuery(mSearchQuery, false);
+//            (findViewById(R.id.fab)).setVisibility(View.GONE); // hide fab
+//            if(mSearchQuery.length() > 0) {
+//                // preserve the highlight
+//                mCommodityAdapter.setmFilterSearch(mSearchQuery);
+//                mCommodityAdapter.notifyDataSetChanged();
+//            }
+//            // searchView.clearFocus(); // hide keyboard
+//        }
+//
+//        searchView.setOnQueryTextListener(
+//                new SearchView.OnQueryTextListener() {
+//                    @Override
+//                    public boolean onQueryTextChange(String query) {
+//                        Bundle args = new Bundle();
+//                        query = query.trim();
+//                        args.putString("name", query);
+//                        mSearchQuery = query;
+//                        getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, CommodityListActivity.this);
+//                        mCommodityAdapter.setmFilterSearch(query);
+//                        return false;
+//                    }
+//                    @Override
+//                    public boolean onQueryTextSubmit(String query) { return false; }
+//                }
+//        );
+//
+//        MenuItemCompat.setOnActionExpandListener(menu.findItem(R.id.search_commodities),
+//                new MenuItemCompat.OnActionExpandListener() {
+//                    @Override
+//                    public boolean onMenuItemActionExpand(MenuItem item) {
+//                        // hide FAB
+//                        (findViewById(R.id.fab)).setVisibility(View.GONE);
+//                        mSearchViewExpanded = true;
+//                        return true; //true if item should expand
+//                    }
+//
+//                    @Override
+//                    public boolean onMenuItemActionCollapse(MenuItem item) {
+//                        // FAB should re-appear
+//                        (findViewById(R.id.fab)).setVisibility(View.VISIBLE);
+//                        mSearchQuery = "";
+//                        mSearchViewExpanded = false;
+//                        return true; //true if item should collapse
+//                    }
+//                }
+//        );
+//
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -305,12 +297,12 @@ public class CommodityListActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            mServiceStarted = false;
-            launchXmlService();
-            Toast.makeText(getApplicationContext(), "Data refresh started..", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+//        if (id == R.id.action_refresh) {
+//            mServiceStarted = false;
+//            launchXmlService();
+//            Toast.makeText(getApplicationContext(), "Data refresh started..", Toast.LENGTH_SHORT).show();
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
