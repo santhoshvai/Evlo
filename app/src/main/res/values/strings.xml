@@ -30,4 +30,5 @@
     <string name="no_search_results">No search results for \"%s\"</string>
     <string name="Connect_internet">Connect to the internet</string>
     <string name="loading">Data is being loaded</string>
+    <string name="unit_of_price">per 100kg*</string>
 </resources>
