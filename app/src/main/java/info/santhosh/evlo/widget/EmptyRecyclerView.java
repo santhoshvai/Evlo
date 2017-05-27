@@ -119,15 +119,6 @@ public class EmptyRecyclerView extends RecyclerView {
         }
     }
 
-//    public void setEmptyViewText() {
-//        // set the empty view text
-//        if(getAdapter() instanceof CommodityListActivity.CommodityAdapter) {
-//            CommodityListActivity.CommodityAdapter adapter = (CommodityListActivity.CommodityAdapter) getAdapter();
-//            String searchFilter = adapter.getFilterSearch();
-//            Utils.setEmptyViewText(getContext(), (TextView) mEmptyView, searchFilter);
-//        }
-//    }
-
     public interface SetEmptyViewCallback {
         void setEmptyView(View emptyView);
     }

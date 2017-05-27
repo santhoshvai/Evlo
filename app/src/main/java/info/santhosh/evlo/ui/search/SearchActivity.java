@@ -40,8 +40,8 @@ import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ColorUtil;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
-import info.santhosh.evlo.ui.CommodityDetailActivity;
-import info.santhosh.evlo.ui.CommodityDetailFragment;
+import info.santhosh.evlo.ui.detail.CommodityDetailActivity;
+import info.santhosh.evlo.ui.detail.CommodityDetailFragment;
 import info.santhosh.evlo.widget.EmptyRecyclerView;
 
 import static info.santhosh.evlo.ui.search.SearchActivity.CommodityAdapter.SEARCH_HIGHLIGHT_PAYLOAD;

@@ -1,91 +1,77 @@
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/card_layout_margin"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/card_layout_margin"
+    tools:background="@android:color/white">
 
     <TextView
-        android:id="@+id/text_variety"
-        style="@style/TextAppearance.AppCompat.Subhead"
+        android:id="@+id/text_market_district"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:paddingEnd="4dp"
         android:paddingLeft="0dp"
         android:paddingRight="4dp"
         android:paddingStart="0dp"
-        android:layout_marginTop="8dp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+        android:textSize="18sp"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Arecal betlanut long text faking, Normal Variety long text I want to ellipsise"
-        app:layout_constraintHorizontal_bias="0.0" />
+        tools:text="Chirala market, Prakasam district" />
 
     <TextView
         android:id="@+id/text_modal_price"
-        style="@style/TextAppearance.AppCompat.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+        android:textSize="18sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_market_district"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="\u20B9 3950" />
 
     <TextView
-        android:id="@+id/text_market_district"
-        style="@style/TextAppearance.AppCompat.Body1"
+        android:id="@+id/text_state_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="0dp"
         android:maxLines="2"
         android:paddingEnd="16dp"
         android:paddingLeft="0dp"
         android:paddingRight="16dp"
         android:paddingStart="0dp"
+        android:paddingTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/text_variety"
-        tools:text="Chirala market, Prakasam district" />
-
-    <TextView
-        android:id="@+id/text_state_name"
-        style="@style/TextAppearance.AppCompat.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:paddingEnd="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="16dp"
-        android:paddingStart="0dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        tools:text="Andhra Pradesh"
-        android:layout_marginLeft="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/text_market_district" />
+        app:layout_constraintTop_toBottomOf="@+id/text_market_district"
+        tools:text="Andhra Pradesh" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/details_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:drawableLeft="@drawable/more_detail_state"
         android:drawablePadding="8dp"
-        android:text="@string/details_content"
-        android:padding="@dimen/card_action_button_padding"
         android:drawableStart="@drawable/more_detail_state"
-        android:clickable="true"
+        android:padding="@dimen/card_action_button_padding"
+        android:text="@string/details_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/light_grey"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/favorite_icon"
-        app:layout_constraintTop_toBottomOf="@+id/text_state_name"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+        app:layout_constraintTop_toBottomOf="@+id/text_state_name" />
 
     <TextView
         android:id="@+id/favorite_icon"
@@ -96,13 +82,15 @@
         android:drawableLeft="@drawable/bookmark_fill"
         android:drawablePadding="8dp"
         android:drawableStart="@drawable/bookmark_fill"
-        android:textColor="@color/bookmark_states"
         android:gravity="center"
         android:padding="@dimen/card_action_button_padding"
         android:text="@string/favorite_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/bookmark_states"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintRight_toLeftOf="@+id/share_icon"
         app:layout_constraintLeft_toRightOf="@+id/details_icon"
+        app:layout_constraintRight_toLeftOf="@+id/share_icon"
         app:layout_constraintTop_toTopOf="@+id/details_icon" />
 
     <TextView
@@ -111,24 +99,27 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
-        android:drawableLeft="@drawable/ic_share_grey600_24dp"
+        android:drawableLeft="@drawable/share_state"
         android:drawablePadding="8dp"
-        android:drawableStart="@drawable/ic_share_grey600_24dp"
+        android:drawableStart="@drawable/share_state"
         android:gravity="center"
         android:padding="@dimen/card_action_button_padding"
         android:text="@string/share_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textColor="@color/light_grey"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/favorite_icon"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/details_icon" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline"
         android:orientation="vertical"
-        tools:layout_editor_absoluteY="0dp"
+        app:layout_constraintGuide_begin="16dp"
         tools:layout_editor_absoluteX="16dp"
-        app:layout_constraintGuide_begin="16dp" />
+        tools:layout_editor_absoluteY="0dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -29,7 +29,7 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".ui.CommodityDetailActivity"
+            android:name=".ui.detail.CommodityDetailActivity"
             android:parentActivityName=".ui.search.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

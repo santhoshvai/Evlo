@@ -11,17 +11,16 @@
     <!--Material palette: Pink-->
     <color name="pink_A200">#FF4081</color>
 
-    <!--Normal card Button color - used from facebook-->
-    <color name="dark_grey">#4b4f56</color>
-
-    <!--icon colors-->
-    <color name="light_grey">#757575</color>
-    <color name="bookmark_yellow">#ffa500</color>c
-
-    <color name="colorListRowSelect">#E9EBEB</color>
-    <color name="almostWhite">#FFFAFAFA</color>
+    <color name="dark_grey">#4b4f56</color> <!--Normal card Button color - used from facebook-->
+    <color name="light_grey">#757575</color> <!--icon colors-->
+    <color name="very_light_grey">#f6f6f6</color>
     <color name="lightGray">#EEEEEE</color>
     <color name="dividerGrey">#FFE5E5E5</color>
+
+
+    <color name="bookmark_yellow">#ffa500</color>
+    <color name="colorListRowSelect">#E9EBEB</color>
+    <color name="almostWhite">#FFFAFAFA</color>
     <color name="searchHighlight">#4fc3f7</color>
 
 </resources>
