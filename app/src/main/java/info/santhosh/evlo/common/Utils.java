@@ -6,12 +6,15 @@ import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+
+import info.santhosh.evlo.R;
 
 /**
  * Created by santhoshvai on 09/05/16.
@@ -68,14 +71,13 @@ public class Utils {
      */
     public static void setEmptyViewText(Context context, TextView mEmptyView, String searchFilter) {
         if(searchFilter.isEmpty()) { // not a search thing ( this will occur only once during app lifetime )
-            mEmptyView.setText("Data is being loaded");
+            mEmptyView.setText(R.string.loading);
 
             if(! isNetworkAvailable(context)) {
-                mEmptyView.setText("Please connect to the internet");
-                return;
+                mEmptyView.setText(R.string.Connect_internet);
             }
         } else { // search did not yield results
-            mEmptyView.setText("No search results for " + searchFilter);
+            mEmptyView.setText(context.getString(R.string.no_search_results, searchFilter));
         }
     }
 
@@ -105,6 +107,10 @@ public class Utils {
         }
 
         return screenWidth;
+    }
+
+    public static boolean isAPI21Plus() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
 }

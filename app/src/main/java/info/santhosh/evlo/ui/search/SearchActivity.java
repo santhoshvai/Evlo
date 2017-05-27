@@ -42,6 +42,7 @@ import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.ui.CommodityDetailActivity;
 import info.santhosh.evlo.ui.CommodityDetailFragment;
+import info.santhosh.evlo.widget.EmptyRecyclerView;
 
 import static info.santhosh.evlo.ui.search.SearchActivity.CommodityAdapter.SEARCH_HIGHLIGHT_PAYLOAD;
 import static info.santhosh.evlo.ui.search.SearchActivity.CommodityName.COMMODITY_NAME_COLUMNS;
@@ -56,7 +57,7 @@ public class SearchActivity extends AppCompatActivity
     private Searchbar mSearchBar;
     private boolean mTwoPane;
     private CommodityAdapter mCommodityAdapter;
-    private RecyclerView mRecyclerView;
+    private EmptyRecyclerView mRecyclerView;
 
     private static final int COMMODITY_NAME_LOADER = 0;
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
@@ -110,14 +111,24 @@ public class SearchActivity extends AppCompatActivity
             args = new Bundle();
             args.putString("name", query);
         }
-        getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, SearchActivity.this);
         mFilterSearch = query;
         mRecyclerView.scrollToPosition(0);
+        mRecyclerView.updateEmptyView();
+        getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, SearchActivity.this);
     }
 
     private void setupRecyclerView() {
         mCommodityAdapter = new CommodityAdapter(this, "");
-        mRecyclerView = (RecyclerView) findViewById(R.id.commodity_list);
+        mRecyclerView = (EmptyRecyclerView) findViewById(R.id.commodity_list);
+        mRecyclerView.setEmptyView(findViewById(R.id.empty_text_view));
+        mRecyclerView.setEmptyViewCallback(new EmptyRecyclerView.SetEmptyViewCallback() {
+            @Override
+            public void setEmptyView(View emptyView) {
+                if(!TextUtils.isEmpty(mFilterSearch)) { // search did not yield results
+                    ((TextView) emptyView).setText(getString(R.string.no_search_results, mFilterSearch));
+                }
+            }
+        });
         mRecyclerView.setAdapter(mCommodityAdapter);
         // set item decoration
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();

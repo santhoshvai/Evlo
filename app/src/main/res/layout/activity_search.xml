@@ -7,19 +7,41 @@
     android:orientation="vertical">
 
     <info.santhosh.evlo.ui.search.Searchbar
-      android:id="@+id/search_toolbar"
-      android:layout_width="match_parent"
-        android:elevation="8dp"
-      android:layout_height="@dimen/search_toolbar_height"
-      android:gravity="top" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/commodity_list"
+        android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/main_recycler_view_style"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="info.santhosh.evlo.ui.CommodityListActivity"
-        tools:listitem="@layout/commodity_list_content"/>
+        android:layout_height="@dimen/search_toolbar_height"
+        android:elevation="8dp"
+        android:gravity="top" />
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:background="@color/almostWhite"
+        android:layout_height="match_parent">
+        <info.santhosh.evlo.widget.EmptyRecyclerView
+            android:id="@+id/commodity_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="info.santhosh.evlo.CommodityListFragment"
+            style="@style/main_recycler_view_style"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="info.santhosh.evlo.ui.CommodityListActivity"
+            tools:listitem="@layout/commodity_list_content" />
+
+        <TextView
+            android:id="@+id/empty_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
+            android:visibility="gone"
+            tools:text='No search results for "Apple"'
+            tools:visibility="visible" />
+    </FrameLayout>
 
 </LinearLayout>

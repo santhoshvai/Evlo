@@ -26,4 +26,8 @@
     <string name="details_content">More</string>
     <string name="search_hint_detail">Search for commodities</string>
     <string name="Normal_variety">Normal</string>
+    <string name="bookmark_empty">Search for commodities and bookmark the ones that you are interested in. They will appear here.</string>
+    <string name="no_search_results">No search results for \"%s\"</string>
+    <string name="Connect_internet">Connect to the internet</string>
+    <string name="loading">Data is being loaded</string>
 </resources>

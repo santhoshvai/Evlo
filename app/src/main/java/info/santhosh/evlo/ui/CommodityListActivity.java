@@ -30,7 +30,7 @@ import android.widget.TextView;
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ColorUtil;
-import info.santhosh.evlo.common.EmptyRecyclerView;
+import info.santhosh.evlo.widget.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.service.GetXmlService;

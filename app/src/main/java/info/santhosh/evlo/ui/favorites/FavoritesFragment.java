@@ -12,12 +12,12 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.widget.EmptyRecyclerView;
 import info.santhosh.evlo.common.RecyclerViewUtil;
 import info.santhosh.evlo.data.CommodityContract;
 
@@ -29,7 +29,7 @@ import static info.santhosh.evlo.data.dbModels.Commodity.COMMODITY_DETAIL_COLUMN
 
 public class FavoritesFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    RecyclerView mRecyclerView;
+    EmptyRecyclerView mRecyclerView;
 
     private static final int COMMODITY_FAV_LOADER = 1;
     RecyclerViewUtil.CommodityDetailAdapter commodityFavAdapter;
@@ -52,8 +52,10 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         View rootView = inflater.inflate(R.layout.favorites_list, container, false);
         commodityFavAdapter = new RecyclerViewUtil.CommodityDetailAdapter(RecyclerViewUtil.FAVORITES);
         getLoaderManager().initLoader(COMMODITY_FAV_LOADER, null, this);
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.fav_rv);
+        mRecyclerView = (EmptyRecyclerView) rootView.findViewById(R.id.fav_rv);
+        mRecyclerView.setEmptyView(rootView.findViewById(R.id.bookmark_empty));
         mRecyclerView.setAdapter(commodityFavAdapter);
+        mRecyclerView.setShouldAnimate(true);
         // set item decoration
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
@@ -108,6 +110,5 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }
