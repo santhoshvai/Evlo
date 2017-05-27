@@ -49,7 +49,7 @@ public class WriteDb {
 
         // add to database
         int inserted = 0;
-        if ( cVVector.size() > 0 ) {
+        if (cVVector.size() > 0) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
             cVVector.toArray(cvArray);
             inserted = mContext.getContentResolver().bulkInsert(CommodityDataEntry.CONTENT_URI, cvArray);

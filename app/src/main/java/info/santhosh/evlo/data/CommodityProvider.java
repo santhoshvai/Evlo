@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -299,7 +300,40 @@ public class CommodityProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case COMMODITY_DATA:
+                if (values.length == 0) return 0;
+
                 db.beginTransaction();
+
+                // update sql string
+                StringBuilder sqlUpdateStr = new StringBuilder(120);
+                sqlUpdateStr.append("UPDATE ");
+                sqlUpdateStr.append(CommodityContract.CommodityDataEntry.TABLE_NAME);
+                sqlUpdateStr.append(" SET ");
+
+                // insert sql string
+                StringBuilder sqlInsertStr = new StringBuilder();
+                sqlInsertStr.append("INSERT INTO ");
+                sqlInsertStr.append(CommodityContract.CommodityDataEntry.TABLE_NAME);
+                sqlInsertStr.append('(');
+                int i = 0;
+                for (String colName : values[0].keySet()) {
+                    sqlUpdateStr.append((i > 0) ? "," : "");
+                    sqlUpdateStr.append(colName);
+                    sqlUpdateStr.append("=?");
+
+                    sqlInsertStr.append((i > 0) ? "," : "");
+                    sqlInsertStr.append(colName);
+                    i++;
+                }
+                sqlUpdateStr.append(" WHERE ");
+
+                sqlInsertStr.append(')');
+                sqlInsertStr.append(" VALUES (");
+                for (i = 0; i < values[0].size(); i++) {
+                    sqlInsertStr.append((i > 0) ? ",?" : "?");
+                }
+                sqlInsertStr.append(')');
+
                 // TODO: when arrival date is the same, dont update or insert (Logic must be in writeDb to send only needed ones)
                 String selection = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME +
                         "=? AND " +
@@ -309,20 +343,44 @@ public class CommodityProvider extends ContentProvider {
                         "=? AND " +
                         CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME +
                         "=?";
-                String[] selectionArgs;
+                sqlUpdateStr.append(selection);
+
+                // compile statements
+                SQLiteStatement updateStatement = db.compileStatement(sqlUpdateStr.toString());
+                SQLiteStatement insertStatement = db.compileStatement(sqlInsertStr.toString());
+
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        selectionArgs = new String[] {
+                        String[] bindArgs = new String[value.size() + 4]; // 4 is the amount where statements we will insert
+                        i = 0;
+                        for (String colName : value.keySet()) {
+                            bindArgs[i++] = (String) value.get(colName);
+                        }
+                        String[] selectionArgs = new String[] {
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME),
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY),
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME),
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME)};
+                        for (i=value.size(); i < value.size() + 4; i++) {
+                            bindArgs[i] = selectionArgs[i - value.size()];
+                        }
+                        updateStatement.clearBindings();
+                        updateStatement.bindAllArgsAsStrings(bindArgs);
                         // the row is updated if the above four values are same
-                        int affected = db.update(
-                                CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
+                        final int affected = updateStatement.executeUpdateDelete();
+//                        int affected = db.update(
+//                                CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
                         if (affected == 0) { // only if no row was updated do the insert
-                            long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
+                            bindArgs = new String[value.size()];
+                            i = 0;
+                            for (String colName : value.keySet()) {
+                                bindArgs[i++] = (String) value.get(colName);
+                            }
+                            insertStatement.clearBindings();
+                            insertStatement.bindAllArgsAsStrings(bindArgs);
+                            final long _id = insertStatement.executeInsert();
+//                            long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
                             if (_id != -1) {
                                 returnCount++;
                             }
