@@ -349,20 +349,26 @@ public class CommodityProvider extends ContentProvider {
                 SQLiteStatement updateStatement = db.compileStatement(sqlUpdateStr.toString());
                 SQLiteStatement insertStatement = db.compileStatement(sqlInsertStr.toString());
 
+                /**
+                 *
+                 * UPDATE commodity_data SET market_name=?,commodity_name=?,modal_price=?,state_name=?,arrival_date=?,district_name=?,min_price=?,variety=?,max_price=? WHERE commodity_name=? AND variety=? AND market_name=? AND district_name=?
+                 * INSERT INTO commodity_data(market_name,commodity_name,modal_price,state_name,arrival_date,district_name,min_price,variety,max_price) VALUES (?,?,?,?,?,?,?,?,?)
+                 */
+
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        String[] bindArgs = new String[value.size() + 4]; // 4 is the amount where statements we will insert
-                        i = 0;
-                        for (String colName : value.keySet()) {
-                            bindArgs[i++] = (String) value.get(colName);
-                        }
                         String[] selectionArgs = new String[] {
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME),
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY),
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME),
                                 value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME)};
-                        for (i=value.size(); i < value.size() + 4; i++) {
+                        String[] bindArgs = new String[value.size() + selectionArgs.length];
+                        i = 0;
+                        for (String colName : value.keySet()) {
+                            bindArgs[i++] = (String) value.get(colName);
+                        }
+                        for (i = value.size(); i < (value.size() + selectionArgs.length); i++) {
                             bindArgs[i] = selectionArgs[i - value.size()];
                         }
                         updateStatement.clearBindings();
