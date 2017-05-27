@@ -60,6 +60,7 @@ public class WriteDb {
     public @Nullable Uri addUsingCommoditiesFavId(int favId) {
         ContentValues commodityFavValues = new ContentValues();
         commodityFavValues.put(CommodityContract.CommodityFavEntry.COLUMN_FAV_ID, favId);
+
         return mContext.getContentResolver().insert(CommodityContract.CommodityFavEntry.CONTENT_URI, commodityFavValues);
     }
 

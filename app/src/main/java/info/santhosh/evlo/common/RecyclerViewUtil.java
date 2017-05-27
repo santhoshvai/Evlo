@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.support.v7.util.DiffUtil;
@@ -96,8 +97,6 @@ public class RecyclerViewUtil {
                     if (pos != NO_POSITION) {
                         final Commodity commodity = mCommodityList.get(pos);
                         commodity.setFavorite(!commodity.isFavorite());
-
-                        new FavoriteAddorRemoveAsyncTask(v.getContext(), commodity.isFavorite()).execute(commodity.getId());
                         animateFavoriteSelect(vh, commodity.isFavorite());
 
                         Snackbar.make(v,
@@ -107,12 +106,17 @@ public class RecyclerViewUtil {
                                     @Override
                                     public void onClick(View v) {
                                         commodity.setFavorite(!commodity.isFavorite());
-                                        new FavoriteAddorRemoveAsyncTask(v.getContext(),
+                                        vh.mFav.setSelected(commodity.isFavorite());
+                                    }
+                                })
+                                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                    @Override
+                                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                                        super.onDismissed(transientBottomBar, event);
+                                        new FavoriteAddorRemoveAsyncTask(
+                                                transientBottomBar.getContext(),
                                                 commodity.isFavorite())
                                                 .execute(commodity.getId());
-                                        if (vh.getAdapterPosition() != NO_POSITION) {
-                                            vh.mFav.setSelected(commodity.isFavorite());
-                                        }
                                     }
                                 })
                                 .show();

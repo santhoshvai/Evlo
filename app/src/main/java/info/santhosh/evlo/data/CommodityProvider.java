@@ -223,7 +223,7 @@ public class CommodityProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        Uri returnUri;
+        Uri returnUri = null;
 
         switch (match) {
             case COMMODITY_DATA: {
@@ -235,11 +235,10 @@ public class CommodityProvider extends ContentProvider {
                 break;
             }
             case COMMODITY_FAV: {
-                long _id = db.insert(CommodityContract.CommodityFavEntry.TABLE_NAME, null, values);
+                long _id = db.insertWithOnConflict(CommodityContract.CommodityFavEntry.TABLE_NAME,
+                        null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 if ( _id > 0 )
                     returnUri = CommodityContract.CommodityFavEntry.buildCommodityFavUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             default:

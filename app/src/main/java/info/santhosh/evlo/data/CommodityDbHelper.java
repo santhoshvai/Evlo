@@ -41,7 +41,7 @@ class CommodityDbHelper  extends SQLiteOpenHelper {
         final String SQL_CREATE_COMMODITY_FAV_TABLE = "CREATE TABLE "
                 + CommodityContract.CommodityFavEntry.TABLE_NAME + " ( "
                 + CommodityContract.CommodityFavEntry._ID + " INTEGER PRIMARY KEY, "
-                + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + " INTEGER NOT NULL, "
+                + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + " INTEGER NOT NULL UNIQUE, "
                 + "FOREIGN KEY("  + CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + ") "
                 + "REFERENCES " + CommodityDataEntry.TABLE_NAME + "(" + CommodityDataEntry._ID + ")"
                 + ");";
