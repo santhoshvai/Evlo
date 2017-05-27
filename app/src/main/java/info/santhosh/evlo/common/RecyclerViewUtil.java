@@ -95,33 +95,27 @@ public class RecyclerViewUtil {
                     final int pos = vh.getAdapterPosition();
                     if (pos != NO_POSITION) {
                         final Commodity commodity = mCommodityList.get(pos);
-                        final boolean shouldAdd = !v.isSelected();
-//                        final Uri detailUri = CommodityContract.CommodityDataEntry.buildCommodityNameDetailUri(commodity.getCommodity());
-                        new FavoriteAddorRemoveAsyncTask(v.getContext(), shouldAdd).execute(commodity.getId());
-                        animateFavoriteSelect(vh, shouldAdd);
-                        if (!shouldAdd) {
-                            Snackbar.make(v, R.string.fav_removed, Snackbar.LENGTH_LONG)
-                                    .setAction(R.string.undo, new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            new FavoriteAddorRemoveAsyncTask(v.getContext(),
-                                                    true)
-                                                    .execute(commodity.getId());
-                                            animateFavoriteSelect(vh, true);
+                        commodity.setFavorite(!commodity.isFavorite());
+
+                        new FavoriteAddorRemoveAsyncTask(v.getContext(), commodity.isFavorite()).execute(commodity.getId());
+                        animateFavoriteSelect(vh, commodity.isFavorite());
+
+                        Snackbar.make(v,
+                                commodity.isFavorite() ? R.string.fav_added : R.string.fav_removed,
+                                Snackbar.LENGTH_LONG)
+                                .setAction(R.string.undo, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        commodity.setFavorite(!commodity.isFavorite());
+                                        new FavoriteAddorRemoveAsyncTask(v.getContext(),
+                                                commodity.isFavorite())
+                                                .execute(commodity.getId());
+                                        if (vh.getAdapterPosition() != NO_POSITION) {
+                                            vh.mFav.setSelected(commodity.isFavorite());
                                         }
-                                    }).show();
-                        } else {
-                            Snackbar.make(v, R.string.fav_added, Snackbar.LENGTH_SHORT)
-                                    .setAction(R.string.undo, new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            new FavoriteAddorRemoveAsyncTask(v.getContext(),
-                                                    false)
-                                                    .execute(commodity.getId());
-                                            animateFavoriteSelect(vh, false);
-                                        }
-                                    }).show();
-                        }
+                                    }
+                                })
+                                .show();
                     }
                 }
             });
@@ -157,7 +151,7 @@ public class RecyclerViewUtil {
             // TODO: animate the icon fill instead of the zoom animation below
             holder.mFav.setSelected(shouldSelect);
 
-            if(shouldSelect) {
+            if(shouldSelect && Utils.isAPI21Plus()) { // not animating in api <21 due to cost of no render thread
                 holder.mFav.animate().scaleX(1.3f).scaleY(1.3f).setDuration(100).withEndAction(new Runnable() {
                     @Override
                     public void run() {
@@ -233,7 +227,7 @@ public class RecyclerViewUtil {
             return mCommodityList.get(position).getId();
         }
 
-        void setList(List<Commodity> commodityList) {
+        public void setList(List<Commodity> commodityList) {
             if (mCommodityList != null) {
                 mCommodityList.clear();
                 mCommodityList.addAll(commodityList);

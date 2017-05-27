@@ -98,6 +98,10 @@ public class Commodity {
         return isFavorite;
     }
 
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
     public static Commodity fromCursor(Cursor cursor) {
         Double maxPriceDouble = Double.valueOf(cursor.getString(COL_MAX_PRICE));
         Double modalPriceDouble = Double.valueOf(cursor.getString(COL_MODAL_PRICE));
