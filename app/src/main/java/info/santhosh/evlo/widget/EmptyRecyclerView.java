@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.ref.WeakReference;
-
 /**
  * Created by santhoshvai on 24/11/2016.
  */
@@ -22,7 +20,7 @@ public class EmptyRecyclerView extends RecyclerView {
 
     private static final String TAG = "EmptyRecyclerView";
     public View mEmptyView;
-    private WeakReference<SetEmptyViewCallback> mSetEmptyViewCallbackWeakReference = new WeakReference<>(null);
+    private SetEmptyViewCallback mSetEmptyViewCallback;
 
     private boolean shouldAnimate = false;
 
@@ -36,6 +34,12 @@ public class EmptyRecyclerView extends RecyclerView {
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
             super.onItemRangeChanged(positionStart, itemCount);
+            updateEmptyView();
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+            super.onItemRangeChanged(positionStart, itemCount, payload);
             updateEmptyView();
         }
 
@@ -80,7 +84,7 @@ public class EmptyRecyclerView extends RecyclerView {
     }
 
     public void setEmptyViewCallback(SetEmptyViewCallback setEmptyViewCallback) {
-        this.mSetEmptyViewCallbackWeakReference = new WeakReference<>(setEmptyViewCallback);
+        this.mSetEmptyViewCallback = setEmptyViewCallback;
     }
 
     @Override
@@ -108,11 +112,8 @@ public class EmptyRecyclerView extends RecyclerView {
             mEmptyView.setVisibility(showEmptyView ? VISIBLE : GONE);
             setVisibility(showEmptyView ? GONE : VISIBLE);
 
-            if (showEmptyView && mSetEmptyViewCallbackWeakReference != null) {
-                final SetEmptyViewCallback emptyViewCallback = mSetEmptyViewCallbackWeakReference.get();
-                if (emptyViewCallback != null) {
-                    emptyViewCallback.setEmptyView(mEmptyView);
-                }
+            if (showEmptyView && mSetEmptyViewCallback != null) {
+                mSetEmptyViewCallback.setEmptyView(mEmptyView);
             }
         } else if (mEmptyView == null){
             Log.e(TAG, "Empty view should be set before setting the adapter");

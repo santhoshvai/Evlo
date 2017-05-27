@@ -7,8 +7,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 
-import java.lang.ref.WeakReference;
-
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.ui.TransformingToolbar;
 
@@ -17,7 +15,7 @@ import info.santhosh.evlo.ui.TransformingToolbar;
  */
 public class Searchbar extends TransformingToolbar {
 
-    WeakReference<onTextChanged> mOnTextChangedWeakReference;
+    OnTextChangedCallback mOnTextChangedCallback;
 
     public Searchbar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -37,8 +35,7 @@ public class Searchbar extends TransformingToolbar {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                final onTextChanged onTextChanged = mOnTextChangedWeakReference.get();
-                if (onTextChanged != null) onTextChanged.onSearchChange(s);
+                if (mOnTextChangedCallback != null) mOnTextChangedCallback.onSearchChange(s);
             }
 
             @Override
@@ -58,11 +55,11 @@ public class Searchbar extends TransformingToolbar {
         ((EditText) findViewById(R.id.toolbar_search_edittext)).setText(null);
     }
 
-    public void setTextChangedListener(onTextChanged onTextChanged) {
-        mOnTextChangedWeakReference = new WeakReference<>(onTextChanged);
+    public void setTextChangedListener(OnTextChangedCallback OnTextChangedCallback) {
+        mOnTextChangedCallback = OnTextChangedCallback;
     }
 
-    interface onTextChanged {
+    interface OnTextChangedCallback {
         void onSearchChange(CharSequence s);
     }
 

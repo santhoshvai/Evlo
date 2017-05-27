@@ -52,7 +52,7 @@ import static info.santhosh.evlo.ui.search.SearchActivity.CommodityName.COMMODIT
  */
 
 public class SearchActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor>, Searchbar.onTextChanged {
+        implements LoaderManager.LoaderCallbacks<Cursor>, Searchbar.OnTextChangedCallback, EmptyRecyclerView.SetEmptyViewCallback {
 
     private Searchbar mSearchBar;
     private boolean mTwoPane;
@@ -95,11 +95,13 @@ public class SearchActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         mSearchBar.setTextChangedListener(this);
+        mRecyclerView.setEmptyViewCallback(this);
     }
 
     @Override
     protected void onStop() {
         mSearchBar.setTextChangedListener(null);
+        mRecyclerView.setEmptyViewCallback(null);
         super.onStop();
     }
 
@@ -113,8 +115,18 @@ public class SearchActivity extends AppCompatActivity
         }
         mFilterSearch = query;
         mRecyclerView.scrollToPosition(0);
-        mRecyclerView.updateEmptyView();
+        if (mCommodityAdapter.getItemCount() == 0) {
+            // none of the data may change in the adapter
+            mRecyclerView.updateEmptyView();
+        }
         getSupportLoaderManager().restartLoader(COMMODITY_NAME_LOADER, args, SearchActivity.this);
+    }
+
+    @Override
+    public void setEmptyView(View emptyView) {
+        if(!TextUtils.isEmpty(mFilterSearch)) { // search did not yield results
+            ((TextView) emptyView).setText(getString(R.string.no_search_results, mFilterSearch));
+        }
     }
 
     private void setupRecyclerView() {
