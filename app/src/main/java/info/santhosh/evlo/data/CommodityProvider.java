@@ -300,8 +300,6 @@ public class CommodityProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case COMMODITY_DATA:
-                if (values.length == 0) return 0;
-
                 db.beginTransaction();
 
                 // update sql string

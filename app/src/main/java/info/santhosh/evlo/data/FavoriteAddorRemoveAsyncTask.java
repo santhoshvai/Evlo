@@ -31,12 +31,11 @@ public class FavoriteAddorRemoveAsyncTask extends AsyncTask<Integer, Void, Boole
 
     @Override
     protected Boolean doInBackground(Integer... params) {
-        WriteDb writeDb = new WriteDb(mApplicationContext);
         boolean success;
         if(mIsAdd) {
-            success = writeDb.addUsingCommoditiesFavId(params[0]) != null;
+            success = WriteDb.addUsingCommoditiesFavId(mApplicationContext, params[0]) != null;
         } else {
-            success = writeDb.removeUsingCommoditiesFavId(params[0]) != 0;
+            success = WriteDb.removeUsingCommoditiesFavId(mApplicationContext, params[0]) != 0;
         }
 
         if(mUri != null && success) {

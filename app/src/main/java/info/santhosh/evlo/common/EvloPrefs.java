@@ -1,0 +1,48 @@
+package info.santhosh.evlo.common;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import java.util.Date;
+
+/**
+ * Created by santhoshvai on 28/05/17.
+ */
+
+public class EvloPrefs {
+
+    private static final String GENERAL_PREFERENCES_KEY = "general_preferences_key";
+    private static final String LAST_ROW_ORDER = "last_row_order";
+    private static final String LAST_ARRIVAL_DATE = "last_arrival_date";
+    private static final String TAG = "EvloPrefs";
+
+    private EvloPrefs() {}
+
+    private static SharedPreferences generalPreferences(Context context) {
+        return context.getSharedPreferences(GENERAL_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
+
+    public static int getLastRowOrder(Context context) {
+        // <Table diffgr:id="Table43" msdata:rowOrder="42">
+        // (roworder starts from 0, but id starts from 1)
+        return generalPreferences(context).getInt(LAST_ROW_ORDER, -1);
+    }
+
+    public static void setLastRowOrder(Context context, int rowOrder) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putInt(LAST_ROW_ORDER, rowOrder);
+        editor.apply();
+    }
+
+    public static Date getLastArrivalDate(Context context) {
+        // <Arrival_Date>28/05/2017</Arrival_Date>
+        String s = generalPreferences(context).getString(LAST_ARRIVAL_DATE, null);
+        return Utils.convertArrivalDate(s);
+    }
+
+    public static void setLastArrivalDate(Context context, String arrivalDate) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putString(LAST_ARRIVAL_DATE, arrivalDate);
+        editor.apply();
+    }
+}

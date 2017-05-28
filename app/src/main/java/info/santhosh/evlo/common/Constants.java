@@ -8,4 +8,7 @@ import java.text.DecimalFormat;
 
 public class Constants {
     public static final DecimalFormat IndianCurrencyFormat = new DecimalFormat("##,##,###");
+
+    private Constants() {
+    }
 }

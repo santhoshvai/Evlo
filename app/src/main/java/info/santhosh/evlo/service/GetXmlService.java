@@ -41,7 +41,7 @@ public class GetXmlService  extends IntentService {
             final String responseXml = response.body().string(); // get the xml string
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;
-            Log.d(TAG, "elapsedTime to get xml from network: " + Long.toString(elapsedTime) );
+            Log.d(TAG, "elapsedTime to get xml from network (ms): " + elapsedTime );
 
             startTime = System.currentTimeMillis();
             Serializer serializer = new Persister(new AnnotationStrategy());
@@ -49,15 +49,14 @@ public class GetXmlService  extends IntentService {
 //            Log.d(TAG, envelope.getList().getList().get(0).toString());
             stopTime = System.currentTimeMillis();
             elapsedTime = stopTime - startTime;
-            Log.d(TAG, "elapsedTime to parse data: " + Long.toString(elapsedTime) );
+            Log.d(TAG, "elapsedTime to parse data (ms): " + elapsedTime);
             startTime = System.currentTimeMillis();
 
-            WriteDb writeDb = new WriteDb(getApplicationContext());
-            writeDb.usingCommoditiesList(envelope.getCommodities().getList());
+            WriteDb.usingCommoditiesList(this, envelope.getCommodities().getList());
 
             stopTime = System.currentTimeMillis();
             elapsedTime = stopTime - startTime;
-            Log.d(TAG, "elapsedTime to write data: " + Long.toString(elapsedTime) );
+            Log.d(TAG, "elapsedTime to write data (ms): " + elapsedTime);
         } catch(Exception e) {
             e.printStackTrace();
             Log.e(TAG, e.getClass().getSimpleName()+ ": "+ e.getLocalizedMessage());

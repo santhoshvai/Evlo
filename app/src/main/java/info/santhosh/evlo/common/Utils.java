@@ -8,11 +8,18 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import info.santhosh.evlo.R;
 
@@ -20,6 +27,8 @@ import info.santhosh.evlo.R;
  * Created by santhoshvai on 09/05/16.
  */
 public class Utils {
+
+    private static final String TAG = "Utils";
 
     private static int screenWidth = 0;
     private static int screenHeight = 0;
@@ -111,6 +120,16 @@ public class Utils {
 
     public static boolean isAPI21Plus() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    public static Date convertArrivalDate(String s) {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        try {
+            return df.parse(s);
+        } catch(ParseException e) {
+            Log.e(TAG, "cannot parse date in the prefs: " + s, e);
+        }
+        return null;
     }
 
 }
