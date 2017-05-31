@@ -20,6 +20,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            versionNameSuffix " Debug"
+        }
+
         release {
             shrinkResources true
             minifyEnabled true
@@ -63,8 +67,12 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
 
+    // job scheduler backkground compatability
+    compile 'com.evernote:android-job:1.1.10'
+
     // ui
     compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
+    compile 'ca.barrenechea.header-decor:header-decor:0.2.8'
 
     // okhttp
     compile "com.squareup.okhttp:okhttp:${okhttpVersion}"
@@ -81,5 +89,4 @@ dependencies {
 
     // stetho - for inspecting networks and sqlite dbs
     debugCompile "com.facebook.stetho:stetho:${stethoVersion}"
-
 }
