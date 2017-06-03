@@ -6,7 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.ui.TransformingToolbar;
+import info.santhosh.evlo.widget.TransformingToolbar;
 
 /**
  * Created by santhoshvai on 07/04/17.

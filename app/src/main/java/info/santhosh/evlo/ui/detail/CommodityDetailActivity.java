@@ -1,5 +1,7 @@
 package info.santhosh.evlo.ui.detail;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -38,11 +40,9 @@ public class CommodityDetailActivity extends AppCompatActivity {
         if (getSupportFragmentManager().findFragmentById(R.id.commodity_detail_container) == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(CommodityDetailFragment.COMMODITY_NAME,
+            Fragment fragment = CommodityDetailFragment.newInstance(
                     getIntent().getStringExtra(CommodityDetailFragment.COMMODITY_NAME));
-            Fragment fragment = new CommodityDetailFragment();
-            fragment.setArguments(arguments);
+
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.commodity_detail_container, fragment)
                     .commit();
@@ -50,6 +50,12 @@ public class CommodityDetailActivity extends AppCompatActivity {
 
         // we set the background for viewgroup in xml, no need for window background
         getWindow().setBackgroundDrawable(null);
+    }
+
+    public static Intent getIntent(Activity activity, String commodityName) {
+        Intent intent = new Intent(activity, CommodityDetailActivity.class);
+        intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
+        return intent;
     }
 
 }

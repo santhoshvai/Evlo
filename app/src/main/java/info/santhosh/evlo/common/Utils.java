@@ -123,6 +123,7 @@ public class Utils {
     }
 
     public static Date convertArrivalDate(String s) {
+        if (s == null) return null;
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         try {
             return df.parse(s);

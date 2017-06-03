@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.Utils;
+import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
 import info.santhosh.evlo.ui.favorites.FavoritesFragment;
 import info.santhosh.evlo.ui.search.SearchActivity;
 
@@ -67,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
+        /// schedule evernote jobs
+        CommodityJob.scheduleJobWhenCharging();
+        CommodityJob.scheduleJobWhenNotChargingWiFiOnly();
+
     }
 
     private void transitionToSearch() {
@@ -75,9 +80,7 @@ public class MainActivity extends AppCompatActivity {
         transition.setDuration(SEARCH_BAR_TRANSITION_DURATION);
         transition.addListener(new Transition.TransitionListener() {
             @Override
-            public void onTransitionStart(@NonNull Transition transition) {
-
-            }
+            public void onTransitionStart(@NonNull Transition transition) {}
 
             @Override
             public void onTransitionEnd(@NonNull Transition transition) {
@@ -92,19 +95,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTransitionCancel(@NonNull Transition transition) {
-
-            }
+            public void onTransitionCancel(@NonNull Transition transition) {}
 
             @Override
-            public void onTransitionPause(@NonNull Transition transition) {
-
-            }
+            public void onTransitionPause(@NonNull Transition transition) {}
 
             @Override
-            public void onTransitionResume(@NonNull Transition transition) {
-
-            }
+            public void onTransitionResume(@NonNull Transition transition) {}
         });
 
         // all we have to do is change the attributes of the toolbar and the TransitionManager animates the changes

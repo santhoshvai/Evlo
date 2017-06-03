@@ -21,11 +21,10 @@ public class EvloApplication extends Application {
     public void onCreate() {
         super.onCreate();
         registerActivityLifecycleCallbacks(EVLO_LIFECYCLE_CALLBACKS);
-
-        DebugUtils.init(this);
-
         JobManager.create(this).addJobCreator(new CommodityJobCreator());
         startService(new Intent(this, GetXmlService.class));
+
+        DebugUtils.init(this);
     }
 
     public static boolean isVisible() {

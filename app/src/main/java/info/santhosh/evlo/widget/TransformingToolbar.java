@@ -1,4 +1,4 @@
-package info.santhosh.evlo.ui;
+package info.santhosh.evlo.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

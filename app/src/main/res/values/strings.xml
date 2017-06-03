@@ -6,7 +6,8 @@
     <string name="search_hint">Search Commodities</string>
     <string name="action_refresh">Refresh data</string>
     <string name="rupee_symbol">\u20B9</string>
-    <string name="modal_price">\u20B9 %1$s</string>
+    <string name="rupee_price">\u20B9 %1$s</string>
+    <string name="rupee_price_with_unit">\u20B9 %1$s per 100kg*</string>
     <string name="market">%1$s market, %2$s district</string>
     <string name="share_data">%1$s,\n%2$s variety,\n\u20B9 %3$s per 100kg,\n%4$s market, %5$s district,\n %6$s </string>
     <string name="variety">%1$s variety</string>
@@ -31,4 +32,9 @@
     <string name="Connect_internet">Connect to the internet</string>
     <string name="loading">Data is being loaded</string>
     <string name="unit_of_price">per 100kg*</string>
+    <string name="arrival_header">Arrival Date : </string>
+    <string name="max_price_header">Maximum Price : </string>
+    <string name="min_price_header">Minimum Price : </string>
+    <string name="modal_price_header">Modal Price : </string>
+    <string name="faq">FAQ</string>
 </resources>

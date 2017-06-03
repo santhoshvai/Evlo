@@ -1,9 +1,13 @@
 package info.santhosh.evlo.service;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 import android.util.Log;
 
+import com.evernote.android.job.Job;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -29,15 +33,27 @@ public class GetXmlService  extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        final Job.Result result = synchronousRequest(this);
+        if (result.equals(Job.Result.RESCHEDULE)) {
+            // reschedule ASAP
+        }
+    }
+
+    @WorkerThread
+    public static Job.Result synchronousRequest(@NonNull Context context) {
+        Log.d(TAG, "START synchronousRequest");
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url( getApplicationContext().getResources().getString(R.string.price_xml_url) )
+                .url( context.getResources().getString(R.string.price_xml_url) )
                 .build();
 
         try{
             long startTime = System.currentTimeMillis();
-            Response response = client.newCall(request).execute(); // synchronous
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                return Job.Result.RESCHEDULE;
+            }
             final String responseXml = response.body().string(); // get the xml string
             long stopTime = System.currentTimeMillis();
             long elapsedTime = stopTime - startTime;
@@ -52,14 +68,16 @@ public class GetXmlService  extends IntentService {
             Log.d(TAG, "elapsedTime to parse data (ms): " + elapsedTime);
             startTime = System.currentTimeMillis();
 
-            WriteDb.usingCommoditiesList(this, envelope.getCommodities().getList());
-
+            WriteDb.usingCommoditiesList(context, envelope.getCommodities().getList());
             stopTime = System.currentTimeMillis();
             elapsedTime = stopTime - startTime;
             Log.d(TAG, "elapsedTime to write data (ms): " + elapsedTime);
+
+            return Job.Result.SUCCESS;
         } catch(Exception e) {
             e.printStackTrace();
             Log.e(TAG, e.getClass().getSimpleName()+ ": "+ e.getLocalizedMessage());
+            return Job.Result.RESCHEDULE;
         }
     }
 }

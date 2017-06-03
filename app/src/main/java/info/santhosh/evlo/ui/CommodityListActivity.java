@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
@@ -30,12 +31,12 @@ import android.widget.TextView;
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ColorUtil;
-import info.santhosh.evlo.ui.detail.CommodityDetailActivity;
-import info.santhosh.evlo.ui.detail.CommodityDetailFragment;
-import info.santhosh.evlo.widget.EmptyRecyclerView;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.service.GetXmlService;
+import info.santhosh.evlo.ui.detail.CommodityDetailActivity;
+import info.santhosh.evlo.ui.detail.CommodityDetailFragment;
+import info.santhosh.evlo.widget.EmptyRecyclerView;
 
 import static android.support.v7.widget.RecyclerView.NO_POSITION;
 
@@ -365,7 +366,7 @@ public class CommodityListActivity extends AppCompatActivity
                             }
                             mCursor.moveToPosition(position);
                             final String commodityName = mCursor.getString(CommodityListActivity.COL_COMMODITY_NAME);
-                            mItemClickListener.onClick(commodityName, mContext);
+                            mItemClickListener.onClick(commodityName);
                         }
                     }
                 });
@@ -443,24 +444,20 @@ public class CommodityListActivity extends AppCompatActivity
      * The click listener for the recycler view items
      */
     private class ItemClickListener {
-        void onClick(String commodityName, Context context) {
+        void onClick(String commodityName) {
             // move to the detail activity/fragment
             if (mTwoPane) {
-                Bundle arguments = new Bundle();
-                arguments.putString(CommodityDetailFragment.COMMODITY_NAME, commodityName);
-                CommodityDetailFragment fragment = new CommodityDetailFragment();
-                fragment.setArguments(arguments);
+                Fragment fragment = CommodityDetailFragment.newInstance(commodityName);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.commodity_detail_container, fragment)
                         .commit();
                 Utils.hideSoftKeyboard(CommodityListActivity.this);
             } else {
-                Intent intent = new Intent(context, CommodityDetailActivity.class);
-                intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
-                context.startActivity(intent);
+                startActivity(CommodityDetailActivity.getIntent(CommodityListActivity.this, commodityName));
             }
         }
     }
+
 
     // called when we come back through up button, as we are in "singleTop" mode.
     @Override

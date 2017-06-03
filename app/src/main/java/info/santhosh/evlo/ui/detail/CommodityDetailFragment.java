@@ -9,8 +9,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +32,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,18 +60,23 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
     private static final String TAG = "CommodityDetailFragment";
 
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
-    public static final String COMMODITY_NAME = "commodity_name";
+    static final String COMMODITY_NAME = "commodity_name";
 
     private static final int COMMODITY_DETAIL_LOADER = 1;
 
     private String mCommodityName;
     private CommodityDetailAdapter mCommodityDetailAdapter;
+    RecyclerView mRecyclerView;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityDetailFragment.recycler.layout";
+
+    public static CommodityDetailFragment newInstance(String commodityName) {
+        Bundle arguments = new Bundle();
+        arguments.putString(COMMODITY_NAME, commodityName);
+        CommodityDetailFragment fragment = new CommodityDetailFragment();
+        fragment.setArguments(arguments);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,15 +94,15 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         }
 
         View rootView = inflater.inflate(R.layout.fragment_commodity_detail, container, false);
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.commodity_detail_list);
-        recyclerView.setAdapter(mCommodityDetailAdapter);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.commodity_detail_list);
+        mRecyclerView.setAdapter(mCommodityDetailAdapter);
         // set item decoration
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 LinearLayoutManager.VERTICAL);
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(recyclerView.getContext(), R.drawable.divider_grey));
-        recyclerView.addItemDecoration(dividerItemDecoration);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_grey));
+        mRecyclerView.addItemDecoration(dividerItemDecoration);
         // header
-        recyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter), 1);
+        mRecyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter), 1);
 
         return rootView;
     }
@@ -99,19 +110,18 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.commodity_detail_list);
         if(savedInstanceState != null)
         {
             Parcelable savedRecyclerLayoutState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
-            recyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(savedRecyclerLayoutState);
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        RecyclerView recyclerView = (RecyclerView) getView().findViewById(R.id.commodity_detail_list);
-        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
+        mRecyclerView = (RecyclerView) getView().findViewById(R.id.commodity_detail_list);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
     }
 
     @Override
@@ -136,21 +146,40 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mCommodityDetailAdapter.setList(null);
     }
 
-    static class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
+    class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
             StickyHeaderAdapter<CommodityDetailAdapter.HeaderHolder> {
 
         private List<Commodity> mCommodityList = null;
         private Map<String, Integer> mVarietyToHeaderId;
+        private int mIsExpandedPosition = -1;
+        final DateFormat mDateInstance;
 
-        static class ViewHolder extends RecyclerView.ViewHolder {
+        CommodityDetailAdapter() {
+            mDateInstance = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        }
+
+        /**
+         * The ConstraintSet to use for the normal initial state
+         */
+        private ConstraintSet mConstraintSetNormal = new ConstraintSet();
+        /**
+         * ConstraintSet to be applied on the normal ConstraintLayout to make the Image bigger.
+         */
+        private ConstraintSet mConstraintSetBig = new ConstraintSet();
+
+        class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mModalPrice;
             final TextView mState;
             final TextView mMarket;
             final TextView mFav;
             final TextView mShare;
+            final TextView mDetail;
+            final TextView mArrivalDate;
+            final TextView mMaxPrice;
+            final TextView mMinPrice;
 
             ViewHolder(View view) {
                 super(view);
@@ -159,10 +188,14 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
                 this.mFav = (TextView) view.findViewById(R.id.favorite_icon);
                 this.mShare = (TextView) view.findViewById(R.id.share_icon);
+                this.mDetail = (TextView) view.findViewById(R.id.details_icon);
+                this.mArrivalDate = (TextView) view.findViewById(R.id.text_arrival_date);
+                this.mMaxPrice = (TextView) view.findViewById(R.id.text_max_price);
+                this.mMinPrice = (TextView) view.findViewById(R.id.text_min_price);
             }
         }
 
-        static class HeaderHolder extends RecyclerView.ViewHolder {
+        class HeaderHolder extends RecyclerView.ViewHolder {
             final TextView mVariety;
 
             HeaderHolder(View itemView) {
@@ -186,10 +219,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         @Override
         public void onBindHeaderViewHolder(HeaderHolder headerHolder, int position) {
             Commodity commodity = mCommodityList.get(position);
-            final String variety =
-                    commodity.getVariety().equalsIgnoreCase(commodity.getCommodity())?
-                    headerHolder.itemView.getContext().getString(R.string.Normal_variety) :
-                    commodity.getVariety();
+            final String variety = commodity.getVariety();
             headerHolder.mVariety.setText(
                     headerHolder.itemView.getContext().getString(R.string.variety, variety));
         }
@@ -198,6 +228,8 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         public CommodityDetailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.commodity_detail_card_row, parent, false);
+            mConstraintSetNormal.clone((ConstraintLayout) view);
+            mConstraintSetBig.load(parent.getContext(), R.layout.commodity_detail_card_row_more);
             final CommodityDetailAdapter.ViewHolder vh = new ViewHolder(view);
             vh.mFav.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -247,13 +279,24 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                         final String district = commodity.getDistrict();
                         final String market = commodity.getMarket();
                         final String state = commodity.getState();
-                        final String variety = commodity.getVariety().equalsIgnoreCase(commodityName)? "Normal": commodity.getVariety();
+                        final String variety = commodity.getVariety();
                         String share = v.getContext().getResources().getString(R.string.share_data,
                                 commodityName, variety, modalPrice, market, district, state);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, share);
                         sendIntent.setType("text/plain");
                         vh.itemView.getContext().startActivity(Intent.createChooser(sendIntent,
                                 res.getString(R.string.share_heading)));
+                    }
+                }
+            });
+            vh.mDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = vh.getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        mIsExpandedPosition = (pos == mIsExpandedPosition) ? -1 : pos;
+                        TransitionManager.beginDelayedTransition(mRecyclerView);
+                        notifyDataSetChanged();
                     }
                 }
             });
@@ -297,20 +340,41 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             final String market = commodity.getMarket();
             final String state = commodity.getState();
             // variety name given is same as commodityName, then replace it as Normal
-            final String variety = commodity.getVariety().equalsIgnoreCase(commodityName)?
-                    holder.itemView.getContext().getString(R.string.Normal_variety) :
-                    commodity.getVariety();
+            final String variety = commodity.getVariety();
             final String nameAndVariety = res.getString(R.string.commodity_name_and_variety, commodityName, variety);
 
             holder.mFav.setSelected(commodity.isFavorite());
-
-            String modal_price_text = res.getString(R.string.modal_price, modalPrice);
             String market_text = res.getString(R.string.market, market, district);
-            holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
             holder.mMarket.setText(market_text);
             holder.mState.setText(state);
 
-            // TODO: (More Button to show details) https://stackoverflow.com/questions/41464629/expand-collapse-animation-in-cardview
+            // (More Button to show details) https://stackoverflow.com/questions/41464629/expand-collapse-animation-in-cardview
+            String modal_price_text;
+            boolean isExpanded = position == mIsExpandedPosition;
+
+            if (isExpanded) {
+                final String maxPrice = res.getString(R.string.rupee_price_with_unit, commodity.getMax_Price());
+                final String minPrice = res.getString(R.string.rupee_price_with_unit, commodity.getMin_Price());
+                modal_price_text = res.getString(R.string.rupee_price_with_unit, modalPrice);
+                final String arrivalDate = mDateInstance.format(Utils.convertArrivalDate(commodity.getArrival_Date()));
+                holder.mArrivalDate.setText(arrivalDate);
+                holder.mMaxPrice.setText(maxPrice);
+                holder.mMinPrice.setText(minPrice);
+
+                AnimatedVectorDrawableCompat drawable = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
+                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+                drawable.start();
+
+                mConstraintSetBig.applyTo((ConstraintLayout) holder.itemView);
+            } else {
+                modal_price_text = res.getString(R.string.rupee_price, modalPrice);
+                AnimatedVectorDrawableCompat drawable = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_up_arrow);
+                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+
+                mConstraintSetNormal.applyTo((ConstraintLayout) holder.itemView);
+            }
+
+            holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
         }
 
         @Override
@@ -330,7 +394,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         }
 
         public void setList(List<Commodity> commodityList) {
-            if (mCommodityList != null) {
+            if (mCommodityList != null && commodityList != null) {
                 mCommodityList.clear();
                 mCommodityList.addAll(commodityList);
             }

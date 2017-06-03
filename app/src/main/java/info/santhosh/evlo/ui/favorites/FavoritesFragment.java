@@ -66,6 +66,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         commodityFavAdapter = new CommodityDetailAdapter();
         getLoaderManager().initLoader(COMMODITY_FAV_LOADER, null, this);
         mRecyclerView = (EmptyRecyclerView) rootView.findViewById(R.id.fav_rv);
+        mRecyclerView.setProgressView(rootView.findViewById(R.id.progressBar));
         mRecyclerView.setEmptyView(rootView.findViewById(R.id.bookmark_empty));
         mRecyclerView.setAdapter(commodityFavAdapter);
         mRecyclerView.setShouldAnimate(true);
@@ -118,7 +119,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        new CursorToListAsyncTask(data, commodityFavAdapter).execute();
+        new CursorToListAsyncTask(data, this).execute();
     }
 
     @Override
@@ -164,30 +165,32 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                     if (pos != RecyclerView.NO_POSITION) {
                         // user removed from favs
                         final Commodity commodity = mCommodityList.get(pos);
-                        commodity.setFavorite(false);
-                        vh.mFav.setSelected(false);
+                        if (commodity.isFavorite()) {
+                            commodity.setFavorite(false);
+                            vh.mFav.setSelected(false);
 
-                        Snackbar.make(v, R.string.fav_removed, Snackbar.LENGTH_LONG)
-                                .setAction(R.string.undo, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        commodity.setFavorite(true);
-                                        vh.mFav.setSelected(true);
-                                    }
-                                })
-                                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                    @Override
-                                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                                        super.onDismissed(transientBottomBar, event);
-                                        if (!commodity.isFavorite()) {
-                                            new FavoriteAddorRemoveAsyncTask(
-                                                    transientBottomBar.getContext(),
-                                                    false)
-                                                    .execute(commodity.getId());
+                            Snackbar.make(v, R.string.fav_removed, Snackbar.LENGTH_LONG)
+                                    .setAction(R.string.undo, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            commodity.setFavorite(true);
+                                            vh.mFav.setSelected(true);
                                         }
-                                    }
-                                })
-                                .show();
+                                    })
+                                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                                        @Override
+                                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                                            super.onDismissed(transientBottomBar, event);
+                                            if (!commodity.isFavorite()) {
+                                                new FavoriteAddorRemoveAsyncTask(
+                                                        transientBottomBar.getContext(),
+                                                        false)
+                                                        .execute(commodity.getId());
+                                            }
+                                        }
+                                    })
+                                    .show();
+                        }
                     }
                 }
             });
@@ -206,9 +209,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                         final String district = commodity.getDistrict();
                         final String market = commodity.getMarket();
                         final String state = commodity.getState();
-                        final String variety = commodity.getVariety().equalsIgnoreCase(commodityName)?
-                                v.getContext().getString(R.string.Normal_variety) :
-                                commodity.getVariety();
+                        final String variety = commodity.getVariety();
                         String share = v.getContext().getResources().getString(R.string.share_data,
                                 commodityName, variety, modalPrice, market, district, state);
                         sendIntent.putExtra(Intent.EXTRA_TEXT, share);
@@ -258,13 +259,11 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             final String market = commodity.getMarket();
             final String state = commodity.getState();
             // variety name given is same as commodityName, then replace it as Normal
-            final String variety = commodity.getVariety().equalsIgnoreCase(commodityName)?
-                    holder.itemView.getContext().getString(R.string.Normal_variety) :
-                    commodity.getVariety();
+            final String variety = commodity.getVariety();
 
             holder.mFav.setSelected(commodity.isFavorite());
 
-            String modal_price_text = res.getString(R.string.modal_price, modalPrice);
+            String modal_price_text = res.getString(R.string.rupee_price, modalPrice);
             String market_text = res.getString(R.string.market, market, district);
             holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
             holder.mMarket.setText(market_text);
@@ -291,7 +290,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         public void setList(List<Commodity> commodityList) {
-            if (mCommodityList != null) {
+            if (mCommodityList != null && commodityList != null) {
                 mCommodityList.clear();
                 mCommodityList.addAll(commodityList);
             }
@@ -357,19 +356,19 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<Commodity>>> {
         Cursor mCursor;
-        WeakReference<CommodityDetailAdapter> commodityAdapterWeakReference;
+        WeakReference<FavoritesFragment> favoritesFragmentWeakReference;
 
-        CursorToListAsyncTask(Cursor cursor, CommodityDetailAdapter commodityDetailAdapter) {
+        CursorToListAsyncTask(Cursor cursor, FavoritesFragment favoritesFragment) {
             mCursor = cursor;
-            commodityAdapterWeakReference = new WeakReference<>(commodityDetailAdapter);
+            favoritesFragmentWeakReference = new WeakReference<>(favoritesFragment);
         }
 
         @Override
         protected Pair<DiffUtil.DiffResult, ArrayList<Commodity>> doInBackground(String... params) {
-            CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
-            if(commodityDetailAdapter == null) return null;
+            FavoritesFragment favoritesFragment = favoritesFragmentWeakReference.get();
+            if(favoritesFragment == null) return null;
 
-            final List<Commodity> oldCommodityList = commodityDetailAdapter.getList();
+            final List<Commodity> oldCommodityList = favoritesFragment.commodityFavAdapter.getList();
             ArrayList<Commodity> newCommodityList = new ArrayList<>(mCursor.getCount());
 
             mCursor.moveToFirst();
@@ -384,11 +383,12 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
         @Override
         protected void onPostExecute(Pair<DiffUtil.DiffResult, ArrayList<Commodity>> pair) {
-            CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
-            if(commodityDetailAdapter == null) return;
+            FavoritesFragment favoritesFragment = favoritesFragmentWeakReference.get();
+            if(favoritesFragment == null) return;
 
-            commodityDetailAdapter.setList(pair.second);
-            pair.first.dispatchUpdatesTo(commodityDetailAdapter);
+            favoritesFragment.mRecyclerView.hideProgressView();
+            favoritesFragment.commodityFavAdapter.setList(pair.second);
+            pair.first.dispatchUpdatesTo(favoritesFragment.commodityFavAdapter);
         }
     }
 }

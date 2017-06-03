@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.ui.TransformingToolbar;
+import info.santhosh.evlo.widget.TransformingToolbar;
 
 /**
  * A Toolbar with an EditText used for searching

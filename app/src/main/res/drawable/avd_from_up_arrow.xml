@@ -1,0 +1,10 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="NewApi"
+    android:drawable="@drawable/ic_expand_more_grey">
+
+    <target
+        android:name="arrow"
+        android:animation="@animator/rotate_up_arrow_to_down" />
+
+</animated-vector>

@@ -19,7 +19,8 @@ import android.view.ViewGroup;
 public class EmptyRecyclerView extends RecyclerView {
 
     private static final String TAG = "EmptyRecyclerView";
-    public View mEmptyView;
+    private View mEmptyView;
+    private View mProgressView;
     private SetEmptyViewCallback mSetEmptyViewCallback;
 
     private boolean shouldAnimate = false;
@@ -96,7 +97,12 @@ public class EmptyRecyclerView extends RecyclerView {
             adapter.registerAdapterDataObserver(mDataObserver);
         }
         super.setAdapter(adapter);
-        updateEmptyView();
+
+        if (mProgressView != null) {
+            mProgressView.setVisibility(VISIBLE);
+        } else {
+            updateEmptyView();
+        }
     }
 
     public void setShouldAnimate(boolean shouldAnimate) {
@@ -117,6 +123,23 @@ public class EmptyRecyclerView extends RecyclerView {
             }
         } else if (mEmptyView == null){
             Log.e(TAG, "Empty view should be set before setting the adapter");
+        }
+    }
+
+    public void setProgressView(View progressView) {
+        mProgressView = progressView;
+    }
+
+    public void hideProgressView() {
+        if (mProgressView != null) {
+            mProgressView.setVisibility(GONE);
+        }
+        updateEmptyView();
+    }
+
+    public void showProgressView() {
+        if (mProgressView != null) {
+            mProgressView.setVisibility(VISIBLE);
         }
     }
 

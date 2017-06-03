@@ -14,16 +14,16 @@
         android:layout_marginTop="8dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:paddingEnd="20dp"
+        android:paddingEnd="24dp"
         android:paddingLeft="0dp"
-        android:paddingRight="20dp"
+        android:paddingRight="24dp"
         android:paddingStart="0dp"
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Arecal betlanut long text lonnng long long long long text lonnng long long long long text lonnng long long long" />
+        tools:text="Arecal betlanut  long long long long  long long long long  long long long long  long long long long" />
 
     <TextView
         android:id="@+id/text_modal_price"
@@ -63,7 +63,8 @@
         android:paddingStart="0dp"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/text_variety"
-        tools:text="Chirala market, Prakasam district" />
+        tools:text="Chirala market, Prakasam district lonwer"
+        app:layout_constraintRight_toLeftOf="@+id/text_unit_price" />
 
     <TextView
         android:id="@+id/text_state_name"

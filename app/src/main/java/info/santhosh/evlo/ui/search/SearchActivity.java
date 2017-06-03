@@ -2,12 +2,12 @@ package info.santhosh.evlo.ui.search;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
@@ -132,6 +132,7 @@ public class SearchActivity extends AppCompatActivity
     private void setupRecyclerView() {
         mCommodityAdapter = new CommodityAdapter(this, "");
         mRecyclerView = (EmptyRecyclerView) findViewById(R.id.commodity_list);
+        mRecyclerView.setProgressView(findViewById(R.id.progressBarSearch));
         mRecyclerView.setEmptyView(findViewById(R.id.empty_text_view));
         mRecyclerView.setEmptyViewCallback(new EmptyRecyclerView.SetEmptyViewCallback() {
             @Override
@@ -152,6 +153,7 @@ public class SearchActivity extends AppCompatActivity
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mRecyclerView.showProgressView();
         // Sort order:  Ascending, by name.
         // TODO: sort by recently used
         String sortOrder = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME + " ASC";
@@ -179,7 +181,7 @@ public class SearchActivity extends AppCompatActivity
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        new CursorToListAsyncTask(data, mCommodityAdapter, mFilterSearch).execute();
+        new CursorToListAsyncTask(data, this).execute();
     }
 
     // clean up any references to the now reset Loader data
@@ -451,20 +453,21 @@ public class SearchActivity extends AppCompatActivity
     private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<CommodityName>>> {
 
         Cursor mCursor;
-        WeakReference<CommodityAdapter> commodityAdapterWeakReference;
+        WeakReference<SearchActivity> searchActivityWeakReference;
         String mFilterSearch;
 
-        public CursorToListAsyncTask(Cursor cursor, CommodityAdapter commodityAdapter, String filterSearch) {
+        CursorToListAsyncTask(Cursor cursor, SearchActivity activity) {
             mCursor = cursor;
-            commodityAdapterWeakReference = new WeakReference<>(commodityAdapter);
-            mFilterSearch = filterSearch;
+            searchActivityWeakReference = new WeakReference<>(activity);
+            mFilterSearch = activity.mFilterSearch;
         }
 
         @Override
         protected Pair<DiffUtil.DiffResult, ArrayList<CommodityName>> doInBackground(String... params) {
-            CommodityAdapter commodityAdapter = commodityAdapterWeakReference.get();
-            if(commodityAdapter == null) return null;
-            final List<CommodityName> oldCommodities = commodityAdapter.getList();
+            SearchActivity searchActivity = searchActivityWeakReference.get();
+            if(searchActivity == null) return null;
+
+            final List<CommodityName> oldCommodities = searchActivity.mCommodityAdapter.getList();
             ArrayList<CommodityName> newCommodities = new ArrayList<>(mCursor.getCount());
             mCursor.moveToFirst();
             while(!mCursor.isAfterLast()) {
@@ -473,18 +476,21 @@ public class SearchActivity extends AppCompatActivity
             }
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
                     new CommodityDiffCallback(oldCommodities, newCommodities,
-                            commodityAdapter.getFilterSearch(), mFilterSearch), false);
+                            searchActivity.mCommodityAdapter.getFilterSearch(), mFilterSearch), false);
             return new Pair<>(diffResult, newCommodities);
             // cursor close is handled by the cursor loader
         }
 
         @Override
         protected void onPostExecute(Pair<DiffUtil.DiffResult, ArrayList<CommodityName>> pair) {
-            CommodityAdapter commodityAdapter = commodityAdapterWeakReference.get();
-            if(commodityAdapter == null) return;
-            commodityAdapter.setList(pair.second);
-            commodityAdapter.setmFilterSearch(mFilterSearch);
-            pair.first.dispatchUpdatesTo(commodityAdapter);
+            SearchActivity searchActivity = searchActivityWeakReference.get();
+            if(searchActivity == null) return;
+
+            // TODO: the empty check is to not hide the bar on the first ever search fragment call, what if the user had no internet and nothing is displayed?
+            if (!pair.second.isEmpty()) searchActivity.mRecyclerView.hideProgressView();
+            searchActivity.mCommodityAdapter.setList(pair.second);
+            searchActivity.mCommodityAdapter.setmFilterSearch(mFilterSearch);
+            pair.first.dispatchUpdatesTo(searchActivity.mCommodityAdapter);
         }
     }
 
@@ -495,18 +501,13 @@ public class SearchActivity extends AppCompatActivity
         void onClick(String commodityName) {
             // move to the detail activity/fragment
             if (mTwoPane) {
-                Bundle arguments = new Bundle();
-                arguments.putString(CommodityDetailFragment.COMMODITY_NAME, commodityName);
-                CommodityDetailFragment fragment = new CommodityDetailFragment();
-                fragment.setArguments(arguments);
+                Fragment fragment = CommodityDetailFragment.newInstance(commodityName);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.commodity_detail_container, fragment)
                         .commit();
                 Utils.hideSoftKeyboard(SearchActivity.this);
             } else {
-                Intent intent = new Intent(SearchActivity.this, CommodityDetailActivity.class);
-                intent.putExtra(CommodityDetailFragment.COMMODITY_NAME, commodityName);
-                startActivity(intent);
+                startActivity(CommodityDetailActivity.getIntent(SearchActivity.this, commodityName));
             }
         }
     }
