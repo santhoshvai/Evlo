@@ -149,7 +149,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mCommodityDetailAdapter.setList(null);
     }
 
-    class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
+    private class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
             StickyHeaderAdapter<CommodityDetailAdapter.HeaderHolder> {
 
         private List<Commodity> mCommodityList = null;
@@ -469,7 +469,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         }
     }
 
-    static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<Commodity>>> {
+    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<Commodity>>> {
 
         Cursor mCursor;
         WeakReference<CommodityDetailAdapter> commodityAdapterWeakReference;

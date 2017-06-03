@@ -8,8 +8,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
+import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
@@ -27,6 +31,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +54,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     EmptyRecyclerView mRecyclerView;
 
     private static final int COMMODITY_FAV_LOADER = 1;
-    CommodityDetailAdapter commodityFavAdapter;
+    CommodityFavAdapter commodityFavAdapter;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "FavoritesFragment.recycler.layout";
 
@@ -63,7 +69,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.favorites_list, container, false);
-        commodityFavAdapter = new CommodityDetailAdapter();
+        commodityFavAdapter = new CommodityFavAdapter();
         getLoaderManager().initLoader(COMMODITY_FAV_LOADER, null, this);
         mRecyclerView = (EmptyRecyclerView) rootView.findViewById(R.id.fav_rv);
         mRecyclerView.setProgressView(rootView.findViewById(R.id.progressBar));
@@ -127,20 +133,40 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         commodityFavAdapter.setList(null);
     }
 
-    private static class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> {
+    private class CommodityFavAdapter extends RecyclerView.Adapter<CommodityFavAdapter.ViewHolder> {
 
         private List<Commodity> mCommodityList = null;
+
+        private int mIsExpandedPosition = -1;
+        final DateFormat mDateInstance;
+
+        CommodityFavAdapter() {
+            mDateInstance = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        }
+
+        /**
+         * The ConstraintSet to use for the normal initial state
+         */
+        private ConstraintSet mConstraintSetNormal = new ConstraintSet();
+        /**
+         * ConstraintSet to be applied on the normal ConstraintLayout to make the Image bigger.
+         */
+        private ConstraintSet mConstraintSetBig = new ConstraintSet();
 
         /**
          * Cache of the children views for a commodity list item.
          */
-        public class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mVariety;
             final TextView mModalPrice;
             final TextView mState;
             final TextView mMarket;
             final TextView mFav;
             final TextView mShare;
+            final TextView mDetail;
+            final TextView mArrivalDate;
+            final TextView mMaxPrice;
+            final TextView mMinPrice;
 
             ViewHolder(View view) {
                 super(view);
@@ -150,14 +176,21 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
                 this.mFav = (TextView) view.findViewById(R.id.favorite_icon);
                 this.mShare = (TextView) view.findViewById(R.id.share_icon);
+                this.mDetail = (TextView) view.findViewById(R.id.details_icon);
+                this.mArrivalDate = (TextView) view.findViewById(R.id.text_arrival_date);
+                this.mMaxPrice = (TextView) view.findViewById(R.id.text_max_price);
+                this.mMinPrice = (TextView) view.findViewById(R.id.text_min_price);
             }
         }
 
         @Override
-        public CommodityDetailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public CommodityFavAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.favorites_card_row, parent, false);
-            final CommodityDetailAdapter.ViewHolder vh = new ViewHolder(view);
+            mConstraintSetNormal.clone((ConstraintLayout) view);
+            mConstraintSetBig.load(parent.getContext(), R.layout.favorites_card_row_more);
+
+            final CommodityFavAdapter.ViewHolder vh = new ViewHolder(view);
             vh.mFav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -219,10 +252,21 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                     }
                 }
             });
+            vh.mDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = vh.getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        mIsExpandedPosition = (pos == mIsExpandedPosition) ? -1 : pos;
+                        TransitionManager.beginDelayedTransition(mRecyclerView);
+                        notifyDataSetChanged();
+                    }
+                }
+            });
             return vh;
         }
 
-        private void animateFavoriteSelect(final CommodityDetailAdapter.ViewHolder holder, boolean shouldSelect) {
+        private void animateFavoriteSelect(final CommodityFavAdapter.ViewHolder holder, boolean shouldSelect) {
             // TODO: animate the icon fill instead of the zoom animation below
             holder.mFav.setSelected(shouldSelect);
 
@@ -249,7 +293,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         @Override
-        public void onBindViewHolder(final CommodityDetailAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(final CommodityFavAdapter.ViewHolder holder, int position) {
             Commodity commodity = mCommodityList.get(position);
             final Resources res = holder.itemView.getContext().getResources();
 
@@ -263,14 +307,39 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
             holder.mFav.setSelected(commodity.isFavorite());
 
-            String modal_price_text = res.getString(R.string.rupee_price, modalPrice);
             String market_text = res.getString(R.string.market, market, district);
-            holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
             holder.mMarket.setText(market_text);
             holder.mState.setText(state);
-
-            // TODO: (More Button to show details) https://stackoverflow.com/questions/41464629/expand-collapse-animation-in-cardview
             holder.mVariety.setText(res.getString(R.string.commodity_name_and_variety, commodityName, variety));
+
+            // (More Button to show details) https://stackoverflow.com/questions/41464629/expand-collapse-animation-in-cardview
+
+            String modal_price_text;
+            boolean isExpanded = position == mIsExpandedPosition;
+
+            if (isExpanded) {
+                final String maxPrice = res.getString(R.string.rupee_price_with_unit, commodity.getMax_Price());
+                final String minPrice = res.getString(R.string.rupee_price_with_unit, commodity.getMin_Price());
+                modal_price_text = res.getString(R.string.rupee_price_with_unit, modalPrice);
+                final String arrivalDate = mDateInstance.format(Utils.convertArrivalDate(commodity.getArrival_Date()));
+                holder.mArrivalDate.setText(arrivalDate);
+                holder.mMaxPrice.setText(maxPrice);
+                holder.mMinPrice.setText(minPrice);
+
+                AnimatedVectorDrawableCompat drawable = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
+                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+                drawable.start();
+
+                mConstraintSetBig.applyTo((ConstraintLayout) holder.itemView);
+            } else {
+                modal_price_text = res.getString(R.string.rupee_price, modalPrice);
+                AnimatedVectorDrawableCompat drawable = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_up_arrow);
+                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+
+                mConstraintSetNormal.applyTo((ConstraintLayout) holder.itemView);
+            }
+
+            holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
         }
 
         @Override

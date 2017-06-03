@@ -21,28 +21,16 @@
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Arecal betlanut  long long long long  long long long long  long long long long  long long long long" />
-
-    <TextView
-        android:id="@+id/text_modal_price"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textStyle="bold"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:text="\u20B9 3950"
-        app:layout_constraintBaseline_toBaselineOf="@+id/text_variety" />
 
     <TextView
         android:id="@+id/text_unit_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         android:layout_marginRight="8dp"
         android:layout_marginTop="4dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -52,7 +40,6 @@
 
     <TextView
         android:id="@+id/text_market_district"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -61,31 +48,30 @@
         android:paddingLeft="0dp"
         android:paddingRight="16dp"
         android:paddingStart="0dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintRight_toLeftOf="@+id/text_unit_price"
         app:layout_constraintTop_toBottomOf="@+id/text_variety"
-        tools:text="Chirala market, Prakasam district lonwer"
-        app:layout_constraintRight_toLeftOf="@+id/text_unit_price" />
+        tools:text="Chirala market, Prakasam district lonwer" />
 
     <TextView
         android:id="@+id/text_state_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:paddingEnd="16dp"
         android:paddingLeft="0dp"
         android:paddingRight="16dp"
         android:paddingStart="0dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        tools:text="Andhra Pradesh"
-        android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/text_market_district" />
-
+        app:layout_constraintTop_toBottomOf="@+id/text_market_district"
+        tools:text="Andhra Pradesh" />
 
     <TextView
         android:id="@+id/header_modal_price"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/modal_price_header"
@@ -96,8 +82,18 @@
         app:layout_constraintRight_toRightOf="@+id/price_guideline" />
 
     <TextView
+        android:id="@+id/text_modal_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/text_state_name"
+        tools:text="\u20B9 3950 per 100kg*" />
+
+    <TextView
         android:id="@+id/header_min_price"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -109,7 +105,6 @@
 
     <TextView
         android:id="@+id/text_min_price"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -121,7 +116,6 @@
 
     <TextView
         android:id="@+id/header_max_price"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -133,7 +127,6 @@
 
     <TextView
         android:id="@+id/text_max_price"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -145,7 +138,6 @@
 
     <TextView
         android:id="@+id/header_arrival"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -157,7 +149,6 @@
 
     <TextView
         android:id="@+id/text_arrival_date"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
@@ -185,7 +176,7 @@
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/favorite_icon"
-        app:layout_constraintTop_toBottomOf="@+id/text_state_name" />
+        app:layout_constraintTop_toBottomOf="@+id/text_arrival_date" />
 
     <TextView
         android:id="@+id/favorite_icon"
