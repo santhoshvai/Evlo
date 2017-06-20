@@ -68,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-        /// schedule evernote jobs
+        // schedule evernote jobs
+        // TODO: need to be done only once
         CommodityJob.scheduleJobWhenCharging();
         CommodityJob.scheduleJobWhenNotChargingWiFiOnly();
 
