@@ -67,7 +67,7 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:design:${supportLibVersion}"
 
-    // job scheduler background compatability
+    // job scheduler background compatibility
     compile 'com.evernote:android-job:1.1.10'
 
     // ui
@@ -83,6 +83,10 @@ dependencies {
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
+
+    // protobuf
+    compile 'com.github.santhoshvai:evlo-protobuf-model:1.0-SNAPSHOT'
+    compile 'com.google.protobuf:protobuf-java:3.3.0'
 
     // leak canary
     debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"

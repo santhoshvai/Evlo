@@ -35,7 +35,7 @@ public class GetXmlService  extends IntentService {
     protected void onHandleIntent(Intent intent) {
         final Job.Result result = synchronousRequest(this);
         if (result.equals(Job.Result.RESCHEDULE)) {
-            // reschedule ASAP
+            // TODO: reschedule ASAP
         }
     }
 
