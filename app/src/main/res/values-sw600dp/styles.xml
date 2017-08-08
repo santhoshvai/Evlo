@@ -1,8 +1,25 @@
 <resources>
 
-    <style name="main_recycler_view_style">
-        <item name="android:layout_width">@dimen/recyclerview_width</item>
+    <style name="container_tablet_bg">
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/lightGrayForBg</item>
+    </style>
+
+    <style name="container_tablet_constrain">
+        <item name="android:layout_width">600dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="main_recycler_view_style">
+        <item name="android:layout_width">600dp</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="SearchToolbar_Container">
+        <item name="android:layout_width">400dp</item>
+        <item name="android:layout_height">@dimen/search_toolbar_height</item>
     </style>
 
 </resources>

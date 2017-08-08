@@ -16,6 +16,7 @@
     <color name="very_light_grey">#f6f6f6</color>
     <color name="lightGray">#EEEEEE</color>
     <color name="dividerGrey">#FFE5E5E5</color>
+    <color name="lightGrayForBg">#E0E0E0</color> <!--background color used for containers in google app tablet UIs-->
 
 
     <color name="bookmark_yellow">#ffa500</color>

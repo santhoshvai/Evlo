@@ -93,14 +93,14 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
         View rootView = inflater.inflate(R.layout.fragment_commodity_detail, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.commodity_detail_list);
-        mRecyclerView.setAdapter(mCommodityDetailAdapter);
         // set item decoration
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
                 LinearLayoutManager.VERTICAL);
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_grey));
         mRecyclerView.addItemDecoration(dividerItemDecoration);
-        // header
-        mRecyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter), 1);
+        mRecyclerView.setAdapter(mCommodityDetailAdapter);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter));
 
         return rootView;
     }

@@ -22,15 +22,30 @@
 
     <style name="AppTheme.PopupOverlay" parent="Base.ThemeOverlay.AppCompat.Light" />
 
+    <style name="container_tablet_bg">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="container_tablet_constrain">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
     <style name="main_recycler_view_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="SearchToolbar.TitleText"
+    <style name="SearchToolbar_TitleText"
         parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">@dimen/search_title_text_size</item>
         <item name="android:textColor">#a0000000</item>
+    </style>
+
+    <style name="SearchToolbar_Container">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/search_toolbar_height</item>
     </style>
 
 </resources>
