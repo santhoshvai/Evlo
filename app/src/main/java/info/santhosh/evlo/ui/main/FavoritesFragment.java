@@ -1,4 +1,4 @@
-package info.santhosh.evlo.ui.favorites;
+package info.santhosh.evlo.ui.main;
 
 import android.content.Intent;
 import android.content.res.Resources;

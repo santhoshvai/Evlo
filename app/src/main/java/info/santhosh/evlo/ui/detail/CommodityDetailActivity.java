@@ -10,14 +10,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.ui.CommodityListActivity;
 
-/**
- * An activity representing a single Commodity detail screen. This
- * activity is only used narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link CommodityListActivity}.
- */
 public class CommodityDetailActivity extends AppCompatActivity {
 
     static {

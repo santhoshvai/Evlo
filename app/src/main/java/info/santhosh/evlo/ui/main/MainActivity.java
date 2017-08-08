@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.Utils;
-import info.santhosh.evlo.ui.favorites.FavoritesFragment;
 import info.santhosh.evlo.ui.search.SearchActivity;
 
 /**

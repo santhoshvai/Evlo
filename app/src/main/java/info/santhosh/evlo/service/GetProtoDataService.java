@@ -73,14 +73,14 @@ public class GetProtoDataService extends IntentService {
 
             response.body().close();
             return Job.Result.SUCCESS;
-        } catch(IOException e) {
+        } catch (IOException e) {
             // TODO: log exception to firebase
             e.printStackTrace();
-            Log.e(TAG, e.getClass().getSimpleName()+ ": "+ e.getLocalizedMessage());
+            Log.e(TAG, e.getLocalizedMessage());
             return Job.Result.RESCHEDULE;
         } catch(Exception e) {
             e.printStackTrace();
-            Log.e(TAG, e.getClass().getSimpleName()+ ": "+ e.getLocalizedMessage());
+            Log.e(TAG, e.getLocalizedMessage());
             return Job.Result.FAILURE;
         }
     }

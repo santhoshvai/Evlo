@@ -44,16 +44,9 @@ import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
 import info.santhosh.evlo.data.dbModels.Commodity;
-import info.santhosh.evlo.ui.CommodityListActivity;
 
 import static info.santhosh.evlo.data.dbModels.Commodity.COMMODITY_DETAIL_COLUMNS;
 
-/**
- * A fragment representing a single Commodity detail screen.
- * This fragment is either contained in a {@link CommodityListActivity}
- * in two-pane mode (on tablets) or a {@link CommodityDetailActivity}
- * on handsets.
- */
 public class CommodityDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "CommodityDetailFragment";

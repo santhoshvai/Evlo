@@ -1,13 +1,11 @@
 package info.santhosh.evlo.ui.search;
 
 
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
@@ -38,10 +36,8 @@ import java.util.List;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ColorUtil;
-import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.ui.detail.CommodityDetailActivity;
-import info.santhosh.evlo.ui.detail.CommodityDetailFragment;
 import info.santhosh.evlo.widget.EmptyRecyclerView;
 
 import static info.santhosh.evlo.ui.search.SearchActivity.CommodityAdapter.SEARCH_HIGHLIGHT_PAYLOAD;
@@ -55,7 +51,6 @@ public class SearchActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, Searchbar.OnTextChangedCallback, EmptyRecyclerView.SetEmptyViewCallback {
 
     private Searchbar mSearchBar;
-    private boolean mTwoPane;
     private CommodityAdapter mCommodityAdapter;
     private EmptyRecyclerView mRecyclerView;
 
@@ -63,7 +58,6 @@ public class SearchActivity extends AppCompatActivity
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
 
     private String mFilterSearch = null;
-    private int mSelectedItem = -1;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -78,14 +72,6 @@ public class SearchActivity extends AppCompatActivity
         mSearchBar.setTextChangedListener(this);
         setSupportActionBar(mSearchBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        if (findViewById(R.id.commodity_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-sw600dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
 
         setupRecyclerView();
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
@@ -130,7 +116,7 @@ public class SearchActivity extends AppCompatActivity
     }
 
     private void setupRecyclerView() {
-        mCommodityAdapter = new CommodityAdapter(this, "");
+        mCommodityAdapter = new CommodityAdapter();
         mRecyclerView = (EmptyRecyclerView) findViewById(R.id.commodity_list);
         mRecyclerView.setProgressView(findViewById(R.id.progressBarSearch));
         mRecyclerView.setEmptyView(findViewById(R.id.empty_text_view));
@@ -162,7 +148,7 @@ public class SearchActivity extends AppCompatActivity
 
         if(args != null) {
             //  search
-            String name = args.getString("name","");
+            String name = args.getString("name", "");
             return new CursorLoader(this,
                     CommodityContract.CommodityDataEntry.buildCommodityNameSearchUri(name),
                     COMMODITY_NAME_COLUMNS,
@@ -190,23 +176,15 @@ public class SearchActivity extends AppCompatActivity
         mCommodityAdapter.setList(null);
     }
 
-    /*
-    The adapter used for recycler view
-     */
     class CommodityAdapter extends RecyclerView.Adapter<CommodityAdapter.ViewHolder> {
 
         private List<CommodityName> mCommodityList = new ArrayList<>();
-        final private Context mContext;
         final int mSearchHighlightColor;
-        private String mFilterSearch;
-        private int mSelectedPos = -1;
+        private String mFilterSearch = "";
         private final ItemClickListener mItemClickListener;
 
         static final int SEARCH_HIGHLIGHT_PAYLOAD = 1;
 
-        /**
-         * Cache of the children views for a commodity list item.
-         */
         class ViewHolder extends RecyclerView.ViewHolder {
             final TextView mCommodityNameView;
             final LinearLayout mLinearLayout;
@@ -219,10 +197,8 @@ public class SearchActivity extends AppCompatActivity
 
         }
 
-        CommodityAdapter(Context context, String filter) {
-            mContext = context;
-            mFilterSearch = filter;
-            mSearchHighlightColor = ContextCompat.getColor(context, R.color.searchHighlight);
+        CommodityAdapter() {
+            mSearchHighlightColor = ContextCompat.getColor(SearchActivity.this, R.color.searchHighlight);
             mItemClickListener = new ItemClickListener();
         }
 
@@ -236,14 +212,6 @@ public class SearchActivity extends AppCompatActivity
                 public void onClick(View view) {
                     int position = vh.getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        if (mTwoPane) {
-                            // set the greyish background indicating that this was clicked
-                            ColorUtil.setListRowSelectionBackgroundColor(mContext, vh.mLinearLayout);
-                            // reset the old selected position background
-                            notifyItemChanged(mSelectedPos);
-                            // change the selected position
-                            mSelectedPos = position;
-                        }
                         final CommodityName commodity = mCommodityList.get(position);
                         mItemClickListener.onClick(commodity.getName());
                     }
@@ -273,12 +241,7 @@ public class SearchActivity extends AppCompatActivity
             final String commodityName = commodity.getName();
 
             setHighlightedTextIfNeeded(commodityName, holder.mCommodityNameView);
-            if (mTwoPane && (mSelectedPos == position)) { // on tablet rotation, we must retain the clicked color
-                // set the greyish background indicating that this was clicked
-                ColorUtil.setListRowSelectionBackgroundColor(mContext, holder.mLinearLayout);
-            } else {
-                ColorUtil.setTransparentBackgroundColor(holder.mLinearLayout);
-            }
+            ColorUtil.setTransparentBackgroundColor(holder.mLinearLayout);
         }
 
         private void setHighlightedTextIfNeeded(String commodityName, TextView commodityNameView) {
@@ -370,7 +333,6 @@ public class SearchActivity extends AppCompatActivity
         }
 
         static CommodityName fromCursor(Cursor cursor) {
-            // Read from cursor
             return new CommodityName(cursor.getInt(COL_COMMODITY_ID), cursor.getString(COL_COMMODITY_NAME));
         }
 
@@ -482,15 +444,20 @@ public class SearchActivity extends AppCompatActivity
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
         protected void onPostExecute(Pair<DiffUtil.DiffResult, ArrayList<CommodityName>> pair) {
             SearchActivity searchActivity = searchActivityWeakReference.get();
             if(searchActivity == null) return;
 
             // TODO: the empty check is to not hide the bar on the first ever search fragment call, what if the user had no internet and nothing is displayed?
-            if (!pair.second.isEmpty()) searchActivity.mRecyclerView.hideProgressView();
             searchActivity.mCommodityAdapter.setList(pair.second);
             searchActivity.mCommodityAdapter.setmFilterSearch(mFilterSearch);
             pair.first.dispatchUpdatesTo(searchActivity.mCommodityAdapter);
+            searchActivity.mRecyclerView.hideProgressView();
         }
     }
 
@@ -500,15 +467,7 @@ public class SearchActivity extends AppCompatActivity
     private class ItemClickListener {
         void onClick(String commodityName) {
             // move to the detail activity/fragment
-            if (mTwoPane) {
-                Fragment fragment = CommodityDetailFragment.newInstance(commodityName);
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.commodity_detail_container, fragment)
-                        .commit();
-                Utils.hideSoftKeyboard(SearchActivity.this);
-            } else {
-                startActivity(CommodityDetailActivity.getIntent(SearchActivity.this, commodityName));
-            }
+            startActivity(CommodityDetailActivity.getIntent(SearchActivity.this, commodityName));
         }
     }
 
