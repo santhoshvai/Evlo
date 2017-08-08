@@ -356,33 +356,48 @@ public class CommodityProvider extends ContentProvider {
                 int returnCount = 0;
                 try {
                     for (ContentValues value : values) {
-                        String[] selectionArgs = new String[] {
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME),
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY),
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME),
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME)};
-                        String[] bindArgs = new String[value.size() + selectionArgs.length];
-                        i = 0;
-                        for (String colName : value.keySet()) {
-                            bindArgs[i++] = (String) value.get(colName);
-                        }
-                        for (i = value.size(); i < (value.size() + selectionArgs.length); i++) {
-                            bindArgs[i] = selectionArgs[i - value.size()];
-                        }
                         updateStatement.clearBindings();
-                        updateStatement.bindAllArgsAsStrings(bindArgs);
+                        i = 1;
+                        final String market_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME);
+                        final String commodity_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME);
+                        final String variety_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY);
+                        final String district_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME);
+                        final Integer modal_price = value.getAsInteger(CommodityContract.CommodityDataEntry.COLUMN_MODAL_PRICE);
+                        final String state_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_STATE_NAME);
+                        final long arrival_date = value.getAsLong(CommodityContract.CommodityDataEntry.COLUMN_ARRIVAL_DATE);
+                        final Integer min_price = value.getAsInteger(CommodityContract.CommodityDataEntry.COLUMN_MIN_PRICE);
+                        final Integer max_price = value.getAsInteger(CommodityContract.CommodityDataEntry.COLUMN_MAX_PRICE);
+                        updateStatement.bindString(i++, market_name);
+                        updateStatement.bindString(i++, commodity_name);
+                        updateStatement.bindLong(i++, modal_price);
+                        updateStatement.bindString(i++, state_name);
+                        updateStatement.bindLong(i++, arrival_date);
+                        updateStatement.bindString(i++, district_name);
+                        updateStatement.bindLong(i++, min_price);
+                        updateStatement.bindString(i++, variety_name);
+                        updateStatement.bindLong(i++, max_price);
+
+                        updateStatement.bindString(i++, commodity_name);
+                        updateStatement.bindString(i++, variety_name);
+                        updateStatement.bindString(i++, market_name);
+                        updateStatement.bindString(i, district_name);
+
                         // the row is updated if the above four values are same
                         final int affected = updateStatement.executeUpdateDelete();
 //                        int affected = db.update(
 //                                CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
                         if (affected == 0) { // only if no row was updated do the insert
-                            bindArgs = new String[value.size()];
-                            i = 0;
-                            for (String colName : value.keySet()) {
-                                bindArgs[i++] = (String) value.get(colName);
-                            }
                             insertStatement.clearBindings();
-                            insertStatement.bindAllArgsAsStrings(bindArgs);
+                            i = 1;
+                            insertStatement.bindString(i++, market_name);
+                            insertStatement.bindString(i++, commodity_name);
+                            insertStatement.bindLong(i++, modal_price);
+                            insertStatement.bindString(i++, state_name);
+                            insertStatement.bindLong(i++, arrival_date);
+                            insertStatement.bindString(i++, district_name);
+                            insertStatement.bindLong(i++, min_price);
+                            insertStatement.bindString(i++, variety_name);
+                            insertStatement.bindLong(i, max_price);
                             final long _id = insertStatement.executeInsert();
 //                            long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
                             if (_id != -1) {

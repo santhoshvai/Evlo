@@ -31,8 +31,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,10 +136,12 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         private List<Commodity> mCommodityList = null;
 
         private int mIsExpandedPosition = -1;
-        final DateFormat mDateInstance;
+        private final AnimatedVectorDrawableCompat avd_from_down_arrow;
+        private final AnimatedVectorDrawableCompat avd_from_up_arrow;
 
         CommodityFavAdapter() {
-            mDateInstance = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+            avd_from_down_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
+            avd_from_up_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_up_arrow);
         }
 
         /**
@@ -321,20 +321,18 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 final String maxPrice = res.getString(R.string.rupee_price_with_unit, commodity.getMax_Price());
                 final String minPrice = res.getString(R.string.rupee_price_with_unit, commodity.getMin_Price());
                 modal_price_text = res.getString(R.string.rupee_price_with_unit, modalPrice);
-                final String arrivalDate = mDateInstance.format(Utils.convertArrivalDate(commodity.getArrival_Date()));
+                final String arrivalDate = Utils.getArrivalDateString(commodity.getArrival_Date());
                 holder.mArrivalDate.setText(arrivalDate);
                 holder.mMaxPrice.setText(maxPrice);
                 holder.mMinPrice.setText(minPrice);
 
-                AnimatedVectorDrawableCompat drawable = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
-                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
-                drawable.start();
+                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(avd_from_down_arrow, null, null, null);
+                avd_from_down_arrow.start();
 
                 mConstraintSetBig.applyTo((ConstraintLayout) holder.itemView);
             } else {
                 modal_price_text = res.getString(R.string.rupee_price, modalPrice);
-                AnimatedVectorDrawableCompat drawable = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_up_arrow);
-                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+                holder.mDetail.setCompoundDrawablesWithIntrinsicBounds(avd_from_up_arrow, null, null, null);
 
                 mConstraintSetNormal.applyTo((ConstraintLayout) holder.itemView);
             }

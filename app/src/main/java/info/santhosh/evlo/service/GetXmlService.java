@@ -16,7 +16,6 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 
-import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.WriteDb;
 import info.santhosh.evlo.service.SOAP.parser.SOAPEnvelope;
 
@@ -26,6 +25,7 @@ import info.santhosh.evlo.service.SOAP.parser.SOAPEnvelope;
 public class GetXmlService  extends IntentService {
 
     static final String TAG = "GetXmlService";
+    private static final String URL = "https://www.dropbox.com/s/tdnc79h29zkpzhk/Date-Wise-Prices-all-Commodity.xml?dl=1";
 
     public GetXmlService() {
         super("xml-service");
@@ -44,8 +44,12 @@ public class GetXmlService  extends IntentService {
         Log.d(TAG, "START synchronousRequest");
         OkHttpClient client = new OkHttpClient();
 
+//        Request request = new Request.Builder()
+//                .url( context.getResources().getString(R.string.price_xml_url) )
+//                .build();
+
         Request request = new Request.Builder()
-                .url( context.getResources().getString(R.string.price_xml_url) )
+                .url( URL )
                 .build();
 
         try{
@@ -66,12 +70,13 @@ public class GetXmlService  extends IntentService {
             stopTime = System.currentTimeMillis();
             elapsedTime = stopTime - startTime;
             Log.d(TAG, "elapsedTime to parse data (ms): " + elapsedTime);
-            startTime = System.currentTimeMillis();
 
+            startTime = System.currentTimeMillis();
             WriteDb.usingCommoditiesList(context, envelope.getCommodities().getList());
             stopTime = System.currentTimeMillis();
             elapsedTime = stopTime - startTime;
             Log.d(TAG, "elapsedTime to write data (ms): " + elapsedTime);
+            Log.d(TAG, "size: " + envelope.getCommodities().getList().size());
 
             return Job.Result.SUCCESS;
         } catch(Exception e) {

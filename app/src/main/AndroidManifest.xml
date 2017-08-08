@@ -38,6 +38,9 @@
         <service
             android:name=".service.GetXmlService"
             android:exported="false"/>
+        <service
+            android:name=".service.GetProtoDataService"
+            android:exported="false"/>
         <provider
             android:authorities="@string/content_authority"
             android:name=".data.CommodityProvider"

@@ -16,8 +16,8 @@
     <dimen name="card_text_horizontal_padding">16dp</dimen>
 
     <!--Search-->
-    <dimen name="search_toolbar_height">64dp</dimen>
-    <dimen name="search_toolbar_margin">8dp</dimen>
+    <dimen name="search_toolbar_height">56dp</dimen>
+    <dimen name="search_toolbar_margin">6dp</dimen>
     <dimen name="search_title_text_size">14sp</dimen>
 
 </resources>

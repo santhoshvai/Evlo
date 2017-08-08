@@ -14,6 +14,7 @@ public class EvloPrefs {
     private static final String GENERAL_PREFERENCES_KEY = "general_preferences_key";
     private static final String LAST_ROW_ORDER = "last_row_order";
     private static final String LAST_ARRIVAL_DATE = "last_arrival_date";
+    private static final String LAST_ARRIVAL_DATE_TIMESTAMP = "last_arrival_date_timestamp";
     private static final String TAG = "EvloPrefs";
 
     private EvloPrefs() {}
@@ -43,6 +44,18 @@ public class EvloPrefs {
     public static void setLastArrivalDate(Context context, String arrivalDate) {
         final SharedPreferences.Editor editor = generalPreferences(context).edit();
         editor.putString(LAST_ARRIVAL_DATE, arrivalDate);
+        editor.apply();
+    }
+
+    public static long getLastArrivalDateTimeStamp(Context context) {
+        // <Arrival_Date>28/05/2017</Arrival_Date>
+        final long date = generalPreferences(context).getLong(LAST_ARRIVAL_DATE_TIMESTAMP, -1);
+        return date;
+    }
+
+    public static void setLastArrivalDateTimeStamp(Context context, long arrivalDate) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putLong(LAST_ARRIVAL_DATE_TIMESTAMP, arrivalDate);
         editor.apply();
     }
 }

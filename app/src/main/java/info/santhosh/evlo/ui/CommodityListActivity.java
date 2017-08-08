@@ -33,7 +33,7 @@ import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ColorUtil;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
-import info.santhosh.evlo.service.GetXmlService;
+import info.santhosh.evlo.service.GetProtoDataService;
 import info.santhosh.evlo.ui.detail.CommodityDetailActivity;
 import info.santhosh.evlo.ui.detail.CommodityDetailFragment;
 import info.santhosh.evlo.widget.EmptyRecyclerView;
@@ -163,7 +163,7 @@ public class CommodityListActivity extends AppCompatActivity
     private void launchXmlService() {
         if(!mServiceStarted) {
             // Construct our Intent specifying the Service
-            Intent i = new Intent(this, GetXmlService.class);
+            Intent i = new Intent(this, GetProtoDataService.class);
             // Add extras to the bundle
 
             // Start the service

@@ -26,7 +26,7 @@ public class Searchbar extends TransformingToolbar {
     protected void onFinishInflate() {
         super.onFinishInflate();
         inflate(getContext(), R.layout.merge_search, this);
-        EditText editText = (EditText) findViewById(R.id.toolbar_search_edittext);
+        EditText editText = findViewById(R.id.toolbar_search_edittext);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

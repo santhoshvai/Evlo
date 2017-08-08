@@ -7,7 +7,7 @@ import com.evernote.android.job.JobManager;
 
 import info.santhosh.evlo.common.DebugUtils;
 import info.santhosh.evlo.data.scheduleJobs.CommodityJobCreator;
-import info.santhosh.evlo.service.GetXmlService;
+import info.santhosh.evlo.service.GetProtoDataService;
 
 /**
  * Created by santhoshvai on 28/11/2016.
@@ -22,7 +22,7 @@ public class EvloApplication extends Application {
         super.onCreate();
         registerActivityLifecycleCallbacks(EVLO_LIFECYCLE_CALLBACKS);
         JobManager.create(this).addJobCreator(new CommodityJobCreator());
-        startService(new Intent(this, GetXmlService.class));
+        startService(new Intent(this, GetProtoDataService.class));
 
         DebugUtils.init(this);
     }

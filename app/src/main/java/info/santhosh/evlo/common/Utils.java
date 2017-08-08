@@ -32,6 +32,7 @@ public class Utils {
 
     private static int screenWidth = 0;
     private static int screenHeight = 0;
+    private static final DateFormat dateFormat = new SimpleDateFormat("dd-MMMM-yyyy", Locale.ENGLISH);
 
     private Utils() {}
 
@@ -124,13 +125,17 @@ public class Utils {
 
     public static Date convertArrivalDate(String s) {
         if (s == null) return null;
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         try {
-            return df.parse(s);
+            return dateFormat.parse(s);
         } catch(ParseException e) {
             Log.e(TAG, "cannot parse date in the prefs: " + s, e);
         }
         return null;
+    }
+
+    public static String getArrivalDateString(long timestamp) {
+        SimpleDateFormat.getDateInstance(DateFormat.MEDIUM);
+        return dateFormat.format(new Date(timestamp));
     }
 
 }

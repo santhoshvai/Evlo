@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply from: "$project.rootDir/tools/script-git-version.gradle"
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion "26.0.0"
 
     defaultConfig {
@@ -48,7 +48,7 @@ android {
 ext{
     // version numbers
     junitVersion = '4.12'
-    supportLibVersion = '25.3.1'
+    supportLibVersion = '26.0.0'
     constraintLayoutVersion = '1.0.2'
     okhttpVersion = '2.2.0'
     simplexmlVersion = '2.7.1'
@@ -85,8 +85,8 @@ dependencies {
     }
 
     // protobuf
-    compile 'com.github.santhoshvai:evlo-protobuf-model:1.0-SNAPSHOT'
-    compile 'com.google.protobuf:protobuf-java:3.3.0'
+    compile 'com.github.santhoshvai:evlo-protobuf-model:1.1-SNAPSHOT'
+    compile 'com.google.protobuf:protobuf-lite:3.0.1'
 
     // leak canary
     debugCompile "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"

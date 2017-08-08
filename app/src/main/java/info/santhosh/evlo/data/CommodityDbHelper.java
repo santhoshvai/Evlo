@@ -29,7 +29,7 @@ class CommodityDbHelper  extends SQLiteOpenHelper {
                 CommodityDataEntry._ID + " INTEGER PRIMARY KEY," +
                 CommodityDataEntry.COLUMN_COMMODITY_NAME + " TEXT NOT NULL, " +
                 CommodityDataEntry.COLUMN_VARIETY + " TEXT NOT NULL, " +
-                CommodityDataEntry.COLUMN_ARRIVAL_DATE + " TEXT NOT NULL, " +
+                CommodityDataEntry.COLUMN_ARRIVAL_DATE + " INTEGER NOT NULL, " +
                 CommodityDataEntry.COLUMN_MAX_PRICE + " INTEGER NOT NULL, " +
                 CommodityDataEntry.COLUMN_MODAL_PRICE + " INTEGER NOT NULL, " +
                 CommodityDataEntry.COLUMN_MIN_PRICE + " INTEGER NOT NULL," +
