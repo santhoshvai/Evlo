@@ -100,7 +100,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setAdapter(mCommodityDetailAdapter);
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter));
+        mRecyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter), 1);
 
         return rootView;
     }
