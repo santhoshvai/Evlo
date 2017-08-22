@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import info.santhosh.evlo.common.WriteDb;
+import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
 import info.santhosh.evlo.model.CommodityProtos;
 
 /**
@@ -36,11 +37,12 @@ public class GetProtoDataService extends IntentService {
         final Job.Result result = synchronousProtoRequest(this);
         if (result.equals(Job.Result.RESCHEDULE)) {
             // TODO: reschedule ASAP
+            CommodityJob.scheduleJobWhenConnectedImmediately();
         }
     }
 
     @WorkerThread
-    private static Job.Result synchronousProtoRequest(Context context) {
+    public static Job.Result synchronousProtoRequest(Context context) {
         OkHttpClient client = new OkHttpClient();
         Request requestProto = new Request.Builder()
                 .url( PROTO_URL )

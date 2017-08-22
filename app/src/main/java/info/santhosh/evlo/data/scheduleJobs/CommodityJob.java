@@ -9,7 +9,7 @@ import com.evernote.android.job.util.support.PersistableBundleCompat;
 import java.util.concurrent.TimeUnit;
 
 import info.santhosh.evlo.application.EvloApplication;
-import info.santhosh.evlo.service.GetXmlService;
+import info.santhosh.evlo.service.GetProtoDataService;
 
 /**
  * Created by santhoshvai on 28/05/17.
@@ -31,7 +31,7 @@ public class CommodityJob extends Job {
             // this creates stutter in the application
             return Result.SUCCESS;
         }
-        return GetXmlService.synchronousRequest(getContext());
+        return GetProtoDataService.synchronousProtoRequest(getContext());
     }
 
     @Override
@@ -67,6 +67,25 @@ public class CommodityJob extends Job {
                 .setRequiredNetworkType(JobRequest.NetworkType.UNMETERED)
                 .setUpdateCurrent(true)
                 .setPersisted(true)
+                .setRequirementsEnforced(true)
+                .build()
+                .schedule();
+    }
+
+    /**
+     * To be used when we try to access internet when user was offline,
+     * This will immediately start after user gets online
+     * @return id of the job created
+     */
+    public static int scheduleJobWhenConnectedImmediately() {
+        PersistableBundleCompat extras = new PersistableBundleCompat();
+        extras.putBoolean(RUN_WHEN_APP_IS_OPEN, true);
+
+        return new JobRequest.Builder(TAG)
+                .setExecutionWindow(1, TimeUnit.DAYS.toMillis(1)) // https://github.com/evernote/android-job/issues/228
+                .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
+                .setExtras(extras)
+                .setUpdateCurrent(true)
                 .setRequirementsEnforced(true)
                 .build()
                 .schedule();
