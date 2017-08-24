@@ -19,7 +19,7 @@ import android.util.Log;
  */
 public class CommodityProvider extends ContentProvider {
 
-    private final static String TAG = CommodityProvider.class.getSimpleName();
+    private final static String TAG = "CommodityProvider";
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -314,7 +314,19 @@ public class CommodityProvider extends ContentProvider {
                 sqlInsertStr.append(CommodityContract.CommodityDataEntry.TABLE_NAME);
                 sqlInsertStr.append('(');
                 int i = 0;
-                for (String colName : values[0].keySet()) {
+                // IMPORTANT: Follow this ordering when you bind as well
+                final String[] colNames = {
+                        CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_MODAL_PRICE,
+                        CommodityContract.CommodityDataEntry.COLUMN_STATE_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_ARRIVAL_DATE,
+                        CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_MIN_PRICE,
+                        CommodityContract.CommodityDataEntry.COLUMN_VARIETY,
+                        CommodityContract.CommodityDataEntry.COLUMN_MAX_PRICE
+                };
+                for (String colName : colNames) {
                     sqlUpdateStr.append((i > 0) ? "," : "");
                     sqlUpdateStr.append(colName);
                     sqlUpdateStr.append("=?");
@@ -327,7 +339,7 @@ public class CommodityProvider extends ContentProvider {
 
                 sqlInsertStr.append(')');
                 sqlInsertStr.append(" VALUES (");
-                for (i = 0; i < values[0].size(); i++) {
+                for (i = 0; i < colNames.length; i++) {
                     sqlInsertStr.append((i > 0) ? ",?" : "?");
                 }
                 sqlInsertStr.append(')');
