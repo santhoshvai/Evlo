@@ -8,9 +8,6 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.evernote.android.job.Job;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +15,9 @@ import java.io.InputStream;
 import info.santhosh.evlo.common.WriteDb;
 import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
 import info.santhosh.evlo.model.CommodityProtos;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by santhoshvai on 29/07/17.

@@ -8,9 +8,6 @@ import android.support.annotation.WorkerThread;
 import android.util.Log;
 
 import com.evernote.android.job.Job;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.convert.AnnotationStrategy;
@@ -18,6 +15,9 @@ import org.simpleframework.xml.core.Persister;
 
 import info.santhosh.evlo.common.WriteDb;
 import info.santhosh.evlo.service.SOAP.parser.SOAPEnvelope;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by santhoshvai on 12/03/16.
