@@ -2,16 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="info.santhosh.evlo">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".application.EvloApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/evlo_ic_launcher"
-        android:label="@string/app_name"
         android:fullBackupContent="@xml/backup_config"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -21,31 +21,41 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.search.SearchActivity"
-            android:windowSoftInputMode="stateVisible"
             android:parentActivityName=".ui.main.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".ui.detail.CommodityDetailActivity"
             android:parentActivityName=".ui.search.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ui.intro.IntroActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.TranslucentStatus" />
 
         <service
             android:name=".service.GetXmlService"
-            android:exported="false"/>
+            android:exported="false" />
         <service
             android:name=".service.GetProtoDataService"
-            android:exported="false"/>
-        <provider
-            android:authorities="@string/content_authority"
-            android:name=".data.CommodityProvider"
             android:exported="false" />
+
+        <provider
+            android:name=".data.CommodityProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7bcd126695b5b67b539f400b2d5650348ee94745"
+            />
+
     </application>
 
 </manifest>

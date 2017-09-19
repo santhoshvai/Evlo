@@ -3,9 +3,11 @@ package info.santhosh.evlo.common;
 import android.os.StrictMode;
 
 import com.facebook.stetho.Stetho;
+import com.squareup.leakcanary.AndroidRefWatcherBuilder;
 import com.squareup.leakcanary.LeakCanary;
 
 import info.santhosh.evlo.application.EvloApplication;
+import info.santhosh.evlo.service.CrashlyticsLeakLogService;
 
 /**
  * Created by santhoshvai on 19/05/17.
@@ -22,7 +24,9 @@ public class DebugUtils {
             // You should not init your app in this process.
             return;
         }
-        LeakCanary.install(evloApplication);
+        AndroidRefWatcherBuilder refWatcher = LeakCanary.refWatcher(evloApplication).listenerServiceClass(CrashlyticsLeakLogService.class);
+        refWatcher.buildAndInstall();
+        //LeakCanary.install(evloApplication);
 
         // STETHO
         Stetho.initializeWithDefaults(evloApplication);

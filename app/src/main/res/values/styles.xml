@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
@@ -16,6 +16,14 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.TranslucentStatus">
+        <item name="android:windowTranslucentStatus" tools:ignore="NewApi">true</item>
+        <!--<item name="android:windowDrawsSystemBarBackgrounds" tools:ignore="NewApi">true</item>-->
+        <!--<item name="android:statusBarColor" tools:ignore="NewApi">@android:color/transparent</item>-->
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/teal_700</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="Base.ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -46,6 +54,10 @@
     <style name="SearchToolbar_Container">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/search_toolbar_height</item>
+    </style>
+
+    <style name="GetStartedBtn" parent="AppTheme">
+        <item name="colorButtonNormal">@color/triad_market_blue_bg</item>
     </style>
 
 </resources>

@@ -2,18 +2,22 @@ package info.santhosh.evlo.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.transition.AutoTransition;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.EvloPrefs;
 import info.santhosh.evlo.common.Utils;
+import info.santhosh.evlo.ui.intro.IntroActivity;
 import info.santhosh.evlo.ui.search.SearchActivity;
 
 /**
@@ -23,6 +27,7 @@ import info.santhosh.evlo.ui.search.SearchActivity;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final int INTRO_REQUEST_CODE = 77;
 
     SearchToolbar mSearchToolbar;
 
@@ -35,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        startIntroIfNeeded();
+
         setContentView(R.layout.activity_main);
 
         // search bar
@@ -70,7 +78,18 @@ public class MainActivity extends AppCompatActivity {
         // TODO: need to be done only once
 //        CommodityJob.scheduleJobWhenCharging();
 //        CommodityJob.scheduleJobWhenNotChargingWiFiOnly();
+//        exampleOne();
+    }
 
+    private void exampleOne() {
+        new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    SystemClock.sleep(1000);
+                }
+            }
+        }.start();
     }
 
     private void transitionToSearch() {
@@ -142,4 +161,21 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    void startIntroIfNeeded() {
+        if(EvloPrefs.getIsFirstRun(this)) {
+            startActivityForResult(new Intent(this, IntroActivity.class), INTRO_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == INTRO_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+//                EvloPrefs.setIsFirstRun(this, false);
+                Log.d(TAG, "onActivityResult: ");
+            } else {
+                finish();
+            }
+        }
+    }
 }

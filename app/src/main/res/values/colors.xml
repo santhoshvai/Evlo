@@ -24,4 +24,9 @@
     <color name="almostWhite">#FFFAFAFA</color>
     <color name="searchHighlight">#4fc3f7</color>
 
+    <!-- Intro -->
+    <color name="market_blue_bg">#305888</color>
+    <color name="market_blueishWhite_text">#E0E7FF</color>
+    <color name="triad_market_blue_bg">#723B02</color>
+
 </resources>

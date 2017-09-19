@@ -1,8 +1,6 @@
 # Guide: http://wiebe-elsinga.com/blog/obfuscating-for-android-with-proguard/
 
-# Just want proguard to strip unused things, don't care about people
-# seeing the source
-#-dontobfuscate
+-dontobfuscate
 
 # remove logcat
 -assumenosideeffects class android.util.Log {
@@ -13,12 +11,42 @@
     public static *** v(...);
 }
 
+# protobuf
+#-keep class com.google.protobuf.** { *; }
+#-keep class info.santhosh.evlo.model.CommodityProtos.** { *; }
+-dontwarn sun.misc.Unsafe
+-dontwarn com.google.protobuf.**
+
 # OkHttp
--keepattributes Signature
+-dontwarn okio.**
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.ParametersAreNonnullByDefault
+-dontwarn okhttp3.**
+
+# evernote android job
+-dontwarn com.evernote.android.job.gcm.**
+-dontwarn com.evernote.android.job.util.GcmAvailableHelper.**
+-keep public class com.evernote.android.job.v21.PlatformJobService
+-keep public class com.evernote.android.job.v14.PlatformAlarmService
+-keep public class com.evernote.android.job.v14.PlatformAlarmReceiver
+-keep public class com.evernote.android.job.JobBootReceiver
+-keep public class com.evernote.android.job.JobRescheduleService
+
+# crashlytics
 -keepattributes *Annotation*
--keep class com.squareup.okhttp.** { *; }
--keep interface com.squareup.okhttp.** { *; }
--dontwarn com.squareup.okhttp.**
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
+
+# unncessary warnings
+-dontnote android.net.http.*
+-dontnote org.apache.commons.codec.**
+-dontnote org.apache.http.**
+-dontnote okhttp3.**
+-dontnote com.evernote.android.job.**
+-dontnote info.santhosh.evlo.ui.search.Searchbar*
+-dontnote info.santhosh.evlo.widget.EmptyRecyclerView*
 
 # Simple-Xml https://stackoverflow.com/a/44152535/3394023
 -dontwarn javax.xml.stream.**

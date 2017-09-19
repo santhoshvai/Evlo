@@ -47,12 +47,12 @@ public class GetProtoDataService extends IntentService {
         Request requestProto = new Request.Builder()
                 .url( PROTO_URL )
                 .build();
-        Response response;
+        Response response = null;
 
         try {
             long startTime = System.currentTimeMillis();
             response = client.newCall(requestProto).execute();
-            if (!response.isSuccessful()) {
+            if (!response.isSuccessful() || response.body() == null) {
                 return Job.Result.RESCHEDULE;
             }
             final InputStream byteStream = response.body().byteStream();
@@ -73,17 +73,18 @@ public class GetProtoDataService extends IntentService {
             Log.d(TAG, "elapsedTime to write data (ms): " + elapsedTime);
             Log.d(TAG, "size: " + commoditiesProto.getCommodityCount());
 
-            response.body().close();
             return Job.Result.SUCCESS;
         } catch (IOException e) {
+            return Job.Result.RESCHEDULE;
+        } catch(Exception e) {
             // TODO: log exception to firebase
             e.printStackTrace();
             Log.e(TAG, e.getLocalizedMessage());
-            return Job.Result.RESCHEDULE;
-        } catch(Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, e.getLocalizedMessage());
             return Job.Result.FAILURE;
+        } finally {
+            if (response != null && response.body() != null) {
+                response.body().close();
+            }
         }
     }
 

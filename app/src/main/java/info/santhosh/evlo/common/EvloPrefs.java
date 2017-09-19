@@ -12,9 +12,11 @@ import java.util.Date;
 public class EvloPrefs {
 
     private static final String GENERAL_PREFERENCES_KEY = "general_preferences_key";
-    private static final String LAST_ROW_ORDER = "last_row_order";
-    private static final String LAST_ARRIVAL_DATE = "last_arrival_date";
-    private static final String LAST_ARRIVAL_DATE_TIMESTAMP = "last_arrival_date_timestamp";
+    private static final String LAST_ROW_ORDER = "LAST_ROW_ORDER";
+    private static final String LAST_ARRIVAL_DATE = "LAST_ARRIVAL_DATE";
+    private static final String LAST_ARRIVAL_DATE_TIMESTAMP = "LAST_ARRIVAL_DATE_TIMESTAMP";
+    private static final String IS_FIRST_RUN = "IS_FIRST_RUN";
+
     private static final String TAG = "EvloPrefs";
 
     private EvloPrefs() {}
@@ -56,6 +58,16 @@ public class EvloPrefs {
     public static void setLastArrivalDateTimeStamp(Context context, long arrivalDate) {
         final SharedPreferences.Editor editor = generalPreferences(context).edit();
         editor.putLong(LAST_ARRIVAL_DATE_TIMESTAMP, arrivalDate);
+        editor.apply();
+    }
+
+    public static boolean getIsFirstRun(Context context) {
+        return generalPreferences(context).getBoolean(IS_FIRST_RUN, true);
+    }
+
+    public static void setIsFirstRun(Context context, boolean isFirst) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putBoolean(IS_FIRST_RUN, isFirst);
         editor.apply();
     }
 }

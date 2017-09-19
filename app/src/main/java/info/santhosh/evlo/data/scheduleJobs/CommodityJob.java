@@ -8,7 +8,6 @@ import com.evernote.android.job.util.support.PersistableBundleCompat;
 
 import java.util.concurrent.TimeUnit;
 
-import info.santhosh.evlo.application.EvloApplication;
 import info.santhosh.evlo.service.GetProtoDataService;
 
 /**
@@ -26,11 +25,11 @@ public class CommodityJob extends Job {
         PersistableBundleCompat extras = params.getExtras();
         Boolean runWhenAppOpen = extras.getBoolean(RUN_WHEN_APP_IS_OPEN, false);
 
-        if(!runWhenAppOpen && EvloApplication.isVisible()) {
-            // do not run when app is visible to the user
-            // this creates stutter in the application
-            return Result.SUCCESS;
-        }
+//        if(!runWhenAppOpen) { // TODO: find a way to see if app is open? maybe shared prefs?
+//            // do not run when app is visible to the user
+//            // this creates stutter in the application
+//            return Result.SUCCESS;
+//        }
         return GetProtoDataService.synchronousProtoRequest(getContext());
     }
 
