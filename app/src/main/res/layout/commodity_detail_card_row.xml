@@ -5,22 +5,22 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/text_market_district"
+        android:id="@+id/text_market"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:paddingEnd="16dp"
         android:paddingLeft="0dp"
         android:paddingRight="16dp"
         android:paddingStart="0dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
-        android:textSize="18sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Chirala market, Prakasam district"
+        tools:text="Chirala market"
         android:layout_marginTop="16dp" />
 
     <TextView
@@ -29,11 +29,28 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
-        android:textSize="18sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/text_market_district"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_market"
         app:layout_constraintRight_toRightOf="parent"
         tools:text="\u20B9 3950" />
+
+    <TextView
+        android:id="@+id/text_district"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:maxLines="1"
+        android:paddingEnd="16dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="16dp"
+        android:paddingStart="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/text_market"
+        tools:text="Prakasam district"
+        app:layout_constraintRight_toLeftOf="@+id/text_unit_price" />
+
 
     <TextView
         android:id="@+id/text_state_name"
@@ -46,10 +63,10 @@
         android:paddingRight="16dp"
         android:paddingStart="0dp"
         android:paddingTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Subtitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_unit_price"
-        app:layout_constraintTop_toBottomOf="@+id/text_market_district"
+        app:layout_constraintTop_toBottomOf="@+id/text_district"
         tools:text="Andhra Pradesh" />
 
     <TextView
@@ -69,7 +86,7 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:text="@string/modal_price_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -81,7 +98,7 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:text="@string/min_price_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -94,8 +111,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
-        android:textSize="18sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
         tools:text="\u20B9 3500 per 100kg*" />
@@ -105,7 +122,7 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:text="@string/max_price_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -118,8 +135,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
-        android:textSize="18sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
         app:layout_constraintTop_toBottomOf="@+id/text_min_price"
         tools:text="\u20B9 4000 per 100kg*" />
@@ -129,7 +146,7 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:text="@string/arrival_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -141,8 +158,8 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
-        android:textSize="18sp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
         tools:text="30/05/2017"
         app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
         android:layout_marginTop="4dp"

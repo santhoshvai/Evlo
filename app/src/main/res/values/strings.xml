@@ -8,6 +8,8 @@
     <string name="rupee_price">\u20B9 %1$s</string>
     <string name="rupee_price_with_unit">\u20B9 %1$s per 100kg*</string>
     <string name="market">%1$s market, %2$s district</string>
+    <string name="market_only">%1$s market</string>
+    <string name="district_only">%1$s district</string>
     <string name="share_data">%1$s,\n%2$s variety,\n\u20B9 %3$s per 100kg,\n%4$s market, %5$s district,\n %6$s </string>
     <string name="variety">%1$s variety</string>
     <string name="commodity_name_and_variety">%1$s, %2$s variety</string>

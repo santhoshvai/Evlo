@@ -167,6 +167,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             final TextView mModalPrice;
             final TextView mState;
             final TextView mMarket;
+            final TextView mDistrict;
             final TextView mFav;
             final TextView mShare;
             final TextView mDetail;
@@ -178,7 +179,8 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 super(view);
                 this.mModalPrice = (TextView) view.findViewById(R.id.text_modal_price);
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
-                this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
+                this.mMarket = (TextView) view.findViewById(R.id.text_market);
+                this.mDistrict = (TextView) view.findViewById(R.id.text_district);
                 this.mFav = (TextView) view.findViewById(R.id.favorite_icon);
                 this.mShare = (TextView) view.findViewById(R.id.share_icon);
                 this.mDetail = (TextView) view.findViewById(R.id.details_icon);
@@ -334,11 +336,10 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             final String state = commodity.getState();
             // variety name given is same as commodityName, then replace it as Normal
             final String variety = commodity.getVariety();
-            final String nameAndVariety = res.getString(R.string.commodity_name_and_variety, commodityName, variety);
 
             holder.mFav.setSelected(commodity.isFavorite());
-            String market_text = res.getString(R.string.market, market, district);
-            holder.mMarket.setText(market_text);
+            holder.mMarket.setText(res.getString(R.string.market_only, market));
+            holder.mDistrict.setText(res.getString(R.string.district_only, district));
             holder.mState.setText(state);
 
             // (More Button to show details) https://stackoverflow.com/questions/41464629/expand-collapse-animation-in-cardview
