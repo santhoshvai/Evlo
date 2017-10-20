@@ -19,11 +19,11 @@ public class EvloApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        DebugUtils.init(this);
         Fabric.with(this, new Crashlytics());
         JobManager.create(this).addJobCreator(new CommodityJobCreator());
-        CommodityJob.scheduleJobWhenConnectedImmediately();
+        CommodityJob.scheduleJobImmediately();
 //        startService(new Intent(this, GetProtoDataService.class));
+        DebugUtils.init(this);
     }
 
 }

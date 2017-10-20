@@ -47,8 +47,6 @@ public class CommodityJob extends Job {
                 .setPeriodic(TimeUnit.MINUTES.toMillis(30), TimeUnit.MINUTES.toMillis(5))
                 .setRequiresCharging(true)
                 .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-                .setUpdateCurrent(true)
-                .setPersisted(true)
                 .setRequirementsEnforced(true)
                 .build()
                 .schedule();
@@ -64,8 +62,6 @@ public class CommodityJob extends Job {
                 .setPeriodic(TimeUnit.HOURS.toMillis(3), TimeUnit.MINUTES.toMillis(5))
                 .setRequiresCharging(false)
                 .setRequiredNetworkType(JobRequest.NetworkType.UNMETERED)
-                .setUpdateCurrent(true)
-                .setPersisted(true)
                 .setRequirementsEnforced(true)
                 .build()
                 .schedule();
@@ -77,17 +73,22 @@ public class CommodityJob extends Job {
      * @return id of the job created
      */
     public static int scheduleJobWhenConnectedImmediately() {
-        PersistableBundleCompat extras = new PersistableBundleCompat();
-        extras.putBoolean(RUN_WHEN_APP_IS_OPEN, true);
 
         return new JobRequest.Builder(TAG)
                 .setExecutionWindow(1, TimeUnit.DAYS.toMillis(1)) // https://github.com/evernote/android-job/issues/228
                 .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
-                .setExtras(extras)
-                .setUpdateCurrent(true)
                 .setRequirementsEnforced(true)
                 .build()
                 .schedule();
     }
+
+    public static int scheduleJobImmediately() {
+
+        return new JobRequest.Builder(TAG)
+                .startNow()
+                .build()
+                .schedule();
+    }
+
 
 }
