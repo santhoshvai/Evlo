@@ -71,6 +71,7 @@ ext {
     stickyHeaderVersion = '0.2.8'
     protoModelVersion = '1.2-SNAPSHOT'
     crashlyticsVersion = '2.6.8'
+    recyclerViewAnimatorsVersion = '2.2.7'
 }
 
 dependencies {
@@ -114,4 +115,5 @@ dependencies {
 
     // stetho - for inspecting networks and sqlite dbs
     debugCompile "com.facebook.stetho:stetho:${stethoVersion}"
+    compile "jp.wasabeef:recyclerview-animators:${recyclerViewAnimatorsVersion}"
 }

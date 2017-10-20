@@ -15,6 +15,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.util.DiffUtil;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -39,6 +41,7 @@ import info.santhosh.evlo.common.ColorUtil;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.ui.detail.CommodityDetailActivity;
 import info.santhosh.evlo.widget.EmptyRecyclerView;
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 import static info.santhosh.evlo.ui.search.SearchActivity.CommodityAdapter.SEARCH_HIGHLIGHT_PAYLOAD;
 import static info.santhosh.evlo.ui.search.SearchActivity.CommodityName.COMMODITY_NAME_COLUMNS;
@@ -93,6 +96,11 @@ public class SearchActivity extends AppCompatActivity
 
     @Override
     public void onSearchChange(CharSequence s) {
+        if (mRecyclerView.getItemAnimator() instanceof SlideInUpAnimator) {
+            // keep slide up animation just on first load
+            // slide up animator causes crash when we notify item changes
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        }
         String query = s.toString().trim();
         Bundle args = null;
         if(!TextUtils.isEmpty(s)) {
@@ -135,6 +143,11 @@ public class SearchActivity extends AppCompatActivity
                 linearLayoutManager.getOrientation());
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(mRecyclerView.getContext(), R.drawable.divider_grey));
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
+        animator.setAddDuration(300);
+        animator.setRemoveDuration(300);
+        mRecyclerView.setItemAnimator(animator);
     }
 
     @Override
