@@ -1,14 +1,25 @@
 package info.santhosh.evlo.data.scheduleJobs;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
+import android.util.Log;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import info.santhosh.evlo.service.GetProtoDataService;
+import info.santhosh.evlo.common.DataFetchStatusProvider;
+import info.santhosh.evlo.common.EvloPrefs;
+import info.santhosh.evlo.common.WriteDb;
+import info.santhosh.evlo.model.CommodityProtos;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by santhoshvai on 28/05/17.
@@ -18,6 +29,7 @@ public class CommodityJob extends Job {
 
     static final String TAG = "CommodityJob";
     private static final String RUN_WHEN_APP_IS_OPEN = "run_when_app_is_open";
+    private static final String PROTO_URL = "https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1";
 
     @NonNull
     @Override
@@ -30,7 +42,7 @@ public class CommodityJob extends Job {
 //            // this creates stutter in the application
 //            return Result.SUCCESS;
 //        }
-        return GetProtoDataService.synchronousProtoRequest(getContext());
+        return synchronousProtoRequest(getContext());
     }
 
     @Override
@@ -83,11 +95,55 @@ public class CommodityJob extends Job {
     }
 
     public static int scheduleJobImmediately() {
-
         return new JobRequest.Builder(TAG)
                 .startNow()
                 .build()
                 .schedule();
+    }
+
+    @WorkerThread
+    private static Job.Result synchronousProtoRequest(Context context) {
+        DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.STARTED);
+        OkHttpClient client = new OkHttpClient();
+        Request requestProto = new Request.Builder()
+                .url( PROTO_URL )
+                .build();
+        Response response = null;
+
+        try {
+            response = client.newCall(requestProto).execute();
+            if (!response.isSuccessful() || response.body() == null) {
+                DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
+                return Job.Result.RESCHEDULE;
+            }
+            final InputStream byteStream = response.body().byteStream();
+            CommodityProtos.Commodities commoditiesProto = CommodityProtos.Commodities.parseFrom(byteStream);
+            WriteDb.usingProtos(context, commoditiesProto);
+            Log.d(TAG, "Received proto list size: " + commoditiesProto.getCommodityCount());
+
+            if (commoditiesProto.getCommodityCount() > 0) {
+                if (!EvloPrefs.getDataHasLoadedAtleastOnce(context)) {
+                    EvloPrefs.setDataHasLoadedAtleastOnce(context, true);
+                }
+                DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.DONE);
+            } else {
+                DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
+            }
+
+            return Job.Result.SUCCESS;
+        } catch (IOException e) {
+            DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
+            return Job.Result.RESCHEDULE;
+        } catch(Exception e) {
+            // TODO: log exception to firebase
+            e.printStackTrace();
+            DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
+            return Job.Result.FAILURE;
+        } finally {
+            if (response != null && response.body() != null) {
+                response.body().close();
+            }
+        }
     }
 
 

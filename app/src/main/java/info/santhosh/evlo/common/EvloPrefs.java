@@ -16,6 +16,7 @@ public class EvloPrefs {
     private static final String LAST_ARRIVAL_DATE = "LAST_ARRIVAL_DATE";
     private static final String LAST_ARRIVAL_DATE_TIMESTAMP = "LAST_ARRIVAL_DATE_TIMESTAMP";
     private static final String IS_FIRST_RUN = "IS_FIRST_RUN";
+    private static final String DATA_HAS_LOADED_ATLEAST_ONCE = "DATA_HAS_LOADED_ATLEAST_ONCE";
 
     private static final String TAG = "EvloPrefs";
 
@@ -50,7 +51,6 @@ public class EvloPrefs {
     }
 
     public static long getLastArrivalDateTimeStamp(Context context) {
-        // <Arrival_Date>28/05/2017</Arrival_Date>
         final long date = generalPreferences(context).getLong(LAST_ARRIVAL_DATE_TIMESTAMP, -1);
         return date;
     }
@@ -68,6 +68,16 @@ public class EvloPrefs {
     public static void setIsFirstRun(Context context, boolean isFirst) {
         final SharedPreferences.Editor editor = generalPreferences(context).edit();
         editor.putBoolean(IS_FIRST_RUN, isFirst);
+        editor.apply();
+    }
+
+    public static boolean getDataHasLoadedAtleastOnce(Context context) {
+        return generalPreferences(context).getBoolean(DATA_HAS_LOADED_ATLEAST_ONCE, false);
+    }
+
+    public static void setDataHasLoadedAtleastOnce(Context context, boolean value) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putBoolean(DATA_HAS_LOADED_ATLEAST_ONCE, value);
         editor.apply();
     }
 }
