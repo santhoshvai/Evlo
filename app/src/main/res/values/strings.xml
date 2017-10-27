@@ -15,7 +15,7 @@
     <string name="commodity_name_and_variety">%1$s, %2$s variety</string>
     <string name="favorite_content">Bookmark</string>
     <string name="share_content">Share</string>
-    <string name="share_heading">Share the price detail</string>
+    <string name="share_heading">Share the commodity details</string>
     <string name="menu_bottom_commodities">Commodities</string>
     <string name="menu_bottom_markets">Markets</string>
     <string name="menu_bottom_favourites">Favourites</string>
@@ -38,8 +38,13 @@
     <string name="min_price_header">Minimum Price : </string>
     <string name="modal_price_header">Modal Price : </string>
     <string name="faq">FAQ</string>
+    <string name="file_authority">info.santhosh.evlo.fileprovider</string>
+    <string name="share_marketing">"Sent using Evlo app"</string>
 
     <string name="intro_1_title">Welcome to Evlo</string>
     <string name="intro_1_desc">"Find India's latest market prices instantly"</string>
+    <string name="rate_app">Love Evlo? Tap to rate us on the Play store</string>
     <string name="intro_button">Get Started</string>
+    <string name="disclaimer">The contents of this service may be used free of charge in any format or media without requiring specific permission. Sanctity of the contents should be maintained. The source of contents must be acknowledged as http://agmarknet.nic.in when being reproduced / used as part of another service or publication. Violators of this advice shall be attracting legal action by the Directorate of Marketing and Inspection, Department of Agriculture and Co-operation, Government of India. “The arrival and prices of different agricultural commodities as received from the Agricultural Produce Market Committee (APMCs) of different States are uploaded at AGMARKNET portal for information only and shall not be considered as guidance, invitation or persuasion. Users/visitors have to make their own decisions based on their own independent enquiries, appraisals, judgments, wisdom and risks. The Govt. of India shall not be liable or responsible for any loss or cost or any action whatsoever arising out of use or relying on the arrivals and prices and other related information disseminated at the portal.</string>
+    <string name="no_thanks">No thanks</string>
 </resources>

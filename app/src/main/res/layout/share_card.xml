@@ -74,19 +74,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/modal_price_header"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_modal_price"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline" />
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_modal_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="@+id/text_min_price"
         app:layout_constraintTop_toBottomOf="@+id/text_state_name"
         tools:text="\u20B9 3950 per 100kg*" />
 
@@ -98,16 +97,15 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_min_price"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline" />
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_min_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="@+id/text_max_price"
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
         tools:text="\u20B9 3500 per 100kg*" />
 
@@ -116,19 +114,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/max_price_header"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_max_price"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline" />
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_max_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toEndOf="@+id/header_max_price"
         app:layout_constraintTop_toBottomOf="@+id/text_min_price"
         tools:text="\u20B9 4000 per 100kg*" />
 
@@ -137,81 +136,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/arrival_header"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_arrival_date"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline" />
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_arrival_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintStart_toStartOf="@+id/text_max_price"
         app:layout_constraintTop_toBottomOf="@+id/text_max_price"
         tools:text="30/05/2017" />
 
     <TextView
-        android:id="@+id/details_icon"
+        android:id="@+id/evlo_promo_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:drawableLeft="@drawable/more_detail_state"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/more_detail_state"
-        android:padding="@dimen/card_action_button_padding"
-        android:text="@string/details_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/light_grey"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/favorite_icon"
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/share_marketing"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/teal_700"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_arrival_date" />
 
     <TextView
-        android:id="@+id/favorite_icon"
+        android:id="@+id/evlo_promo_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:drawableLeft="@drawable/bookmark_fill"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/bookmark_fill"
-        android:gravity="center"
-        android:padding="@dimen/card_action_button_padding"
-        android:text="@string/favorite_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/bookmark_states"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@+id/details_icon"
-        app:layout_constraintRight_toLeftOf="@+id/share_icon"
-        app:layout_constraintTop_toTopOf="@+id/details_icon" />
-
-    <TextView
-        android:id="@+id/share_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:clickable="true"
-        android:drawableLeft="@drawable/share_state"
-        android:drawablePadding="8dp"
-        android:drawableStart="@drawable/share_state"
-        android:gravity="center"
-        android:padding="@dimen/card_action_button_padding"
-        android:text="@string/share_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textColor="@color/light_grey"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@+id/favorite_icon"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/details_icon" />
+        android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="@string/intro_1_desc"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/teal_700"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/evlo_promo_title" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -222,11 +187,5 @@
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="0dp" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/price_guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.35" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,6 +1,5 @@
 package info.santhosh.evlo.ui.main;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
@@ -41,6 +40,7 @@ import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
 import info.santhosh.evlo.data.dbModels.Commodity;
 import info.santhosh.evlo.widget.EmptyRecyclerView;
 
+import static info.santhosh.evlo.common.ShareUtils.startShare;
 import static info.santhosh.evlo.data.dbModels.Commodity.COMMODITY_DETAIL_COLUMNS;
 
 /**
@@ -231,24 +231,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 @Override
                 public void onClick(View v) {
                     // TODO: share an image if you can
-                    final Resources res = vh.itemView.getContext().getResources();
                     int pos = vh.getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
-                        Commodity commodity = mCommodityList.get(pos);
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        final String commodityName = commodity.getCommodity();
-                        final String modalPrice = commodity.getModal_Price();
-                        final String district = commodity.getDistrict();
-                        final String market = commodity.getMarket();
-                        final String state = commodity.getState();
-                        final String variety = commodity.getVariety();
-                        String share = v.getContext().getResources().getString(R.string.share_data,
-                                commodityName, variety, modalPrice, market, district, state);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, share);
-                        sendIntent.setType("text/plain");
-                        vh.itemView.getContext().startActivity(Intent.createChooser(sendIntent,
-                                res.getString(R.string.share_heading)));
+                        startShare(getActivity(), mCommodityList.get(pos));
                     }
                 }
             });
