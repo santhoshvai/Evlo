@@ -41,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startIntroIfNeeded();
+        // start Intro Activity If Needed
+        if(EvloPrefs.getIsFirstRun(this)) {
+            startActivityForResult(new Intent(this, IntroActivity.class), INTRO_REQUEST_CODE);
+        }
 
         setContentView(R.layout.activity_main);
 
@@ -151,9 +154,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    void startIntroIfNeeded() {
-        if(EvloPrefs.getIsFirstRun(this)) {
-            startActivityForResult(new Intent(this, IntroActivity.class), INTRO_REQUEST_CODE);
         }
     }
 
