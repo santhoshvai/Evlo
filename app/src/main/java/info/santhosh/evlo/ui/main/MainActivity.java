@@ -76,20 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
         // schedule evernote jobs
         // TODO: need to be done only once
-//        CommodityJob.scheduleJobWhenCharging();
-//        CommodityJob.scheduleJobWhenNotChargingWiFiOnly();
-//        exampleOne();
-    }
-
-    private void exampleOne() {
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    SystemClock.sleep(1000);
-                }
-            }
-        }.start();
+        if (savedInstanceState == null) {
+            CommodityJob.scheduleJobWhenCharging();
+            CommodityJob.scheduleJobWhenNotChargingWiFiOnly();
+        }
     }
 
     private void transitionToSearch() {
