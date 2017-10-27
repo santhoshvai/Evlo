@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;
-import com.evernote.android.job.util.support.PersistableBundleCompat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,26 +27,12 @@ import okhttp3.Response;
 public class CommodityJob extends Job {
 
     static final String TAG = "CommodityJob";
-    private static final String RUN_WHEN_APP_IS_OPEN = "run_when_app_is_open";
     private static final String PROTO_URL = "https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1";
 
     @NonNull
     @Override
     protected Result onRunJob(Params params) {
-        PersistableBundleCompat extras = params.getExtras();
-        Boolean runWhenAppOpen = extras.getBoolean(RUN_WHEN_APP_IS_OPEN, false);
-
-//        if(!runWhenAppOpen) { // TODO: find a way to see if app is open? maybe shared prefs?
-//            // do not run when app is visible to the user
-//            // this creates stutter in the application
-//            return Result.SUCCESS;
-//        }
         return synchronousProtoRequest(getContext());
-    }
-
-    @Override
-    protected void onReschedule(int newJobId) {
-        // the rescheduled job has a new ID
     }
 
     /**
