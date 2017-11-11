@@ -75,4 +75,60 @@
         <item name="android:textColor">@color/light_grey</item>
     </style>
 
+    <style name="CardFirstRowText" parent="AppTheme">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CardSecondRowText" parent="AppTheme">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+
+    <style name="CardThirdRowText" parent="AppTheme">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Small</item>
+    </style>
+
+    <style name="CardPriceUnit" parent="AppTheme">
+        <item name="android:text">@string/unit_of_price</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Small</item>
+    </style>
+
+    <style name="CardPriceHeaderAndPrice" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Subhead</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
 </resources>

@@ -6,16 +6,7 @@
 
     <TextView
         android:id="@+id/text_market"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:paddingEnd="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="16dp"
-        android:paddingStart="0dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textStyle="bold"
+        style="@style/CardFirstRowText"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
@@ -25,27 +16,17 @@
 
     <TextView
         android:id="@+id/text_modal_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/CardPriceHeaderAndPrice"
+        android:layout_width="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textStyle="bold"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_market"
         app:layout_constraintRight_toRightOf="parent"
         tools:text="\u20B9 3950" />
 
     <TextView
         android:id="@+id/text_district"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:maxLines="1"
-        android:paddingEnd="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="16dp"
-        android:paddingStart="0dp"
+        style="@style/CardSecondRowText"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/text_market"
         tools:text="Prakasam district"
@@ -54,16 +35,7 @@
 
     <TextView
         android:id="@+id/text_state_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:maxLines="2"
-        android:paddingEnd="16dp"
-        android:paddingLeft="0dp"
-        android:paddingRight="16dp"
-        android:paddingStart="0dp"
-        android:paddingTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        style="@style/CardThirdRowText"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_unit_price"
         app:layout_constraintTop_toBottomOf="@+id/text_district"
@@ -71,12 +43,7 @@
 
     <TextView
         android:id="@+id/text_unit_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        style="@style/CardPriceUnit"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
         android:text="@string/unit_of_price" />
@@ -84,9 +51,7 @@
     <TextView
         android:id="@+id/header_modal_price"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        style="@style/CardPriceHeaderAndPrice"
         android:text="@string/modal_price_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -96,9 +61,7 @@
     <TextView
         android:id="@+id/header_min_price"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        style="@style/CardPriceHeaderAndPrice"
         android:text="@string/min_price_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -108,11 +71,7 @@
     <TextView
         android:id="@+id/text_min_price"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textStyle="bold"
+        style="@style/CardPriceHeaderAndPrice"
         app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
         tools:text="\u20B9 3500 per 100kg*" />
@@ -120,9 +79,7 @@
     <TextView
         android:id="@+id/header_max_price"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        style="@style/CardPriceHeaderAndPrice"
         android:text="@string/max_price_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -132,11 +89,7 @@
     <TextView
         android:id="@+id/text_max_price"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textStyle="bold"
+        style="@style/CardPriceHeaderAndPrice"
         app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
         app:layout_constraintTop_toBottomOf="@+id/text_min_price"
         tools:text="\u20B9 4000 per 100kg*" />
@@ -144,9 +97,7 @@
     <TextView
         android:id="@+id/header_arrival"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        style="@style/CardPriceHeaderAndPrice"
         android:text="@string/arrival_header"
         app:layout_constraintRight_toRightOf="@+id/price_guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -156,13 +107,8 @@
     <TextView
         android:id="@+id/text_arrival_date"
         android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textStyle="bold"
-        tools:text="30/05/2017"
+        style="@style/CardPriceHeaderAndPrice"
         app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
-        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@+id/text_max_price" />
 
     <TextView
