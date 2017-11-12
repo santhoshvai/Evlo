@@ -39,7 +39,7 @@
     <TextView
         android:id="@+id/text_modal_price"
         style="@style/CardPriceHeaderAndPrice"
-        app:layout_constraintStart_toStartOf="@+id/text_min_price"
+        app:layout_constraintStart_toStartOf="@+id/text_max_price"
         app:layout_constraintTop_toBottomOf="@+id/text_state_name"
         tools:text="\u20B9 3950 per 100kg*" />
 
@@ -61,9 +61,7 @@
     <TextView
         android:id="@+id/text_min_price"
         style="@style/CardPriceHeaderAndPrice"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintStart_toEndOf="@+id/header_min_price"
+        app:layout_constraintStart_toStartOf="@+id/text_max_price"
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
         tools:text="\u20B9 3500 per 100kg*" />
 
@@ -78,7 +76,9 @@
     <TextView
         android:id="@+id/text_max_price"
         style="@style/CardPriceHeaderAndPrice"
-        app:layout_constraintStart_toStartOf="@+id/text_min_price"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintStart_toEndOf="@+id/header_max_price"
         app:layout_constraintTop_toBottomOf="@+id/text_min_price"
         tools:text="\u20B9 4000 per 100kg*" />
 
