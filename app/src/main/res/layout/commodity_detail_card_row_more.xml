@@ -13,6 +13,13 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
+        android:id="@+id/text_unit_price"
+        style="@style/CardPriceUnit"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_modal_price" />
+
+    <TextView
         android:id="@+id/text_district"
         style="@style/CardSecondRowText"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
@@ -30,35 +37,33 @@
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
+        android:id="@+id/text_modal_price"
+        style="@style/CardPriceHeaderAndPrice"
+        app:layout_constraintStart_toStartOf="@+id/text_min_price"
+        app:layout_constraintTop_toBottomOf="@+id/text_state_name"
+        tools:text="\u20B9 3950 per 100kg*" />
+
+    <TextView
         android:id="@+id/header_modal_price"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/modal_price_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_modal_price"
-        app:layout_constraintHorizontal_bias="0.0" />
-
-    <TextView
-        android:id="@+id/text_modal_price"
-        style="@style/CardPriceHeaderAndPrice"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/text_state_name"
-        tools:text="\u20B9 3950 per 100kg*" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/header_min_price"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/min_price_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_min_price"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_min_price"
         style="@style/CardPriceHeaderAndPrice"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintStart_toEndOf="@+id/header_min_price"
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
         tools:text="\u20B9 3500 per 100kg*" />
 
@@ -66,15 +71,14 @@
         android:id="@+id/header_max_price"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/max_price_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_max_price"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_max_price"
         style="@style/CardPriceHeaderAndPrice"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        app:layout_constraintStart_toStartOf="@+id/text_min_price"
         app:layout_constraintTop_toBottomOf="@+id/text_min_price"
         tools:text="\u20B9 4000 per 100kg*" />
 
@@ -82,27 +86,16 @@
         android:id="@+id/header_arrival"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/arrival_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_arrival_date"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_arrival_date"
         style="@style/CardPriceHeaderAndPrice"
-        tools:text="30/05/2017"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
-        android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@+id/text_max_price" />
-
-    <TextView
-        android:id="@+id/text_unit_price"
-        style="@style/CardPriceUnit"
-        android:visibility="gone"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
-        android:text="@string/unit_of_price" />
-
+        app:layout_constraintStart_toStartOf="@+id/text_max_price"
+        app:layout_constraintTop_toBottomOf="@+id/text_max_price"
+        tools:text="30/05/2017" />
 
     <TextView
         android:id="@+id/details_icon"
@@ -144,12 +137,5 @@
         app:layout_constraintGuide_begin="16dp"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="0dp" />
-
-    <android.support.constraint.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/price_guideline"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
 
 </android.support.constraint.ConstraintLayout>

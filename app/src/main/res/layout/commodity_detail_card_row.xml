@@ -11,8 +11,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_modal_price"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Chirala market"
-        android:layout_marginTop="16dp" />
+        tools:text="Chirala market" />
 
     <TextView
         android:id="@+id/text_modal_price"
@@ -53,26 +52,25 @@
         android:visibility="gone"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/modal_price_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_modal_price"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/header_min_price"
         android:visibility="gone"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/min_price_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_min_price"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_min_price"
         android:visibility="gone"
         style="@style/CardPriceHeaderAndPrice"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintStart_toEndOf="@+id/header_min_price"
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price"
         tools:text="\u20B9 3500 per 100kg*" />
 
@@ -81,16 +79,15 @@
         android:visibility="gone"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/max_price_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_max_price"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_max_price"
         android:visibility="gone"
         style="@style/CardPriceHeaderAndPrice"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
+        app:layout_constraintStart_toStartOf="@+id/text_min_price"
         app:layout_constraintTop_toBottomOf="@+id/text_min_price"
         tools:text="\u20B9 4000 per 100kg*" />
 
@@ -99,17 +96,17 @@
         android:visibility="gone"
         style="@style/CardPriceHeaderAndPrice"
         android:text="@string/arrival_header"
-        app:layout_constraintRight_toRightOf="@+id/price_guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintBaseline_toBaselineOf="@+id/text_arrival_date"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/text_arrival_date"
         android:visibility="gone"
         style="@style/CardPriceHeaderAndPrice"
-        app:layout_constraintLeft_toLeftOf="@+id/price_guideline"
-        app:layout_constraintTop_toBottomOf="@+id/text_max_price" />
+        app:layout_constraintStart_toStartOf="@+id/text_max_price"
+        app:layout_constraintTop_toBottomOf="@+id/text_max_price"
+        tools:text="30/05/2017" />
 
     <TextView
         android:id="@+id/details_icon"
@@ -151,12 +148,5 @@
         app:layout_constraintGuide_begin="16dp"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="0dp" />
-
-    <android.support.constraint.Guideline
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/price_guideline"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
 
 </android.support.constraint.ConstraintLayout>
