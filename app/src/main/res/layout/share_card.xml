@@ -6,7 +6,7 @@
     android:layout_margin="@dimen/card_layout_margin">
 
     <TextView
-        android:id="@+id/text_variety"
+        android:id="@+id/text_variety_and_or_market"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_modal_price" />
 
     <TextView
-        android:id="@+id/text_market_district"
+        android:id="@+id/text_market_and_or_district"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -50,7 +50,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
         app:layout_constraintRight_toLeftOf="@+id/text_unit_price"
-        app:layout_constraintTop_toBottomOf="@+id/text_variety"
+        app:layout_constraintTop_toBottomOf="@+id/text_variety_and_or_market"
         tools:text="Chirala market, Prakasam district lonwer" />
 
     <TextView
@@ -66,7 +66,7 @@
         android:paddingStart="0dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         app:layout_constraintLeft_toLeftOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/text_market_district"
+        app:layout_constraintTop_toBottomOf="@+id/text_market_and_or_district"
         tools:text="Andhra Pradesh" />
 
     <TextView

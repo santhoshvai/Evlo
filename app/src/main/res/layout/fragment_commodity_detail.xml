@@ -10,5 +10,5 @@
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
         android:background="@android:color/white"
-        tools:listitem="@layout/commodity_detail_card_row" />
+        tools:listitem="@layout/commodity_card_row" />
 </FrameLayout>

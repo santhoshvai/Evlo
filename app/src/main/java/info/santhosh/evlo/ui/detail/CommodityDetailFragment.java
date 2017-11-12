@@ -179,8 +179,8 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 super(view);
                 this.mModalPrice = (TextView) view.findViewById(R.id.text_modal_price);
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
-                this.mMarket = (TextView) view.findViewById(R.id.text_market);
-                this.mDistrict = (TextView) view.findViewById(R.id.text_district);
+                this.mMarket = (TextView) view.findViewById(R.id.text_variety_and_or_market);
+                this.mDistrict = (TextView) view.findViewById(R.id.text_market_and_or_district);
                 this.mFav = (TextView) view.findViewById(R.id.favorite_icon);
                 this.mShare = (TextView) view.findViewById(R.id.share_icon);
                 this.mDetail = (TextView) view.findViewById(R.id.details_icon);
@@ -222,9 +222,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         @Override
         public CommodityDetailAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.commodity_detail_card_row, parent, false);
+                            .inflate(R.layout.commodity_card_row, parent, false);
             mConstraintSetNormal.clone((ConstraintLayout) view);
-            mConstraintSetBig.load(parent.getContext(), R.layout.commodity_detail_card_row_more);
+            mConstraintSetBig.load(parent.getContext(), R.layout.commodity_card_row_more);
             final CommodityDetailAdapter.ViewHolder vh = new ViewHolder(view);
             vh.mFav.setOnClickListener(new View.OnClickListener() {
                 @Override

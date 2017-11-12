@@ -170,10 +170,10 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
             ViewHolder(View view) {
                 super(view);
-                this.mVariety = (TextView) view.findViewById(R.id.text_variety);
+                this.mVariety = (TextView) view.findViewById(R.id.text_variety_and_or_market);
                 this.mModalPrice = (TextView) view.findViewById(R.id.text_modal_price);
                 this.mState = (TextView) view.findViewById(R.id.text_state_name);
-                this.mMarket = (TextView) view.findViewById(R.id.text_market_district);
+                this.mMarket = (TextView) view.findViewById(R.id.text_market_and_or_district);
                 this.mFav = (TextView) view.findViewById(R.id.favorite_icon);
                 this.mShare = (TextView) view.findViewById(R.id.share_icon);
                 this.mDetail = (TextView) view.findViewById(R.id.details_icon);
@@ -186,9 +186,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         @Override
         public CommodityFavAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.favorites_card_row, parent, false);
+                            .inflate(R.layout.commodity_card_row, parent, false);
             mConstraintSetNormal.clone((ConstraintLayout) view);
-            mConstraintSetBig.load(parent.getContext(), R.layout.favorites_card_row_more);
+            mConstraintSetBig.load(parent.getContext(), R.layout.commodity_card_row_more);
 
             final CommodityFavAdapter.ViewHolder vh = new ViewHolder(view);
             vh.mFav.setOnClickListener(new View.OnClickListener() {
