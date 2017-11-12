@@ -38,6 +38,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image"
         app:layout_constraintVertical_bias="0.29000002"
+        android:fontFamily="@font/nunito"
         android:text="@string/intro_1_title"
         android:textColor="@color/market_blueishWhite_text" />
 
@@ -54,14 +55,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
+        android:fontFamily="@font/nunito"
         android:textColor="@color/market_blueishWhite_text"
         android:text="@string/intro_1_desc" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginTop="0dp"
+        android:fontFamily="@font/nunito"
         android:onClick="getStarted"
         android:paddingEnd="32dp"
         android:paddingLeft="32dp"
@@ -69,6 +70,7 @@
         android:paddingStart="32dp"
         android:text="@string/intro_button"
         android:textColor="@color/market_blueishWhite_text"
+        android:textStyle="bold"
         android:theme="@style/GetStartedBtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -78,7 +78,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
             TextView title = (TextView) activity.findViewById(R.id.toolbar_title);
             if (title != null) {
-                activity.setTitle(mCommodityName);
+                title.setText(mCommodityName);
             }
             mCommodityDetailAdapter = new CommodityDetailAdapter();
             getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
