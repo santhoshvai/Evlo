@@ -96,10 +96,10 @@ public final class ShareUtils {
         // variety name given is same as commodityName, then replace it as Normal
         final String variety = commodity.getVariety();
 
-        TextView varietyTv = view.findViewById(R.id.text_variety);
+        TextView varietyTv = view.findViewById(R.id.text_variety_and_or_market);
         TextView modalPriceTv = view.findViewById(R.id.text_modal_price);
         TextView stateTv = view.findViewById(R.id.text_state_name);
-        TextView marketTv = view.findViewById(R.id.text_market_district);
+        TextView marketTv = view.findViewById(R.id.text_market_and_or_district);
         TextView arrivalDateTv = view.findViewById(R.id.text_arrival_date);
         TextView maxPriceTv = view.findViewById(R.id.text_max_price);
         TextView minPriceTv = view.findViewById(R.id.text_min_price);
