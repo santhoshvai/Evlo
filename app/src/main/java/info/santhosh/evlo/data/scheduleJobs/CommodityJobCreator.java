@@ -11,6 +11,8 @@ public class CommodityJobCreator implements JobCreator {
     @Override
     public Job create(String tag) {
         switch (tag) {
+            case CommodityJob.TAG_NOT_CHARGING:
+            case CommodityJob.TAG_IMMEDIATE:
             case CommodityJob.TAG:
                 return new CommodityJob();
             default:
