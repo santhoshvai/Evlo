@@ -60,7 +60,7 @@ android {
 ext {
     // version numbers
     junitVersion = '4.12'
-    supportLibVersion = '26.0.2'
+    supportLibVersion = '26.1.0'
     constraintLayoutVersion = '1.0.2'
     okhttpVersion = '2.2.0'
     okhttp3Version = '3.8.1'
