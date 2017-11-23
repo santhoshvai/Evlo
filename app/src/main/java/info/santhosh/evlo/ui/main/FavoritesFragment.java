@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,6 +141,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         private final AnimatedVectorDrawableCompat avd_from_down_arrow;
         private final AnimatedVectorDrawableCompat avd_from_up_arrow;
 
+        // dirty workaround for support library bug https://github.com/googlesamples/android-ConstraintLayoutExamples/issues/6
+        private boolean shouldShowMorebutton = true;
+
         CommodityFavAdapter() {
             avd_from_down_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
             avd_from_up_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_up_arrow);
@@ -188,7 +193,12 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             View view = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.commodity_card_row, parent, false);
             mConstraintSetNormal.clone((ConstraintLayout) view);
-            mConstraintSetBig.load(parent.getContext(), R.layout.commodity_card_row_more);
+            try {
+                mConstraintSetBig.load(parent.getContext(), R.layout.commodity_card_row_more);
+            } catch(Exception e) {
+                Crashlytics.logException(e);
+                shouldShowMorebutton = false;
+            }
 
             final CommodityFavAdapter.ViewHolder vh = new ViewHolder(view);
             vh.mFav.setOnClickListener(new View.OnClickListener() {
@@ -323,6 +333,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             }
 
             holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
+            if (!shouldShowMorebutton) {
+                holder.mDetail.setVisibility(View.GONE);
+            }
         }
 
         @Override
