@@ -2,7 +2,6 @@ package info.santhosh.evlo.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.transition.AutoTransition;
 import android.support.transition.Transition;
@@ -17,6 +16,7 @@ import android.widget.FrameLayout;
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.EvloPrefs;
 import info.santhosh.evlo.common.Utils;
+import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
 import info.santhosh.evlo.ui.intro.IntroActivity;
 import info.santhosh.evlo.ui.search.SearchActivity;
 
@@ -152,9 +152,6 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
-    }
-
-        }
     }
 
     @Override
