@@ -56,6 +56,10 @@
         <item name="android:layout_height">@dimen/search_toolbar_height</item>
     </style>
 
+    <style name="SearchToolbar_Frame">
+        <item name="android:background">@drawable/dialog_full_holo_light</item>
+    </style>
+
     <style name="GetStartedBtn" parent="AppTheme">
         <item name="colorButtonNormal">@color/triad_market_blue_bg</item>
     </style>

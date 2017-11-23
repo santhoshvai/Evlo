@@ -23,6 +23,7 @@
     <color name="colorListRowSelect">#E9EBEB</color>
     <color name="almostWhite">#FFFAFAFA</color>
     <color name="searchHighlight">#4fc3f7</color>
+    <color name="white">#ffffffff</color>
 
     <!-- Intro -->
     <color name="market_blue_bg">#305888</color>

@@ -6,8 +6,7 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:background="@android:color/white"
-        android:elevation="4dp"
+        style="@style/SearchToolbar_Frame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <info.santhosh.evlo.ui.search.Searchbar
@@ -17,7 +16,8 @@
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         style="@style/container_tablet_constrain"
-        android:background="@android:color/white">
+        android:background="@color/white">
+
         <info.santhosh.evlo.widget.EmptyRecyclerView
             android:id="@+id/commodity_list"
             android:layout_width="match_parent"
