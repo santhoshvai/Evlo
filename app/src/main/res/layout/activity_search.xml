@@ -44,7 +44,7 @@
             tools:text='No search results for "Apple"'
             tools:visibility="visible" />
 
-        <ProgressBar
+        <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/progressBarSearch"
             android:layout_marginTop="40dp"
             style="?android:attr/progressBarStyle"
