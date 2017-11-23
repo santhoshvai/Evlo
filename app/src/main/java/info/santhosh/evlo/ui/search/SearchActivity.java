@@ -38,6 +38,7 @@ import java.util.List;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ColorUtil;
+import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.ui.detail.CommodityDetailActivity;
 import info.santhosh.evlo.widget.EmptyRecyclerView;
@@ -53,6 +54,7 @@ import static info.santhosh.evlo.ui.search.SearchActivity.CommodityName.COMMODIT
 public class SearchActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, Searchbar.OnTextChangedCallback, EmptyRecyclerView.SetEmptyViewCallback {
 
+    private static final String ARGS_NAME_KEY = "name";
     private Searchbar mSearchBar;
     private CommodityAdapter mCommodityAdapter;
     private EmptyRecyclerView mRecyclerView;
@@ -105,7 +107,7 @@ public class SearchActivity extends AppCompatActivity
         Bundle args = null;
         if(!TextUtils.isEmpty(s)) {
             args = new Bundle();
-            args.putString("name", query);
+            args.putString(ARGS_NAME_KEY, query);
         }
         mFilterSearch = query;
         mRecyclerView.scrollToPosition(0);
@@ -144,10 +146,12 @@ public class SearchActivity extends AppCompatActivity
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(mRecyclerView.getContext(), R.drawable.divider_grey));
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
-        animator.setAddDuration(300);
-        animator.setRemoveDuration(300);
-        mRecyclerView.setItemAnimator(animator);
+        if (Utils.isAPI21Plus()) { // performance was awful on lower apis
+            SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
+            animator.setAddDuration(300);
+            animator.setRemoveDuration(300);
+            mRecyclerView.setItemAnimator(animator);
+        }
     }
 
     @Override
@@ -161,7 +165,7 @@ public class SearchActivity extends AppCompatActivity
 
         if(args != null) {
             //  search
-            String name = args.getString("name", "");
+            String name = args.getString(ARGS_NAME_KEY, "");
             return new CursorLoader(this,
                     CommodityContract.CommodityDataEntry.buildCommodityNameSearchUri(name),
                     COMMODITY_NAME_COLUMNS,

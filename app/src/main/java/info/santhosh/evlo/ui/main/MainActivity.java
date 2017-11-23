@@ -66,7 +66,12 @@ public class MainActivity extends AppCompatActivity {
                 // Prepare the keyboard as soon as the user touches the Toolbar
                 // This will make the transition look faster
                 Utils.showKeyboard(MainActivity.this);
-                transitionToSearch();
+                if (Utils.isAPI21Plus()) {
+                    transitionToSearch();
+                } else { // use default animation on lower api's due to bad performance
+                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -116,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // all we have to do is change the attributes of the toolbar and the TransitionManager animates the changes
+
         TransitionManager.beginDelayedTransition(mSearchToolbar, transition);
         FrameLayout.LayoutParams frameLP = (FrameLayout.LayoutParams) mSearchToolbar.getLayoutParams();
         frameLP.setMargins(0, 0, 0, 0);
