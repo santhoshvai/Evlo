@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // transition from the cold start launch theme
+        setTheme(R.style.AppTheme_NoActionBar); // https://plus.google.com/+AndroidDevelopers/posts/Z1Wwainpjhd
         super.onCreate(savedInstanceState);
 
         // start Intro Activity If Needed
