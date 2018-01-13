@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
+    android:id="@+id/intro_root"
     tools:context=".ui.intro.IntroActivity"
-    android:background="@color/market_blue_bg">
+    android:background="@color/teal_700">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image"
@@ -57,19 +57,35 @@
         app:layout_constraintTop_toBottomOf="@id/title"
         android:fontFamily="@font/nunito"
         android:textColor="@color/market_blueishWhite_text"
-        android:text="@string/intro_1_desc" />
+        android:text="@string/intro_1_progress" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+        android:theme="@style/Progressbar.TealComp"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description" />
 
     <Button
+        android:id="@+id/getStartedBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/nunito"
-        android:onClick="getStarted"
+        android:onClick="onGetStarted"
         android:paddingEnd="32dp"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
         android:paddingStart="32dp"
         android:text="@string/intro_button"
-        android:textColor="@color/market_blueishWhite_text"
+        android:textColor="@color/teal_700_comp_text"
         android:textStyle="bold"
         android:theme="@style/GetStartedBtn"
         app:layout_constraintBottom_toBottomOf="parent"
