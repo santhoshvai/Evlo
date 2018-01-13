@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             CommodityJob.scheduleJobWhenCharging();
             CommodityJob.scheduleJobWhenNotChargingWiFiOnly();
+            if (!EvloPrefs.getIsFirstRun(this)) {
+                CommodityJob.scheduleJobImmediately();
+            }
         }
     }
 
@@ -166,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == INTRO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-//                EvloPrefs.setIsFirstRun(this, false);
+                EvloPrefs.setIsFirstRun(this, false);
                 Log.d(TAG, "onActivityResult: ");
             } else {
                 finish();

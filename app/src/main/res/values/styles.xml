@@ -7,6 +7,11 @@
         <item name="colorPrimaryDark">@color/teal_700</item>
     </style>
 
+    <style name="AppTheme.LaunchTheme">
+        <item name="android:windowTranslucentStatus" tools:ignore="NewApi">true</item>
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+
     <style name="bottomBarTheme" parent="AppTheme">
         <!--ripple color of bottom bar-->
         <item name="colorControlHighlight">@color/teal_A100</item>
@@ -61,7 +66,7 @@
     </style>
 
     <style name="GetStartedBtn" parent="AppTheme">
-        <item name="colorButtonNormal">@color/triad_market_blue_bg</item>
+        <item name="colorButtonNormal">@color/teal_700_comp</item>
     </style>
 
     <style name="CardActionTextBtn" parent="@style/TextAppearance.AppCompat.Subhead">
@@ -133,6 +138,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:fontFamily">@font/nunito</item>
         <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="Progressbar.TealComp" parent="AppTheme">
+        <item name="colorControlActivated">@color/teal_700_comp</item>
     </style>
 
 </resources>

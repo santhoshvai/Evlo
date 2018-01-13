@@ -1,26 +1,15 @@
 package info.santhosh.evlo.data.scheduleJobs;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.util.Log;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import info.santhosh.evlo.common.DataFetchStatusProvider;
-import info.santhosh.evlo.common.EvloPrefs;
-import info.santhosh.evlo.common.WriteDb;
-import info.santhosh.evlo.model.CommodityProtos;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import static info.santhosh.evlo.data.util.ProtoRequestAndStore.synchronousProtoRequest;
 
 /**
  * Created by santhoshvai on 28/05/17.
@@ -40,7 +29,7 @@ public class CommodityJob extends Job {
     }
 
     /**
-     * Every 30 minutes, when charging
+     * Every 60 minutes, when charging
      * @return id of the job created
      */
     public static int scheduleJobWhenCharging() {
@@ -50,7 +39,7 @@ public class CommodityJob extends Job {
         }
 
         return new JobRequest.Builder(TAG)
-                .setPeriodic(TimeUnit.MINUTES.toMillis(30), TimeUnit.MINUTES.toMillis(5))
+                .setPeriodic(TimeUnit.MINUTES.toMillis(60), TimeUnit.MINUTES.toMillis(5))
                 .setRequiresCharging(true)
                 .setRequiredNetworkType(JobRequest.NetworkType.CONNECTED)
                 .setRequirementsEnforced(true)
@@ -59,7 +48,7 @@ public class CommodityJob extends Job {
     }
 
     /**
-     * Every 2 hours, when not charging, on Wifi
+     * Every 4 hours, when not charging, on Wifi
      * @return id of the job created
      */
     public static int scheduleJobWhenNotChargingWiFiOnly() {
@@ -73,7 +62,7 @@ public class CommodityJob extends Job {
 
         // every 4 hours when not charging
         return new JobRequest.Builder(TAG_NOT_CHARGING)
-                .setPeriodic(TimeUnit.HOURS.toMillis(3), TimeUnit.MINUTES.toMillis(5))
+                .setPeriodic(TimeUnit.HOURS.toMillis(4), TimeUnit.MINUTES.toMillis(5))
                 .setRequiresCharging(false)
                 .setRequiredNetworkType(JobRequest.NetworkType.UNMETERED)
                 .setRequirementsEnforced(true)
@@ -103,51 +92,5 @@ public class CommodityJob extends Job {
                 .build()
                 .schedule();
     }
-
-    @WorkerThread
-    private static Job.Result synchronousProtoRequest(Context context) {
-        DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.STARTED);
-        OkHttpClient client = new OkHttpClient();
-        Request requestProto = new Request.Builder()
-                .url( PROTO_URL )
-                .build();
-        Response response = null;
-
-        try {
-            response = client.newCall(requestProto).execute();
-            if (!response.isSuccessful() || response.body() == null) {
-                DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
-                return Job.Result.RESCHEDULE;
-            }
-            final InputStream byteStream = response.body().byteStream();
-            CommodityProtos.Commodities commoditiesProto = CommodityProtos.Commodities.parseFrom(byteStream);
-            WriteDb.usingProtos(context, commoditiesProto);
-            Log.d(TAG, "Received proto list size: " + commoditiesProto.getCommodityCount());
-
-            if (commoditiesProto.getCommodityCount() > 0) {
-                if (!EvloPrefs.getDataHasLoadedAtleastOnce(context)) {
-                    EvloPrefs.setDataHasLoadedAtleastOnce(context, true);
-                }
-                DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.DONE);
-            } else {
-                DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
-            }
-
-            return Job.Result.SUCCESS;
-        } catch (IOException e) {
-            DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
-            return Job.Result.RESCHEDULE;
-        } catch(Exception e) {
-            // TODO: log exception to firebase
-            e.printStackTrace();
-            DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.ERROR);
-            return Job.Result.FAILURE;
-        } finally {
-            if (response != null && response.body() != null) {
-                response.body().close();
-            }
-        }
-    }
-
 
 }

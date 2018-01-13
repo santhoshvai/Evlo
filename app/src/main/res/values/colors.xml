@@ -8,6 +8,9 @@
     <!--Material palette: Green-->
     <color name="green_A200">#69f0ae</color> <!-- Accent -->
 
+    <color name="teal_700_comp">#C53D00</color>
+    <color name="teal_700_comp_text">#e0ffff</color>
+
     <!--Material palette: Pink-->
     <color name="pink_A200">#FF4081</color>
 

@@ -6,7 +6,6 @@ import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobManager;
 
 import info.santhosh.evlo.common.DebugUtils;
-import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
 import info.santhosh.evlo.data.scheduleJobs.CommodityJobCreator;
 import io.fabric.sdk.android.Fabric;
 
@@ -21,7 +20,7 @@ public class EvloApplication extends Application {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
         JobManager.create(this).addJobCreator(new CommodityJobCreator());
-        CommodityJob.scheduleJobImmediately();
+//        CommodityJob.scheduleJobImmediately();
 //        startService(new Intent(this, GetProtoDataService.class));
         DebugUtils.init(this);
     }
