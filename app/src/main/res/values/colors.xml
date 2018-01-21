@@ -22,11 +22,11 @@
     <color name="lightGrayForBg">#E0E0E0</color> <!--background color used for containers in google app tablet UIs-->
 
 
-    <color name="bookmark_yellow">#ffa500</color>
+    <color name="bookmark_yellow">#E55A5A</color>
     <color name="colorListRowSelect">#E9EBEB</color>
     <color name="almostWhite">#FFFAFAFA</color>
     <color name="searchHighlight">#4fc3f7</color>
-    <color name="white">#ffffffff</color>
+    <color name="white">#fff</color>
 
     <!-- Intro -->
     <color name="market_blue_bg">#305888</color>
