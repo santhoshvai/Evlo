@@ -45,10 +45,6 @@ android {
         }
     }
 
-    buildTypes.each {
-        it.buildConfigField 'String', 'DATA_GOV_IN_API_KEY', MyDataGovInApiKey
-    }
-
     // Always show the result of every unit test, even if it passes.
     testOptions.unitTests.all {
         testLogging {
