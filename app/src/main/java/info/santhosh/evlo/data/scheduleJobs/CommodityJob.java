@@ -9,6 +9,8 @@ import com.evernote.android.job.JobRequest;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import info.santhosh.evlo.data.DeleteDb;
+
 import static info.santhosh.evlo.data.util.ProtoRequestAndStore.synchronousProtoRequest;
 
 /**
@@ -25,7 +27,9 @@ public class CommodityJob extends Job {
     @NonNull
     @Override
     protected Result onRunJob(Params params) {
-        return synchronousProtoRequest(getContext());
+        Result result = synchronousProtoRequest(getContext());
+        DeleteDb.deleteOldCommodities(getContext());
+        return result;
     }
 
     /**

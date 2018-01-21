@@ -15,6 +15,7 @@ public class EvloPrefs {
     private static final String LAST_ROW_ORDER = "LAST_ROW_ORDER";
     private static final String LAST_ARRIVAL_DATE = "LAST_ARRIVAL_DATE";
     private static final String LAST_ARRIVAL_DATE_TIMESTAMP = "LAST_ARRIVAL_DATE_TIMESTAMP";
+    private static final String LAST_DELETION_DATE_TIMESTAMP = "LAST_DELETION_DATE_TIMESTAMP";
     private static final String IS_FIRST_RUN = "IS_FIRST_RUN";
     private static final String DATA_HAS_LOADED_ATLEAST_ONCE = "DATA_HAS_LOADED_ATLEAST_ONCE";
 
@@ -58,6 +59,17 @@ public class EvloPrefs {
     public static void setLastArrivalDateTimeStamp(Context context, long arrivalDate) {
         final SharedPreferences.Editor editor = generalPreferences(context).edit();
         editor.putLong(LAST_ARRIVAL_DATE_TIMESTAMP, arrivalDate);
+        editor.apply();
+    }
+
+    public static long getLastDeletionDateTimeStamp(Context context) {
+        final long date = generalPreferences(context).getLong(LAST_DELETION_DATE_TIMESTAMP, -1);
+        return date;
+    }
+
+    public static void setLastDeletionDateTimeStamp(Context context, long arrivalDate) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putLong(LAST_DELETION_DATE_TIMESTAMP, arrivalDate);
         editor.apply();
     }
 

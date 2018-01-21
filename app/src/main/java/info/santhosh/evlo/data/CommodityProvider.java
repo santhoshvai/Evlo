@@ -62,6 +62,11 @@ public class CommodityProvider extends ContentProvider {
                         " = " + CommodityContract.CommodityDataEntry.TABLE_NAME +
                         "." + CommodityContract.CommodityDataEntry._ID
         );
+
+        /* SELECT commodity_data._id
+            FROM commodity_data LEFT JOIN commodity_fav ON commodity_fav.fav_id = commodity_data._id
+            WHERE commodity_fav.fav_id IS NULL AND commodity_data.arrival_date < 1500501600000
+         */
     }
 
     // commodity_data.commodity_name = ?
@@ -343,8 +348,7 @@ public class CommodityProvider extends ContentProvider {
                     sqlInsertStr.append((i > 0) ? ",?" : "?");
                 }
                 sqlInsertStr.append(')');
-
-                // TODO: when arrival date is the same, dont update or insert (Logic must be in writeDb to send only needed ones)
+                
                 String selection = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME +
                         "=? AND " +
                         CommodityContract.CommodityDataEntry.COLUMN_VARIETY +

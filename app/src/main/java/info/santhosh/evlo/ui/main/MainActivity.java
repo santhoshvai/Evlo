@@ -10,12 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.EvloPrefs;
 import info.santhosh.evlo.common.Utils;
+import info.santhosh.evlo.data.DeleteDb;
 import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
 import info.santhosh.evlo.ui.intro.IntroActivity;
 import info.santhosh.evlo.ui.search.SearchActivity;
@@ -163,6 +165,21 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.settings:
+                DeleteDb.deleteOldCommodities(this);
+                return true;
+            case R.id.faq:
+                DeleteDb.deleteOldCommodities(this);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

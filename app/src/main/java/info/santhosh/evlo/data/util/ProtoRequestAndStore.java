@@ -25,8 +25,8 @@ import okhttp3.Response;
 
 public final class ProtoRequestAndStore {
     static final String TAG = "ProtoRequestAndStore";
-    private static final String PROTO_URL = "https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1";
-//    private static final String PROTO_URL = "https://s3.ap-south-1.amazonaws.com/evlo-proto/commodities_proto.bin";
+//    private static final String PROTO_URL = "https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1";
+    private static final String PROTO_URL = "https://s3.ap-south-1.amazonaws.com/evlo-proto/commodities_proto.bin";
 
     @WorkerThread
     public static Job.Result synchronousProtoRequest(Context context) {
