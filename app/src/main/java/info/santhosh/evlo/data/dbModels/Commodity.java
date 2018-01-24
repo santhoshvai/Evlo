@@ -1,6 +1,8 @@
 package info.santhosh.evlo.data.dbModels;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import info.santhosh.evlo.data.CommodityContract;
 
@@ -10,7 +12,7 @@ import static info.santhosh.evlo.common.Constants.IndianCurrencyFormat;
  * Created by santhoshvai on 10/02/2017.
  */
 
-public class Commodity {
+public class Commodity implements Parcelable {
 
     private static final String TAG = "Commodity-DbModel";
 
@@ -169,4 +171,50 @@ public class Commodity {
         result = 31 * result + (isFavorite ? 1 : 0);
         return result;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.state);
+        dest.writeString(this.variety);
+        dest.writeString(this.district);
+        dest.writeString(this.commodity);
+        dest.writeString(this.market);
+        dest.writeLong(this.arrival_Date);
+        dest.writeString(this.max_Price);
+        dest.writeString(this.modal_Price);
+        dest.writeString(this.min_Price);
+        dest.writeByte(this.isFavorite ? (byte) 1 : (byte) 0);
+    }
+
+    protected Commodity(Parcel in) {
+        this.id = in.readInt();
+        this.state = in.readString();
+        this.variety = in.readString();
+        this.district = in.readString();
+        this.commodity = in.readString();
+        this.market = in.readString();
+        this.arrival_Date = in.readLong();
+        this.max_Price = in.readString();
+        this.modal_Price = in.readString();
+        this.min_Price = in.readString();
+        this.isFavorite = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<Commodity> CREATOR = new Parcelable.Creator<Commodity>() {
+        @Override
+        public Commodity createFromParcel(Parcel source) {
+            return new Commodity(source);
+        }
+
+        @Override
+        public Commodity[] newArray(int size) {
+            return new Commodity[size];
+        }
+    };
 }
