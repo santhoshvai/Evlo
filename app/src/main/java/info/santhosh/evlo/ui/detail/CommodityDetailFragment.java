@@ -43,6 +43,7 @@ import java.util.Map;
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.ShareDialogFragment;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
@@ -83,7 +84,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             if (title != null) {
                 title.setText(mCommodityName);
             }
-            mCommodityDetailAdapter = new CommodityDetailAdapter(container.getContext());
+            mCommodityDetailAdapter = new CommodityDetailAdapter();
             getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
         }
 
@@ -143,7 +144,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mCommodityDetailAdapter.setList(null);
     }
 
-    private static class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
+    private class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
             StickyHeaderAdapter<CommodityDetailAdapter.HeaderHolder> {
 
         private List<Commodity> mCommodityList = null;
@@ -156,9 +157,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         private final AnimatedVectorDrawableCompat avd_from_down_arrow;
         private final AnimatedVectorDrawableCompat avd_from_up_arrow;
 
-        CommodityDetailAdapter(Context context) {
-            avd_from_down_arrow = AnimatedVectorDrawableCompat.create(context, R.drawable.avd_from_down_arrow);
-            avd_from_up_arrow = AnimatedVectorDrawableCompat.create(context, R.drawable.avd_from_up_arrow);
+        CommodityDetailAdapter() {
+            avd_from_down_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
+            avd_from_up_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_up_arrow);
         }
         /**
          * The ConstraintSet to use for the normal initial state
@@ -283,25 +284,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             vh.mShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: share an image if you can
-                    final Resources res = vh.itemView.getContext().getResources();
                     int pos = vh.getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
-                        Commodity commodity = mCommodityList.get(pos);
-                        Intent sendIntent = new Intent();
-                        sendIntent.setAction(Intent.ACTION_SEND);
-                        final String commodityName = commodity.getCommodity();
-                        final String modalPrice = commodity.getModal_Price();
-                        final String district = commodity.getDistrict();
-                        final String market = commodity.getMarket();
-                        final String state = commodity.getState();
-                        final String variety = commodity.getVariety();
-                        String share = v.getContext().getResources().getString(R.string.share_data,
-                                commodityName, variety, modalPrice, market, district, state);
-                        sendIntent.putExtra(Intent.EXTRA_TEXT, share);
-                        sendIntent.setType("text/plain");
-                        vh.itemView.getContext().startActivity(Intent.createChooser(sendIntent,
-                                res.getString(R.string.share_heading)));
+                        ShareDialogFragment.startShare(getActivity(), mCommodityList.get(pos));
                     }
                 }
             });

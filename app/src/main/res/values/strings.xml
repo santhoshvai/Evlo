@@ -39,7 +39,7 @@
     <string name="modal_price_header">Modal Price : </string>
     <string name="faq">FAQs</string>
     <string name="file_authority">info.santhosh.evlo.fileprovider</string>
-    <string name="share_marketing">"Sent using Evlo app"</string>
+    <string name="share_marketing">"Evlo app"</string>
 
     <string name="intro_1_title">Welcome to Evlo</string>
     <string name="intro_1_desc">"Find India's latest market prices instantly"</string>
