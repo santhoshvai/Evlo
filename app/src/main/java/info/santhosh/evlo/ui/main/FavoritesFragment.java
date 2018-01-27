@@ -36,13 +36,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.ShareDialogFragment;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
 import info.santhosh.evlo.data.FavoriteAddorRemoveAsyncTask;
 import info.santhosh.evlo.data.dbModels.Commodity;
 import info.santhosh.evlo.widget.EmptyRecyclerView;
 
-import static info.santhosh.evlo.common.ShareUtils.startShare;
 import static info.santhosh.evlo.data.dbModels.Commodity.COMMODITY_DETAIL_COLUMNS;
 
 /**
@@ -243,7 +243,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                     // TODO: share an image if you can
                     int pos = vh.getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
-                        startShare(getActivity(), mCommodityList.get(pos));
+                        ShareDialogFragment.startShare(getActivity(), mCommodityList.get(pos));
                     }
                 }
             });
