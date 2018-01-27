@@ -58,7 +58,7 @@ ext {
     junitVersion = '4.12'
     supportLibVersion = '27.0.2'
     constraintLayoutVersion = '1.0.2'
-    okhttpVersion = '2.2.0'
+    firebaseVersion='11.8.0'
     okhttp3Version = '3.8.1'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.2'
@@ -83,6 +83,9 @@ dependencies {
     compile "com.android.support:customtabs:${supportLibVersion}"
     compile "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
 
+    // firebase
+    compile "com.google.firebase:firebase-ads:${firebaseVersion}"
+
 
     // job scheduler background compatibility
     compile "com.evernote:android-job:${evernoteJobVersion}"
@@ -105,7 +108,7 @@ dependencies {
 
     // crash reporting
     compile("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar") {
-        transitive = true;
+        transitive = true
     }
 
     // leak canary

@@ -33,6 +33,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -62,6 +64,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     private String mCommodityName;
     private CommodityDetailAdapter mCommodityDetailAdapter;
     RecyclerView mRecyclerView;
+    private AdView mAdView;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityDetailFragment.recycler.layout";
 
@@ -98,6 +101,10 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mRecyclerView.setAdapter(mCommodityDetailAdapter);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter), 1);
+
+        mAdView = rootView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
 
         return rootView;
     }
