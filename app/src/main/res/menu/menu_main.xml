@@ -2,10 +2,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto/android">
 
   <item android:id="@+id/faq"
+      android:icon="@drawable/ic_question_24dp_vd"
       android:title="@string/faq"
-      app:showAsAction="ifRoom" />
-  <item android:id="@+id/settings"
-    android:title="@string/settings"
-    app:showAsAction="never" />
+      app:showAsAction="always" />
 
 </menu>

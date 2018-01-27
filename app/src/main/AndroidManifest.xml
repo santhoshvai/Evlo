@@ -38,9 +38,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.TranslucentStatus" />
 
+        <activity
+            android:name=".ui.faq.FaqActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <service
             android:name=".service.GetXmlService"
             android:exported="false" />
+
+        <service android:name=".ui.faq.KeepAliveService" />
 
         <provider
             android:name=".data.CommodityProvider"

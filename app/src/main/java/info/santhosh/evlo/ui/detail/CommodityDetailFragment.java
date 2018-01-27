@@ -1,6 +1,7 @@
 package info.santhosh.evlo.ui.detail;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -82,16 +83,16 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             if (title != null) {
                 title.setText(mCommodityName);
             }
-            mCommodityDetailAdapter = new CommodityDetailAdapter();
+            mCommodityDetailAdapter = new CommodityDetailAdapter(container.getContext());
             getLoaderManager().initLoader(COMMODITY_DETAIL_LOADER, null, this);
         }
 
         View rootView = inflater.inflate(R.layout.fragment_commodity_detail, container, false);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.commodity_detail_list);
         // set item decoration
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(container.getContext(),
                 LinearLayoutManager.VERTICAL);
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_grey));
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(container.getContext(), R.drawable.divider_grey));
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mRecyclerView.setAdapter(mCommodityDetailAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -142,7 +143,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mCommodityDetailAdapter.setList(null);
     }
 
-    private class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
+    private static class CommodityDetailAdapter extends RecyclerView.Adapter<CommodityDetailAdapter.ViewHolder> implements
             StickyHeaderAdapter<CommodityDetailAdapter.HeaderHolder> {
 
         private List<Commodity> mCommodityList = null;
@@ -155,9 +156,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         private final AnimatedVectorDrawableCompat avd_from_down_arrow;
         private final AnimatedVectorDrawableCompat avd_from_up_arrow;
 
-        CommodityDetailAdapter() {
-            avd_from_down_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
-            avd_from_up_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_up_arrow);
+        CommodityDetailAdapter(Context context) {
+            avd_from_down_arrow = AnimatedVectorDrawableCompat.create(context, R.drawable.avd_from_down_arrow);
+            avd_from_up_arrow = AnimatedVectorDrawableCompat.create(context, R.drawable.avd_from_up_arrow);
         }
         /**
          * The ConstraintSet to use for the normal initial state
@@ -193,6 +194,16 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 this.mMaxPrice = (TextView) view.findViewById(R.id.text_max_price);
                 this.mMinPrice = (TextView) view.findViewById(R.id.text_min_price);
             }
+        }
+
+        RecyclerView mRecyclerView;
+
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+
+            mRecyclerView = recyclerView;
         }
 
         class HeaderHolder extends RecyclerView.ViewHolder {
