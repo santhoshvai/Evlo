@@ -172,9 +172,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-//            case R.id.settings:
-//                DeleteDb.deleteOldCommodities(this);
-//                return true;
+            case R.id.disclaimer:
+                DisclaimerDialog.showDisclaimer(this);
+                return true;
             case R.id.faq:
                 startActivity(new Intent(this, FaqActivity.class));
                 return true;

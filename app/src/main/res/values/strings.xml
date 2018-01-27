@@ -48,7 +48,11 @@
     <string name="intro_1_desc_done">Tap the button below to proceed</string>
     <string name="rate_app">Love Evlo? Tap to rate us on the Play store</string>
     <string name="intro_button">Get Started</string>
-    <string name="disclaimer">The contents of this service may be used free of charge in any format or media without requiring specific permission. Sanctity of the contents should be maintained. The source of contents must be acknowledged as http://agmarknet.nic.in when being reproduced / used as part of another service or publication. Violators of this advice shall be attracting legal action by the Directorate of Marketing and Inspection, Department of Agriculture and Co-operation, Government of India. “The arrival and prices of different agricultural commodities as received from the Agricultural Produce Market Committee (APMCs) of different States are uploaded at AGMARKNET portal for information only and shall not be considered as guidance, invitation or persuasion. Users/visitors have to make their own decisions based on their own independent enquiries, appraisals, judgments, wisdom and risks. The Govt. of India shall not be liable or responsible for any loss or cost or any action whatsoever arising out of use or relying on the arrivals and prices and other related information disseminated at the portal.</string>
+    <string name="disclaimer_description">The source of contents in this app are reproduced / used from <b>http://agmarknet.nic.in</b>\n\n
+
+        <u>Extract from AGMARKNET portal:</u>\n\n
+        \"The arrival and prices of different agricultural commodities as received from the Agricultural Produce Market Committee (APMCs) of different States are uploaded at AGMARKNET portal for information only and shall not be considered as guidance, invitation or persuasion. Users/visitors have to make their own decisions based on their own independent enquiries, appraisals, judgments, wisdom and risks. The Govt. of India shall not be liable or responsible for any loss or cost or any action whatsoever arising out of use or relying on the arrivals and prices and other related information disseminated at the portal.\"
+    </string>
     <string name="no_thanks">No thanks</string>
     <string name="frequently_asked_questions">Frequently Asked Questions</string>
     <string name="where_prices_title">Where do you get the data from?</string>
@@ -62,4 +66,6 @@
     <string name="where_historical_title">Is it possible to get historical prices?</string>
     <string name="where_historical_description">Yes! Please tap to head over to the Agmarknet portal where historical prices can be viewed.</string>
     <string name="where_historical_link">"http://agmarknet.nic.in/agnew/NationalBEnglish/DatewiseCommodityReport.aspx"</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="ok">Ok</string>
 </resources>
