@@ -72,8 +72,11 @@ public class WriteDb {
         Log.d(TAG, "WriteDb List Complete. " + inserted + " Inserted");
     }
 
-    public static void usingProtos(@NonNull Context context, CommodityProtos.Commodities protos) {
-        if (protos == null || protos.getCommodityCount() < 1) return;
+    public static void usingProtos(@NonNull Context context, CommodityProtos.Commodities protos, @Nullable WriteDbProgressListener progressListener) {
+        if (protos == null || protos.getCommodityCount() < 1) {
+            if (progressListener != null) progressListener.update(1,1, true);
+            return;
+        }
 
         // Insert the new commodity information into the database
         Vector<ContentValues> cvVector = new Vector<>(protos.getCommodityCount());
@@ -88,6 +91,7 @@ public class WriteDb {
             i = EvloPrefs.getLastRowOrder(context); // last stored index of array would be row_order - 1
         }
 
+        final int length = protos.getCommodityCount(); // we multiply by 2 as we give 50% weightage to bulkinsert
         while (i < protos.getCommodityCount()) {
             final CommodityProtos.Commodity commodity = protos.getCommodity(i);
             ContentValues commodityValues = new ContentValues();
@@ -102,6 +106,10 @@ public class WriteDb {
             commodityValues.put(CommodityDataEntry.COLUMN_STATE_NAME, commodity.getState());
             cvVector.add(commodityValues);
             i++;
+            if (progressListener != null) {
+                int progressTotal = length * 2; // we give the first 50% weightage, so 0..0.5
+                progressListener.update(i , progressTotal, false);
+            }
         }
 
         // add to database
@@ -109,7 +117,12 @@ public class WriteDb {
         if (cvVector.size() > 0) {
             ContentValues[] cvArray = new ContentValues[cvVector.size()];
             cvVector.toArray(cvArray);
+            if (progressListener != null) DataFetchStatusProvider.getInstance(context).setWriteDbProgressListener(progressListener);
             inserted = context.getContentResolver().bulkInsert(CommodityDataEntry.CONTENT_URI, cvArray);
+            if (progressListener != null) {
+                progressListener.update(100, 100, true);
+                DataFetchStatusProvider.getInstance(context).setWriteDbProgressListener(null);
+            }
         }
 
         EvloPrefs.setLastArrivalDateTimeStamp(context, newArrivalTimeStamp);
@@ -129,6 +142,10 @@ public class WriteDb {
         return context.getContentResolver().delete(CommodityContract.CommodityFavEntry.CONTENT_URI,
                 CommodityContract.CommodityFavEntry.COLUMN_FAV_ID + "=?",
                 new String[] { Integer.toString(favId) });
+    }
+
+    public interface WriteDbProgressListener {
+        void update(int doneSoFar, int length, boolean done);
     }
 
 }

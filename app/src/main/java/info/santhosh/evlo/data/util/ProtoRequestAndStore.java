@@ -25,16 +25,16 @@ import okhttp3.Response;
 
 public final class ProtoRequestAndStore {
     static final String TAG = "ProtoRequestAndStore";
-//    private static final String PROTO_URL = "https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1";
-    private static final String PROTO_URL = "https://s3.ap-south-1.amazonaws.com/evlo-proto/commodities_proto.bin";
+    private static final String PROTO_URL = "https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1";
+//    private static final String PROTO_URL = "https://s3.ap-south-1.amazonaws.com/evlo-proto/commodities_proto.bin";
 
     @WorkerThread
     public static Job.Result synchronousProtoRequest(Context context) {
-        return synchronousProtoRequest(context, null);
+        return synchronousProtoRequest(context, null, null);
     }
 
     @WorkerThread
-    public static Job.Result synchronousProgressiveProtoRequest(Context context, final Progress.ProgressListener progressListener) {
+    public static Job.Result synchronousProgressiveProtoRequest(Context context, final Progress.ProgressListener progressListener, final WriteDb.WriteDbProgressListener writeDbProgressListener) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new Interceptor() {
                     @Override
@@ -46,11 +46,11 @@ public final class ProtoRequestAndStore {
                     }
                 })
                 .build();
-        return synchronousProtoRequest(context, client);
+        return synchronousProtoRequest(context, client, writeDbProgressListener);
     }
 
     @WorkerThread
-    private static Job.Result synchronousProtoRequest(Context context, @Nullable OkHttpClient client) {
+    private static Job.Result synchronousProtoRequest(Context context, @Nullable OkHttpClient client, @Nullable final WriteDb.WriteDbProgressListener writeDbProgressListener) {
         DataFetchStatusProvider.getInstance(context).setDataFetchStatus(DataFetchStatusProvider.STARTED);
 
         if (client == null) client = new OkHttpClient();
@@ -67,7 +67,7 @@ public final class ProtoRequestAndStore {
             }
             final InputStream byteStream = response.body().byteStream();
             CommodityProtos.Commodities commoditiesProto = CommodityProtos.Commodities.parseFrom(byteStream);
-            WriteDb.usingProtos(context, commoditiesProto);
+            WriteDb.usingProtos(context, commoditiesProto, writeDbProgressListener);
             Log.d(TAG, "Received proto list size: " + commoditiesProto.getCommodityCount());
 
             if (commoditiesProto.getCommodityCount() > 0) {

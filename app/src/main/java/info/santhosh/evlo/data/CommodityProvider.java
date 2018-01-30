@@ -14,6 +14,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import info.santhosh.evlo.common.DataFetchStatusProvider;
+
 /**
  * Created by santhoshvai on 16/03/16.
  */
@@ -370,6 +372,9 @@ public class CommodityProvider extends ContentProvider {
                  */
 
                 int returnCount = 0;
+                DataFetchStatusProvider dataFetchStatusProvider = DataFetchStatusProvider.getInstance(getContext());
+                boolean shouldGiveBulkInsertUpdates = dataFetchStatusProvider.shouldGiveBulkInsertUpdates();
+                int progressCount = 1;
                 try {
                     for (ContentValues value : values) {
                         updateStatement.clearBindings();
@@ -420,6 +425,7 @@ public class CommodityProvider extends ContentProvider {
                                 returnCount++;
                             }
                         }
+                        if (shouldGiveBulkInsertUpdates) dataFetchStatusProvider.updateWriteDbProgress(progressCount++, values.length, false);
                     }
                     db.setTransactionSuccessful();
                 } catch (SQLException e) {

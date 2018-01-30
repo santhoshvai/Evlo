@@ -3,6 +3,7 @@ package info.santhosh.evlo.common;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
 import java.lang.annotation.Retention;
@@ -25,6 +26,7 @@ public final class DataFetchStatusProvider {
 
     private Context applnContext;
     private @DataFetchStatus int status = STARTED;
+    @Nullable private WriteDb.WriteDbProgressListener writeDbProgressListener;
 
     public static DataFetchStatusProvider getInstance(Context context) {
         synchronized (mLock) {
@@ -60,5 +62,19 @@ public final class DataFetchStatusProvider {
         }
     }
 
+    public void setWriteDbProgressListener(@Nullable WriteDb.WriteDbProgressListener writeDbProgressListener) {
+        this.writeDbProgressListener = writeDbProgressListener;
+    }
 
+    public boolean shouldGiveBulkInsertUpdates() {
+        return this.writeDbProgressListener != null;
+    }
+
+    public void updateWriteDbProgress(int inserted, int total, boolean done) {
+        if (writeDbProgressListener != null) {
+            // we give the second 50% weightage, so 0.5..1
+            writeDbProgressListener.update(inserted + total, total * 2, done);
+            if (done) this.writeDbProgressListener = null;
+        }
+    }
 }
