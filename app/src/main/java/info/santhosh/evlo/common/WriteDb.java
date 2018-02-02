@@ -126,7 +126,7 @@ public class WriteDb {
         }
 
         EvloPrefs.setLastArrivalDateTimeStamp(context, newArrivalTimeStamp);
-        EvloPrefs.setLastRowOrder(context, protos.getCommodity(protos.getCommodityCount() -1).getRowOrder());
+        EvloPrefs.setLastRowOrder(context, protos.getCommodity(protos.getCommodityCount() - 1).getRowOrder());
 
         Log.d(TAG, "WriteDb List Complete. " + inserted + " Inserted");
     }

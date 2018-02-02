@@ -68,4 +68,8 @@
     <string name="where_historical_link">"http://agmarknet.nic.in/agnew/NationalBEnglish/DatewiseCommodityReport.aspx"</string>
     <string name="disclaimer">Disclaimer</string>
     <string name="ok">Ok</string>
+    <string name="offline_explanation">"You're offline. Check your connection"</string>
+    <string name="unable_to_retry">"Unable to Retry. You seem to be offline. Check your connection"</string>
+    <string name="something_went_wrong">"Something went wrong. Please check your connection or try again later."</string>
+    <string name="retry">Retry</string>
 </resources>

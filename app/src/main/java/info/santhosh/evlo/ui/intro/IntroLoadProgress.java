@@ -58,6 +58,8 @@ public class IntroLoadProgress extends AsyncTask<Void, Integer, Job.Result> {
         if (result == Job.Result.SUCCESS) {
             introActivity.onProgressUpdate(100);
             introActivity.onLoadDone();
+        } else {
+            introActivity.onProtoFetchError();
         }
     }
 }
