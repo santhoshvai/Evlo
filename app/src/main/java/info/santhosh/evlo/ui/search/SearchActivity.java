@@ -32,6 +32,8 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +65,7 @@ public class SearchActivity extends AppCompatActivity
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityListActivity.recycler.layout";
 
     private String mFilterSearch = null;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -80,6 +83,7 @@ public class SearchActivity extends AppCompatActivity
 
         setupRecyclerView();
         getSupportLoaderManager().initLoader(COMMODITY_NAME_LOADER, null, this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override
@@ -484,6 +488,10 @@ public class SearchActivity extends AppCompatActivity
     private class ItemClickListener {
         void onClick(String commodityName) {
             // move to the detail activity/fragment
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, commodityName);
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "search item");
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
             startActivity(CommodityDetailActivity.getIntent(SearchActivity.this, commodityName));
         }
     }

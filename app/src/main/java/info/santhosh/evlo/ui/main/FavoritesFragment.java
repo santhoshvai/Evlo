@@ -30,6 +30,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     private static final int COMMODITY_FAV_LOADER = 1;
     CommodityFavAdapter commodityFavAdapter;
+    private AdView mAdView;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "FavoritesFragment.recycler.layout";
 
@@ -82,6 +85,9 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 linearLayoutManager.getOrientation());
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_grey));
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+        mAdView = rootView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
         return rootView;
     }
 
@@ -125,6 +131,8 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.getCount() > 0) mAdView.setVisibility(View.VISIBLE);
+        else mAdView.setVisibility(View.GONE);
         new CursorToListAsyncTask(data, this).execute();
     }
 

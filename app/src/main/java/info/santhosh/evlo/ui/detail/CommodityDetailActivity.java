@@ -8,9 +8,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.google.android.gms.ads.MobileAds;
 
+import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
 
 public class CommodityDetailActivity extends AppCompatActivity {
@@ -46,8 +48,6 @@ public class CommodityDetailActivity extends AppCompatActivity {
 
         // we set the background for viewgroup in xml, no need for window background
         getWindow().setBackgroundDrawable(null);
-
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
 
     }
 
