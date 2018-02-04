@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#00796B</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--Material palette: Teal-->
+    <color name="teal_500">#009688</color> <!-- Primary -->
+    <color name="teal_700">#00796b</color>  <!-- Primary Dark -->
+    <color name="teal_A100">#A7FFEB</color> <!-- Bottom bar ripple -->
 
+    <!--Material palette: Green-->
+    <color name="green_A200">#69f0ae</color> <!-- Accent -->
+
+    <color name="teal_700_comp">#C53D00</color>
+    <color name="teal_700_comp_text">#e0ffff</color>
+
+    <!--Material palette: Pink-->
+    <color name="pink_A200">#FF4081</color>
+
+    <color name="dark_grey">#4b4f56</color> <!--Normal card Button color - used from facebook-->
+    <color name="light_grey">#757575</color> <!--icon colors-->
+    <color name="very_light_grey">#f6f6f6</color>
+    <color name="lightGray">#EEEEEE</color>
+    <color name="dividerGrey">#FFE5E5E5</color>
+    <color name="lightGrayForBg">#E0E0E0</color> <!--background color used for containers in google app tablet UIs-->
+
+
+    <color name="bookmark_yellow">#E55A5A</color>
     <color name="colorListRowSelect">#E9EBEB</color>
     <color name="almostWhite">#FFFAFAFA</color>
-    <color name="lightGray">#EEEEEE</color>
-    <color name="dividerGrey">#FFE0E0E0</color>
     <color name="searchHighlight">#4fc3f7</color>
+    <color name="white">#fff</color>
+
+    <!-- Intro -->
+    <color name="market_blue_bg">#305888</color>
+    <color name="market_blueishWhite_text">#E0E7FF</color>
+    <color name="triad_market_blue_bg">#723B02</color>
+
 </resources>

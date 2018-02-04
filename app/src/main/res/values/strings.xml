@@ -1,17 +1,75 @@
 <resources>
-    <string name="app_name">Evlo</string>
-    <string name="title_commodity_detail">Commodity Detail</string>
+    <string name="app_name" translatable="false">Evlo</string>
     <string name="price_xml_url">https://data.gov.in/sites/default/files/Date-Wise-Prices-all-Commodity.xml</string>
     <string name="content_authority">info.santhosh.evlo</string>
     <string name="search_hint">Search Commodities</string>
     <string name="action_refresh">Refresh data</string>
     <string name="rupee_symbol">\u20B9</string>
-    <string name="modal_price">\u20B9 %1$s</string>
+    <string name="rupee_price">\u20B9 %1$s</string>
+    <string name="rupee_price_with_unit">\u20B9 %1$s per 100kg</string>
     <string name="market">%1$s market, %2$s district</string>
+    <string name="market_only">%1$s market</string>
+    <string name="district_only">%1$s district</string>
     <string name="share_data">%1$s,\n%2$s variety,\n\u20B9 %3$s per 100kg,\n%4$s market, %5$s district,\n %6$s </string>
     <string name="variety">%1$s variety</string>
     <string name="commodity_name_and_variety">%1$s, %2$s variety</string>
-    <string name="favorite_content">Favorite</string>
+    <string name="favorite_content">Bookmark</string>
     <string name="share_content">Share</string>
-    <string name="share_heading">Share the price detail...</string>
+    <string name="share_heading">Share the commodity details</string>
+    <string name="menu_bottom_commodities">Commodities</string>
+    <string name="menu_bottom_markets">Markets</string>
+    <string name="menu_bottom_favourites">Favourites</string>
+    <string name="settings">Settings</string>
+    <string name="search_commodities">Search Commodities</string>
+    <string name="search_markets">Search Markets</string>
+    <string name="fav_added">Item added to bookmarks</string>
+    <string name="fav_removed">Item removed from bookmarks</string>
+    <string name="undo">Undo</string>
+    <string name="details_content">More</string>
+    <string name="search_hint_detail">Search for commodities</string>
+    <string name="Normal_variety">Normal</string>
+    <string name="bookmark_empty">Search for commodities and bookmark the ones that you are interested in. They will appear here.</string>
+    <string name="no_search_results">No search results for \"%s\"</string>
+    <string name="Connect_internet">Connect to the internet</string>
+    <string name="loading">Data is being loaded</string>
+    <string name="unit_of_price">per 100kg</string>
+    <string name="arrival_header">Arrival Date : </string>
+    <string name="max_price_header">Maximum Price : </string>
+    <string name="min_price_header">Minimum Price : </string>
+    <string name="modal_price_header">Modal Price : </string>
+    <string name="faq">FAQs</string>
+    <string name="file_authority">info.santhosh.evlo.fileprovider</string>
+    <string name="share_marketing">"Evlo app"</string>
+
+    <string name="intro_1_title">Welcome to Evlo</string>
+    <string name="intro_1_desc">"Find India's latest market prices instantly"</string>
+    <string name="intro_1_progress">"Please wait while we finish setting up"</string>
+    <string name="intro_1_title_done">All set up!</string>
+    <string name="intro_1_desc_done">Tap the button below to proceed</string>
+    <string name="rate_app">Love Evlo? Tap to rate us on the Play store</string>
+    <string name="intro_button">Get Started</string>
+    <string name="disclaimer_description">The source of contents in this app are reproduced / used from <b>http://agmarknet.nic.in</b>\n\n
+
+        <u>Extract from AGMARKNET portal:</u>\n\n
+        \"The arrival and prices of different agricultural commodities as received from the Agricultural Produce Market Committee (APMCs) of different States are uploaded at AGMARKNET portal for information only and shall not be considered as guidance, invitation or persuasion. Users/visitors have to make their own decisions based on their own independent enquiries, appraisals, judgments, wisdom and risks. The Govt. of India shall not be liable or responsible for any loss or cost or any action whatsoever arising out of use or relying on the arrivals and prices and other related information disseminated at the portal.\"
+    </string>
+    <string name="no_thanks">No thanks</string>
+    <string name="frequently_asked_questions">Frequently Asked Questions</string>
+    <string name="where_prices_title">Where do you get the data from?</string>
+    <string name="where_prices_description">Evlo gets its data from the Agmarknet portal (a government of India portal). The data is fetched from the Open Government Data (OGD) Platform - data.gov.in. Tap to see FAQs of the Agmarknet portal.</string>
+    <string name="where_prices_link">"http://agmarknet.gov.in/OtherPages/FAQ.aspx"</string>
+    <string name="why_markets_title">Why can\'t I find the market that I am looking for?</string>
+    <string name="why_markets_description">Not all markets in the country have participated in the Agmarknet project. So far 3245 markets across the country have been covered under the project as on 31 March 2015.</string>
+    <string name="why_units_title">Why is the price not appropriate for a certain commodity?</string>
+    <string name="why_units_description">The price reported from Agmarknet is always per Quintal (100 kg). If you find it inappropriate, please look into the commodity price in detail from Agmarknet portal. Please tap here to be redirected to the appropriate location in the Agmarknet portal where you can find the commodity price detail.</string>
+    <string name="why_units_link">"http://agmarknet.gov.in/PriceAndArrivals/arrivals1.aspx"</string>
+    <string name="where_historical_title">Is it possible to get historical prices?</string>
+    <string name="where_historical_description">Yes! Please tap to head over to the Agmarknet portal where historical prices can be viewed.</string>
+    <string name="where_historical_link">"http://agmarknet.nic.in/agnew/NationalBEnglish/DatewiseCommodityReport.aspx"</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="ok">Ok</string>
+    <string name="offline_explanation">"You're offline. Check your connection"</string>
+    <string name="unable_to_retry">"Unable to Retry. You seem to be offline. Check your connection"</string>
+    <string name="something_went_wrong">"Something went wrong. Please check your connection or try again later."</string>
+    <string name="retry">Retry</string>
 </resources>

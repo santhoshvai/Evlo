@@ -13,36 +13,41 @@ import info.santhosh.evlo.common.WriteDb;
 
 public class FavoriteAddorRemoveAsyncTask extends AsyncTask<Integer, Void, Boolean> {
 
-    Context mContext;
+    Context mApplicationContext;
     boolean mIsAdd;
-    Uri mUri = null; // uri for which change should be notified
+    Uri mUri; // uri for which change should be notified
 
     public FavoriteAddorRemoveAsyncTask(Context context, boolean isAdd) {
-        mContext = context.getApplicationContext();
+        mApplicationContext = context.getApplicationContext();
         mIsAdd = isAdd;
+        mUri = null;
     }
 
     public FavoriteAddorRemoveAsyncTask(Context context, boolean isAdd, Uri uri) {
-        mContext = context.getApplicationContext();
+        mApplicationContext = context.getApplicationContext();
         mIsAdd = isAdd;
         mUri = uri;
     }
 
     @Override
     protected Boolean doInBackground(Integer... params) {
-        WriteDb writeDb = new WriteDb(mContext);
+        boolean success;
         if(mIsAdd) {
-            return ( writeDb.addUsingCommoditiesFavId(params[0]) != null );
+            success = WriteDb.addUsingCommoditiesFavId(mApplicationContext, params[0]) != null;
         } else {
-           return ( writeDb.removeUsingCommoditiesFavId(params[0]) != 0 );
+            success = WriteDb.removeUsingCommoditiesFavId(mApplicationContext, params[0]) != 0;
         }
+
+        if(mUri != null && success) {
+            ContentResolver contentResolver = mApplicationContext.getContentResolver();
+            contentResolver.notifyChange(mUri, null);
+        }
+
+        return success;
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if(mUri != null) {
-            ContentResolver contentResolver = mContext.getContentResolver();
-            contentResolver.notifyChange(mUri, null);
-        }
+        // Do nothing
     }
 }

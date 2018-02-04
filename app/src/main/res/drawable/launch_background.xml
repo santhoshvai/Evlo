@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+    <!-- The background color, preferably the same as your normal theme -->
+    <item android:drawable="@color/white"/>
+    <!-- TODO - 144dp color version of your app icon -->
+
+    <!--Note: if you want to specifically match what you see in Google apps,
+    add android:bottom=”@dimen/product_logo_bottom” to the product_logo_144dp
+    item where product_logo_bottom is 16dp,
+    48dp (land),
+    24dp (sw600dp & sw600dp-land),
+    64dp (port-v21) and 72dp (sw600dp-port-v21 & sw600dp-land-v21).-->
+
+    <!--The brand name at the bottom (the ‘Google’ in Google apps’ launch screens)
+    would be a 48dp high grayscale image with gravity center_horizontal|bottom
+    and an android:bottom of 48dp, 56dp (sw600dp), 104dp (port-v21),
+    and 96dp (sw600dp-port-v21 & sw600dp-land-v21).
+    A visible brand name is certainly not required,
+    but can provide consistency if your company has multiple apps.-->
+    <item>
+        <bitmap
+            android:src="@drawable/foreground_inner"
+            android:gravity="center" />
+    </item>
+</layer-list>

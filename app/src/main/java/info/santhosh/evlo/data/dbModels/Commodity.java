@@ -1,6 +1,8 @@
 package info.santhosh.evlo.data.dbModels;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import info.santhosh.evlo.data.CommodityContract;
 
@@ -10,7 +12,7 @@ import static info.santhosh.evlo.common.Constants.IndianCurrencyFormat;
  * Created by santhoshvai on 10/02/2017.
  */
 
-public class Commodity {
+public class Commodity implements Parcelable {
 
     private static final String TAG = "Commodity-DbModel";
 
@@ -48,11 +50,11 @@ public class Commodity {
     private String district;
     private String commodity;
     private String market;
-    private String arrival_Date;
+    private long arrival_Date;
     private String max_Price;
     private String modal_Price;
     private String min_Price;
-    private int fav_row_id;
+    private boolean isFavorite;
 
     public int getId() {
         return id;
@@ -78,7 +80,7 @@ public class Commodity {
         return market;
     }
 
-    public String getArrival_Date() {
+    public long getArrival_Date() {
         return arrival_Date;
     }
 
@@ -94,33 +96,32 @@ public class Commodity {
         return min_Price;
     }
 
-    public int getFav_row_id() {
-        return fav_row_id;
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     public static Commodity fromCursor(Cursor cursor) {
-        Double maxPriceDouble = Double.valueOf(cursor.getString(COL_MAX_PRICE));
-        Double modalPriceDouble = Double.valueOf(cursor.getString(COL_MODAL_PRICE));
-        Double minPriceDouble = Double.valueOf(cursor.getString(COL_MIN_PRICE));
-        int fav_row_id = -1;
-        if (!cursor.isNull(COL_COMMODITY_FAV_ROW_ID)) {
-            fav_row_id = cursor.getInt(COL_COMMODITY_FAV_ROW_ID);
-        }
+
         return new Commodity(
-                cursor.getInt(COL_COMMODITY_DETAIL_ID),
-                cursor.getString(COL_STATE_NAME),
-                cursor.getString(COL_VARIETY),
-                cursor.getString(COL_DISTRICT_NAME),
-                cursor.getString(COL_COMMODITY_NAME),
-                cursor.getString(COL_MARKET_NAME),
-                cursor.getString(COL_ARRIVAL_DATE),
-                IndianCurrencyFormat.format(maxPriceDouble),
-                IndianCurrencyFormat.format(modalPriceDouble),
-                IndianCurrencyFormat.format(minPriceDouble),
-                fav_row_id);
+            cursor.getInt(COL_COMMODITY_DETAIL_ID),
+            cursor.getString(COL_STATE_NAME),
+            cursor.getString(COL_VARIETY),
+            cursor.getString(COL_DISTRICT_NAME),
+            cursor.getString(COL_COMMODITY_NAME),
+            cursor.getString(COL_MARKET_NAME),
+            cursor.getLong(COL_ARRIVAL_DATE),
+            IndianCurrencyFormat.format(cursor.getInt(COL_MAX_PRICE)),
+            IndianCurrencyFormat.format(cursor.getInt(COL_MODAL_PRICE)),
+            IndianCurrencyFormat.format(cursor.getInt(COL_MIN_PRICE)),
+            !cursor.isNull(COL_COMMODITY_FAV_ROW_ID)
+        );
     }
 
-    private Commodity(int id, String state, String variety, String district, String commodity, String market, String arrival_Date, String max_Price, String modal_Price, String min_Price, int fav_row_id) {
+    private Commodity(int id, String state, String variety, String district, String commodity, String market, long arrival_Date, String max_Price, String modal_Price, String min_Price, boolean isFavorite) {
         this.id = id;
         this.state = state;
         this.variety = variety;
@@ -131,7 +132,7 @@ public class Commodity {
         this.max_Price = max_Price;
         this.modal_Price = modal_Price;
         this.min_Price = min_Price;
-        this.fav_row_id = fav_row_id;
+        this.isFavorite = isFavorite;
     }
 
     @Override
@@ -141,21 +142,79 @@ public class Commodity {
 
         Commodity commodity1 = (Commodity) o;
 
+        if (id != commodity1.id) return false;
+        if (arrival_Date != commodity1.arrival_Date) return false;
+        if (isFavorite != commodity1.isFavorite) return false;
         if (!state.equals(commodity1.state)) return false;
         if (!variety.equals(commodity1.variety)) return false;
         if (!district.equals(commodity1.district)) return false;
         if (!commodity.equals(commodity1.commodity)) return false;
-        return market.equals(commodity1.market);
+        if (!market.equals(commodity1.market)) return false;
+        if (!max_Price.equals(commodity1.max_Price)) return false;
+        if (!modal_Price.equals(commodity1.modal_Price)) return false;
+        return min_Price.equals(commodity1.min_Price);
 
     }
 
     @Override
     public int hashCode() {
-        int result = state.hashCode();
+        int result = id;
+        result = 31 * result + state.hashCode();
         result = 31 * result + variety.hashCode();
         result = 31 * result + district.hashCode();
         result = 31 * result + commodity.hashCode();
         result = 31 * result + market.hashCode();
+        result = 31 * result + (int) (arrival_Date ^ (arrival_Date >>> 32));
+        result = 31 * result + max_Price.hashCode();
+        result = 31 * result + modal_Price.hashCode();
+        result = 31 * result + min_Price.hashCode();
+        result = 31 * result + (isFavorite ? 1 : 0);
         return result;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.state);
+        dest.writeString(this.variety);
+        dest.writeString(this.district);
+        dest.writeString(this.commodity);
+        dest.writeString(this.market);
+        dest.writeLong(this.arrival_Date);
+        dest.writeString(this.max_Price);
+        dest.writeString(this.modal_Price);
+        dest.writeString(this.min_Price);
+        dest.writeByte(this.isFavorite ? (byte) 1 : (byte) 0);
+    }
+
+    protected Commodity(Parcel in) {
+        this.id = in.readInt();
+        this.state = in.readString();
+        this.variety = in.readString();
+        this.district = in.readString();
+        this.commodity = in.readString();
+        this.market = in.readString();
+        this.arrival_Date = in.readLong();
+        this.max_Price = in.readString();
+        this.modal_Price = in.readString();
+        this.min_Price = in.readString();
+        this.isFavorite = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<Commodity> CREATOR = new Parcelable.Creator<Commodity>() {
+        @Override
+        public Commodity createFromParcel(Parcel source) {
+            return new Commodity(source);
+        }
+
+        @Override
+        public Commodity[] newArray(int size) {
+            return new Commodity[size];
+        }
+    };
 }

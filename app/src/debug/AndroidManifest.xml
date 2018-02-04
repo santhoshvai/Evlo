@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="info.santhosh.evlo">
+
+    <application tools:ignore="AllowBackup,GoogleAppIndexingWarning">
+        <service
+            android:name=".service.CrashlyticsLeakLogService"
+            android:enabled="false"
+            android:exported="false" />
+    </application>
+
+</manifest>

@@ -9,16 +9,19 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import info.santhosh.evlo.common.DataFetchStatusProvider;
 
 /**
  * Created by santhoshvai on 16/03/16.
  */
 public class CommodityProvider extends ContentProvider {
 
-    private final static String TAG = CommodityProvider.class.getSimpleName();
+    private final static String TAG = "CommodityProvider";
 
     // The URI Matcher used by this content provider.
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -38,6 +41,9 @@ public class CommodityProvider extends ContentProvider {
         sCommodityByVarietyQueryBuilder = new SQLiteQueryBuilder();
         sCommodityByFavouriteQueryBuilder = new SQLiteQueryBuilder();
 
+        /*
+        commodity_data LEFT JOIN commodity_fav ON commodity_fav.fav_id = commodity_data._id
+         */
         sCommodityByVarietyQueryBuilder.setTables(
                 CommodityContract.CommodityDataEntry.TABLE_NAME + " LEFT JOIN " +
                         CommodityContract.CommodityFavEntry.TABLE_NAME +
@@ -58,6 +64,11 @@ public class CommodityProvider extends ContentProvider {
                         " = " + CommodityContract.CommodityDataEntry.TABLE_NAME +
                         "." + CommodityContract.CommodityDataEntry._ID
         );
+
+        /* SELECT commodity_data._id
+            FROM commodity_data LEFT JOIN commodity_fav ON commodity_fav.fav_id = commodity_data._id
+            WHERE commodity_fav.fav_id IS NULL AND commodity_data.arrival_date < 1500501600000
+         */
     }
 
     // commodity_data.commodity_name = ?
@@ -131,6 +142,7 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
+            // used for searching
             // commodity_data/commodity_variety/*
             case SEARCH_FOR_COMMODITY_NAME: {
                 String commodityName =  CommodityContract.CommodityDataEntry.getCommodityNameFromUri(uri);
@@ -139,7 +151,7 @@ public class CommodityProvider extends ContentProvider {
                         CommodityContract.CommodityDataEntry.TABLE_NAME,
                         projection,
                         sCommodityNameSearchSelection,
-                        new String[]{"%"+commodityName+"%"}, // example LIKE %apple%
+                        new String[]{'%'+commodityName+'%'}, // example LIKE %apple%
                         CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME, // groupby
                         null,
                         sortOrder,
@@ -147,7 +159,10 @@ public class CommodityProvider extends ContentProvider {
                 );
                 break;
             }
+            // search activity, start list of all commodities
             // "commodity_data/commodity_variety" - DISTINCT: http://stackoverflow.com/a/13879436/3394023
+            // SELECT DISTINCT commodity_data._id, variety, commodity_name FROM commodity_data GROUP BY commodity_name ORDER BY commodity_name ASC
+            // TODO: SELECT DISTINCT commodity_data._id, variety, commodity_name, count(*) AS no_of_entries FROM commodity_data GROUP BY commodity_name ORDER BY commodity_name ASC
             case COMMODITY_NAME: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         true, // distinct
@@ -216,7 +231,7 @@ public class CommodityProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
-        Uri returnUri;
+        Uri returnUri = null;
 
         switch (match) {
             case COMMODITY_DATA: {
@@ -228,11 +243,10 @@ public class CommodityProvider extends ContentProvider {
                 break;
             }
             case COMMODITY_FAV: {
-                long _id = db.insert(CommodityContract.CommodityFavEntry.TABLE_NAME, null, values);
+                long _id = db.insertWithOnConflict(CommodityContract.CommodityFavEntry.TABLE_NAME,
+                        null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 if ( _id > 0 )
                     returnUri = CommodityContract.CommodityFavEntry.buildCommodityFavUri(_id);
-                else
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
                 break;
             }
             default:
@@ -294,7 +308,49 @@ public class CommodityProvider extends ContentProvider {
         switch (match) {
             case COMMODITY_DATA:
                 db.beginTransaction();
-                // TODO: when arrival date is the same, dont update or insert (Logic must be in writeDb to send only needed ones)
+
+                // update sql string
+                StringBuilder sqlUpdateStr = new StringBuilder(120);
+                sqlUpdateStr.append("UPDATE ");
+                sqlUpdateStr.append(CommodityContract.CommodityDataEntry.TABLE_NAME);
+                sqlUpdateStr.append(" SET ");
+
+                // insert sql string
+                StringBuilder sqlInsertStr = new StringBuilder();
+                sqlInsertStr.append("INSERT INTO ");
+                sqlInsertStr.append(CommodityContract.CommodityDataEntry.TABLE_NAME);
+                sqlInsertStr.append('(');
+                int i = 0;
+                // IMPORTANT: Follow this ordering when you bind as well
+                final String[] colNames = {
+                        CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_MODAL_PRICE,
+                        CommodityContract.CommodityDataEntry.COLUMN_STATE_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_ARRIVAL_DATE,
+                        CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME,
+                        CommodityContract.CommodityDataEntry.COLUMN_MIN_PRICE,
+                        CommodityContract.CommodityDataEntry.COLUMN_VARIETY,
+                        CommodityContract.CommodityDataEntry.COLUMN_MAX_PRICE
+                };
+                for (String colName : colNames) {
+                    sqlUpdateStr.append((i > 0) ? "," : "");
+                    sqlUpdateStr.append(colName);
+                    sqlUpdateStr.append("=?");
+
+                    sqlInsertStr.append((i > 0) ? "," : "");
+                    sqlInsertStr.append(colName);
+                    i++;
+                }
+                sqlUpdateStr.append(" WHERE ");
+
+                sqlInsertStr.append(')');
+                sqlInsertStr.append(" VALUES (");
+                for (i = 0; i < colNames.length; i++) {
+                    sqlInsertStr.append((i > 0) ? ",?" : "?");
+                }
+                sqlInsertStr.append(')');
+                
                 String selection = CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME +
                         "=? AND " +
                         CommodityContract.CommodityDataEntry.COLUMN_VARIETY +
@@ -303,24 +359,73 @@ public class CommodityProvider extends ContentProvider {
                         "=? AND " +
                         CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME +
                         "=?";
-                String[] selectionArgs;
+                sqlUpdateStr.append(selection);
+
+                // compile statements
+                SQLiteStatement updateStatement = db.compileStatement(sqlUpdateStr.toString());
+                SQLiteStatement insertStatement = db.compileStatement(sqlInsertStr.toString());
+
+                /**
+                 *
+                 * UPDATE commodity_data SET market_name=?,commodity_name=?,modal_price=?,state_name=?,arrival_date=?,district_name=?,min_price=?,variety=?,max_price=? WHERE commodity_name=? AND variety=? AND market_name=? AND district_name=?
+                 * INSERT INTO commodity_data(market_name,commodity_name,modal_price,state_name,arrival_date,district_name,min_price,variety,max_price) VALUES (?,?,?,?,?,?,?,?,?)
+                 */
+
                 int returnCount = 0;
+                DataFetchStatusProvider dataFetchStatusProvider = DataFetchStatusProvider.getInstance(getContext());
+                boolean shouldGiveBulkInsertUpdates = dataFetchStatusProvider.shouldGiveBulkInsertUpdates();
+                int progressCount = 1;
                 try {
                     for (ContentValues value : values) {
-                        selectionArgs = new String[] {
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME),
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY),
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME),
-                                value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME)};
+                        updateStatement.clearBindings();
+                        i = 1;
+                        final String market_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_MARKET_NAME);
+                        final String commodity_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_COMMODITY_NAME);
+                        final String variety_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_VARIETY);
+                        final String district_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_DISTRICT_NAME);
+                        final Integer modal_price = value.getAsInteger(CommodityContract.CommodityDataEntry.COLUMN_MODAL_PRICE);
+                        final String state_name = value.getAsString(CommodityContract.CommodityDataEntry.COLUMN_STATE_NAME);
+                        final long arrival_date = value.getAsLong(CommodityContract.CommodityDataEntry.COLUMN_ARRIVAL_DATE);
+                        final Integer min_price = value.getAsInteger(CommodityContract.CommodityDataEntry.COLUMN_MIN_PRICE);
+                        final Integer max_price = value.getAsInteger(CommodityContract.CommodityDataEntry.COLUMN_MAX_PRICE);
+                        updateStatement.bindString(i++, market_name);
+                        updateStatement.bindString(i++, commodity_name);
+                        updateStatement.bindLong(i++, modal_price);
+                        updateStatement.bindString(i++, state_name);
+                        updateStatement.bindLong(i++, arrival_date);
+                        updateStatement.bindString(i++, district_name);
+                        updateStatement.bindLong(i++, min_price);
+                        updateStatement.bindString(i++, variety_name);
+                        updateStatement.bindLong(i++, max_price);
+
+                        updateStatement.bindString(i++, commodity_name);
+                        updateStatement.bindString(i++, variety_name);
+                        updateStatement.bindString(i++, market_name);
+                        updateStatement.bindString(i, district_name);
+
                         // the row is updated if the above four values are same
-                        int affected = db.update(
-                                CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
+                        final int affected = updateStatement.executeUpdateDelete();
+//                        int affected = db.update(
+//                                CommodityContract.CommodityDataEntry.TABLE_NAME, value, selection, selectionArgs);
                         if (affected == 0) { // only if no row was updated do the insert
-                            long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
+                            insertStatement.clearBindings();
+                            i = 1;
+                            insertStatement.bindString(i++, market_name);
+                            insertStatement.bindString(i++, commodity_name);
+                            insertStatement.bindLong(i++, modal_price);
+                            insertStatement.bindString(i++, state_name);
+                            insertStatement.bindLong(i++, arrival_date);
+                            insertStatement.bindString(i++, district_name);
+                            insertStatement.bindLong(i++, min_price);
+                            insertStatement.bindString(i++, variety_name);
+                            insertStatement.bindLong(i, max_price);
+                            final long _id = insertStatement.executeInsert();
+//                            long _id = db.insert(CommodityContract.CommodityDataEntry.TABLE_NAME, null, value);
                             if (_id != -1) {
                                 returnCount++;
                             }
                         }
+                        if (shouldGiveBulkInsertUpdates) dataFetchStatusProvider.updateWriteDbProgress(progressCount++, values.length, false);
                     }
                     db.setTransactionSuccessful();
                 } catch (SQLException e) {
