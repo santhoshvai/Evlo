@@ -63,7 +63,7 @@ ext {
     // version numbers
     junitVersion = '4.12'
     supportLibVersion = '27.0.2'
-    constraintLayoutVersion = '1.1.0-beta4'
+    constraintLayoutVersion = '1.0.2'
     firebaseVersion = '11.8.0'
     okhttp3Version = '3.8.1'
     simplexmlVersion = '2.7.1'
