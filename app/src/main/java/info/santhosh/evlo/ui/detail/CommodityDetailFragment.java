@@ -37,10 +37,12 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
@@ -163,6 +165,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
 
         private final AnimatedVectorDrawableCompat avd_from_down_arrow;
         private final AnimatedVectorDrawableCompat avd_from_up_arrow;
+        final Queue<List<Commodity>> pendingDiffUtilUpdates = new ArrayDeque<>();
 
         CommodityDetailAdapter() {
             avd_from_down_arrow = AnimatedVectorDrawableCompat.create(getContext(), R.drawable.avd_from_down_arrow);
@@ -262,7 +265,12 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                     if (pos != RecyclerView.NO_POSITION) {
                         final Commodity commodity = mCommodityList.get(pos);
                         commodity.setFavorite(!commodity.isFavorite());
-                        animateFavoriteSelect(vh, commodity.isFavorite());
+                        mRecyclerView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                animateFavoriteSelect(vh, commodity.isFavorite());
+                            }
+                        });
 
                         Snackbar.make(v,
                                 commodity.isFavorite() ? R.string.fav_added : R.string.fav_removed,
@@ -271,7 +279,12 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                                     @Override
                                     public void onClick(View v) {
                                         commodity.setFavorite(!commodity.isFavorite());
-                                        vh.mFav.setSelected(commodity.isFavorite());
+                                        mRecyclerView.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                vh.mFav.setSelected(commodity.isFavorite());
+                                            }
+                                        });
                                     }
                                 })
                                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -478,28 +491,46 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         }
     }
 
-    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<Commodity>>> {
+    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, List<Commodity>>> {
 
         Cursor mCursor;
         WeakReference<CommodityDetailAdapter> commodityAdapterWeakReference;
+        List<Commodity> pendingUpdateFromDiff;
 
         CursorToListAsyncTask(Cursor cursor, CommodityDetailAdapter commodityDetailAdapter) {
             mCursor = cursor;
             commodityAdapterWeakReference = new WeakReference<>(commodityDetailAdapter);
+            pendingUpdateFromDiff = null;
         }
 
+        CursorToListAsyncTask(List<Commodity> data, CommodityDetailAdapter commodityDetailAdapter) {
+            mCursor = null;
+            commodityAdapterWeakReference = new WeakReference<>(commodityDetailAdapter);
+            pendingUpdateFromDiff = data;
+        }
+
+
         @Override
-        protected Pair<DiffUtil.DiffResult, ArrayList<Commodity>> doInBackground(String... params) {
+        protected Pair<DiffUtil.DiffResult, List<Commodity>> doInBackground(String... params) {
             CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
             if(commodityDetailAdapter == null) return null;
 
             final List<Commodity> oldCommodityList = commodityDetailAdapter.getList();
-            ArrayList<Commodity> newCommodityList = new ArrayList<>(mCursor.getCount());
+            List<Commodity> newCommodityList;
 
-            mCursor.moveToFirst();
-            while(!mCursor.isAfterLast()) {
-                newCommodityList.add(Commodity.fromCursor(mCursor));
-                mCursor.moveToNext();
+            if (mCursor != null) {
+                newCommodityList = new ArrayList<>(mCursor.getCount());
+                mCursor.moveToFirst();
+                while(!mCursor.isAfterLast()) {
+                    newCommodityList.add(Commodity.fromCursor(mCursor));
+                    mCursor.moveToNext();
+                }
+            } else {
+                newCommodityList = this.pendingUpdateFromDiff;
+            }
+            commodityDetailAdapter.pendingDiffUtilUpdates.add(newCommodityList);
+            if (commodityDetailAdapter.pendingDiffUtilUpdates.size() > 1) {
+                return null;
             }
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CommodityDiffCallback(oldCommodityList, newCommodityList), false);
             return new Pair<>(diffResult, newCommodityList);
@@ -507,12 +538,17 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         }
 
         @Override
-        protected void onPostExecute(Pair<DiffUtil.DiffResult, ArrayList<Commodity>> pair) {
+        protected void onPostExecute(Pair<DiffUtil.DiffResult, List<Commodity>> pair) {
             CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
             if(commodityDetailAdapter == null) return;
+            if (pair == null) return;
 
-            commodityDetailAdapter.setList(pair.second);
+            commodityDetailAdapter.pendingDiffUtilUpdates.remove();
             pair.first.dispatchUpdatesTo(commodityDetailAdapter);
+            commodityDetailAdapter.setList(pair.second);
+            if (commodityDetailAdapter.pendingDiffUtilUpdates.size() > 0) {
+                new CursorToListAsyncTask(commodityDetailAdapter.pendingDiffUtilUpdates.peek(), commodityDetailAdapter).execute();
+            }
         }
     }
 }

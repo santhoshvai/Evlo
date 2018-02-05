@@ -34,8 +34,10 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ShareDialogFragment;
@@ -148,6 +150,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         private int mIsExpandedPosition = -1;
         private final AnimatedVectorDrawableCompat avd_from_down_arrow;
         private final AnimatedVectorDrawableCompat avd_from_up_arrow;
+        final Queue<List<Commodity>> pendingDiffUtilUpdates = new ArrayDeque<>();
 
         // dirty workaround for support library bug https://github.com/googlesamples/android-ConstraintLayoutExamples/issues/6
         private boolean shouldShowMorebutton = true;
@@ -196,6 +199,17 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
             }
         }
 
+        RecyclerView mRecyclerView;
+
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+
+            mRecyclerView = recyclerView;
+        }
+
+
         @Override
         public CommodityFavAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
@@ -218,14 +232,24 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                         final Commodity commodity = mCommodityList.get(pos);
                         if (commodity.isFavorite()) {
                             commodity.setFavorite(false);
-                            vh.mFav.setSelected(false);
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    vh.mFav.setSelected(false);
+                                }
+                            });
 
                             Snackbar.make(v, R.string.fav_removed, Snackbar.LENGTH_LONG)
                                     .setAction(R.string.undo, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             commodity.setFavorite(true);
-                                            vh.mFav.setSelected(true);
+                                            mRecyclerView.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    vh.mFav.setSelected(true);
+                                                }
+                                            });
                                         }
                                     })
                                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -427,27 +451,46 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<Commodity>>> {
+    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, List<Commodity>>> {
         Cursor mCursor;
         WeakReference<FavoritesFragment> favoritesFragmentWeakReference;
+        List<Commodity> pendingUpdateFromDiff;
 
         CursorToListAsyncTask(Cursor cursor, FavoritesFragment favoritesFragment) {
             mCursor = cursor;
             favoritesFragmentWeakReference = new WeakReference<>(favoritesFragment);
+            pendingUpdateFromDiff = null;
+        }
+
+        CursorToListAsyncTask(List<Commodity> data, FavoritesFragment favoritesFragment) {
+            mCursor = null;
+            favoritesFragmentWeakReference = new WeakReference<>(favoritesFragment);
+            pendingUpdateFromDiff = data;
         }
 
         @Override
-        protected Pair<DiffUtil.DiffResult, ArrayList<Commodity>> doInBackground(String... params) {
+        protected Pair<DiffUtil.DiffResult, List<Commodity>> doInBackground(String... params) {
             FavoritesFragment favoritesFragment = favoritesFragmentWeakReference.get();
             if(favoritesFragment == null) return null;
 
             final List<Commodity> oldCommodityList = favoritesFragment.commodityFavAdapter.getList();
-            ArrayList<Commodity> newCommodityList = new ArrayList<>(mCursor.getCount());
 
-            mCursor.moveToFirst();
-            while(!mCursor.isAfterLast()) {
-                newCommodityList.add(Commodity.fromCursor(mCursor));
-                mCursor.moveToNext();
+            List<Commodity> newCommodityList;
+            if (mCursor != null) {
+                newCommodityList = new ArrayList<>(mCursor.getCount());
+                mCursor.moveToFirst();
+                while(!mCursor.isAfterLast()) {
+                    newCommodityList.add(Commodity.fromCursor(mCursor));
+                    mCursor.moveToNext();
+                }
+            } else {
+                newCommodityList = this.pendingUpdateFromDiff;
+            }
+
+            Queue<List<Commodity>> pendingDiffUtilUpdates = favoritesFragment.commodityFavAdapter.pendingDiffUtilUpdates;
+            pendingDiffUtilUpdates.add(newCommodityList);
+            if (pendingDiffUtilUpdates.size() > 1) {
+                return null;
             }
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CommodityDiffCallback(oldCommodityList, newCommodityList), false);
             return new Pair<>(diffResult, newCommodityList);
@@ -455,13 +498,19 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         }
 
         @Override
-        protected void onPostExecute(Pair<DiffUtil.DiffResult, ArrayList<Commodity>> pair) {
+        protected void onPostExecute(Pair<DiffUtil.DiffResult, List<Commodity>> pair) {
             FavoritesFragment favoritesFragment = favoritesFragmentWeakReference.get();
             if(favoritesFragment == null) return;
-
             favoritesFragment.mRecyclerView.hideProgressView();
-            favoritesFragment.commodityFavAdapter.setList(pair.second);
+            if (pair == null) return;
+
+            Queue<List<Commodity>> pendingDiffUtilUpdates = favoritesFragment.commodityFavAdapter.pendingDiffUtilUpdates;
+            pendingDiffUtilUpdates.remove();
             pair.first.dispatchUpdatesTo(favoritesFragment.commodityFavAdapter);
+            favoritesFragment.commodityFavAdapter.setList(pair.second);
+            if (pendingDiffUtilUpdates.size() > 0) {
+                new CursorToListAsyncTask(pendingDiffUtilUpdates.peek(), favoritesFragment).execute();
+            }
         }
     }
 }
