@@ -24,6 +24,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -205,7 +206,6 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         @Override
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
             super.onAttachedToRecyclerView(recyclerView);
-
             mRecyclerView = recyclerView;
         }
 
@@ -231,37 +231,18 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                         // user removed from favs
                         final Commodity commodity = mCommodityList.get(pos);
                         if (commodity.isFavorite()) {
-                            commodity.setFavorite(false);
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    vh.mFav.setSelected(false);
-                                }
-                            });
+                            final int id = commodity.getId();
+                            // no need to send uri to constructor here,
+                            // because we use the favorite uri in the async task and that is automatically notified when there is a change
+                            new FavoriteAddorRemoveAsyncTask(getContext(), false)
+                                    .execute(id);
 
                             Snackbar.make(v, R.string.fav_removed, Snackbar.LENGTH_LONG)
                                     .setAction(R.string.undo, new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            commodity.setFavorite(true);
-                                            mRecyclerView.post(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    vh.mFav.setSelected(true);
-                                                }
-                                            });
-                                        }
-                                    })
-                                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                        @Override
-                                        public void onDismissed(Snackbar transientBottomBar, int event) {
-                                            super.onDismissed(transientBottomBar, event);
-                                            if (!commodity.isFavorite()) {
-                                                new FavoriteAddorRemoveAsyncTask(
-                                                        transientBottomBar.getContext(),
-                                                        false)
-                                                        .execute(commodity.getId());
-                                            }
+                                            new FavoriteAddorRemoveAsyncTask(getContext(), true)
+                                                    .execute(id);
                                         }
                                     })
                                     .show();

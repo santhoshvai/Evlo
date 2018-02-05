@@ -27,6 +27,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -264,37 +265,30 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                     final int pos = vh.getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION) {
                         final Commodity commodity = mCommodityList.get(pos);
-                        commodity.setFavorite(!commodity.isFavorite());
+                        final boolean isFavorite = commodity.isFavorite();
+                        final Uri uri = CommodityContract.CommodityDataEntry.buildCommodityNameDetailUri(mCommodityName);
+                        final int id = commodity.getId();
                         mRecyclerView.post(new Runnable() {
                             @Override
                             public void run() {
-                                animateFavoriteSelect(vh, commodity.isFavorite());
+                                animateFavoriteSelect(vh, !isFavorite);
+                                new FavoriteAddorRemoveAsyncTask(
+                                        getContext(),
+                                        !isFavorite, uri)
+                                        .execute(id);
                             }
                         });
 
                         Snackbar.make(v,
-                                commodity.isFavorite() ? R.string.fav_added : R.string.fav_removed,
+                                isFavorite ? R.string.fav_removed: R.string.fav_added,
                                 Snackbar.LENGTH_LONG)
                                 .setAction(R.string.undo, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        commodity.setFavorite(!commodity.isFavorite());
-                                        mRecyclerView.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                vh.mFav.setSelected(commodity.isFavorite());
-                                            }
-                                        });
-                                    }
-                                })
-                                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                                    @Override
-                                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                                        super.onDismissed(transientBottomBar, event);
                                         new FavoriteAddorRemoveAsyncTask(
-                                                transientBottomBar.getContext(),
-                                                commodity.isFavorite())
-                                                .execute(commodity.getId());
+                                                getContext(),
+                                                isFavorite, uri)
+                                                .execute(id);
                                     }
                                 })
                                 .show();
@@ -345,6 +339,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             } else {
                 Commodity commodity = mCommodityList.get(position);
                 if (payloads.contains(CommodityDiffCallback.FAVORITE_PAYLOAD)) {
+                    Log.d("test", "payload");
                     animateFavoriteSelect(holder, commodity.isFavorite());
                 }
             }
