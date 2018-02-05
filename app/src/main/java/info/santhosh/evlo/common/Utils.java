@@ -1,6 +1,7 @@
 package info.santhosh.evlo.common;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -22,8 +23,11 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import info.santhosh.evlo.R;
 
@@ -165,4 +169,37 @@ public class Utils {
         return returnedBitmap;
     }
 
+    /**
+     * Source: https://github.com/aws/aws-sdk-android/blob/master/aws-android-sdk-pinpoint/src/main/java/com/amazonaws/mobileconnectors/pinpoint/targeting/notification/AppUtil.java
+     * @return true if the application is in the foreground, otherwise return false.
+     */
+    public static boolean isAppInForeground(Context context) {
+        Context applicationContext = context.getApplicationContext();
+        // Gets a list of running processes.
+        final ActivityManager am = (ActivityManager) applicationContext.getSystemService(Context.ACTIVITY_SERVICE);
+        if (am == null) return true; // unknown state, so assuming foreground
+        final List<ActivityManager.RunningAppProcessInfo> processes = am.getRunningAppProcesses();
+
+        // On some versions of android the first item in the list is what runs in the foreground, but this is not true
+        // on all versions. Check the process importance to see if the app is in the foreground.
+        final String packageName = applicationContext.getApplicationContext().getPackageName();
+        for (final ActivityManager.RunningAppProcessInfo appProcess : processes) {
+            final String processName = appProcess.processName;
+            if (ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND == appProcess.importance &&
+                    packageName.equals(processName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return is the current time between 9am - 9pm?
+     */
+    public static boolean isNowBetweenNineToNine() {
+        Calendar now = Calendar.getInstance(TimeZone.getDefault());
+        final int hour = now.get(Calendar.HOUR_OF_DAY);
+        return hour >= 9 && hour <= 21;
+    }
 }

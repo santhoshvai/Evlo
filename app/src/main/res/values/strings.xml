@@ -72,4 +72,13 @@
     <string name="unable_to_retry">"Unable to Retry. You seem to be offline. Check your connection"</string>
     <string name="something_went_wrong">"Something went wrong. Please check your connection or try again later."</string>
     <string name="retry">Retry</string>
+    <string name="price_updates_channel_title">Price Updates of Bookmarked Commodities</string>
+    <plurals name="update_prices_notif_title">
+        <item quantity="one">Price has been updated</item>
+        <item quantity="other">Prices have been updated</item>
+    </plurals>
+    <plurals name="update_prices_notif_description">
+        <item quantity="one">A Commodity that you bookmarked has been updated with its latest price. Tap to see it.</item>
+        <item quantity="other">%d Commodities that you bookmarked have been updated with their latest prices. Tap to see them.</item>
+    </plurals>
 </resources>

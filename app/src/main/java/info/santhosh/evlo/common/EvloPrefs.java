@@ -18,6 +18,7 @@ public class EvloPrefs {
     private static final String LAST_DELETION_DATE_TIMESTAMP = "LAST_DELETION_DATE_TIMESTAMP";
     private static final String IS_FIRST_RUN = "IS_FIRST_RUN";
     private static final String DATA_HAS_LOADED_ATLEAST_ONCE = "DATA_HAS_LOADED_ATLEAST_ONCE";
+    private static final String UNNOTIFIED_BOOKMARK_UPDATES = "UNNOTIFIED_BOOKMARK_UPDATES";
 
     private static final String TAG = "EvloPrefs";
 
@@ -90,6 +91,30 @@ public class EvloPrefs {
     public static void setDataHasLoadedAtleastOnce(Context context, boolean value) {
         final SharedPreferences.Editor editor = generalPreferences(context).edit();
         editor.putBoolean(DATA_HAS_LOADED_ATLEAST_ONCE, value);
+        editor.apply();
+    }
+
+    public static int getUnnotifiedBookmarkUpdates(Context context) {
+        return generalPreferences(context).getInt(UNNOTIFIED_BOOKMARK_UPDATES, 0);
+    }
+
+    /**
+     *
+     * @param context
+     * @param newUpdatesCount how many bookmarks have been updated?
+     * @return total number of unnotified updates
+     */
+    public static int updateUnnotifiedBookmarkUodates(Context context, int newUpdatesCount) {
+        int count = getUnnotifiedBookmarkUpdates(context) + newUpdatesCount;
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putInt(UNNOTIFIED_BOOKMARK_UPDATES, count);
+        editor.apply();
+        return count;
+    }
+
+    public static void resetUnnotifiedBookmarkUpdates(Context context) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putInt(UNNOTIFIED_BOOKMARK_UPDATES, 0);
         editor.apply();
     }
 }

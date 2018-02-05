@@ -14,7 +14,10 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+
 import info.santhosh.evlo.common.DataFetchStatusProvider;
+import info.santhosh.evlo.common.NotificationUtil;
 
 /**
  * Created by santhoshvai on 16/03/16.
@@ -375,6 +378,7 @@ public class CommodityProvider extends ContentProvider {
                 DataFetchStatusProvider dataFetchStatusProvider = DataFetchStatusProvider.getInstance(getContext());
                 boolean shouldGiveBulkInsertUpdates = dataFetchStatusProvider.shouldGiveBulkInsertUpdates();
                 int progressCount = 1;
+                int totalupdates = 0;
                 try {
                     for (ContentValues value : values) {
                         updateStatement.clearBindings();
@@ -424,14 +428,18 @@ public class CommodityProvider extends ContentProvider {
                             if (_id != -1) {
                                 returnCount++;
                             }
+                        } else {
+                            totalupdates++;
                         }
                         if (shouldGiveBulkInsertUpdates) dataFetchStatusProvider.updateWriteDbProgress(progressCount++, values.length, false);
                     }
                     db.setTransactionSuccessful();
                 } catch (SQLException e) {
+                    Crashlytics.logException(e);
                     Log.e(TAG, "BulkInsert", e);
                 } finally {
                     db.endTransaction();
+                    NotificationUtil.notifyBookmarkPriceUpdatesIfNeeded(getContext(), totalupdates);
                 }
                 notifyChange(getContext(), uri);
                 return returnCount;
