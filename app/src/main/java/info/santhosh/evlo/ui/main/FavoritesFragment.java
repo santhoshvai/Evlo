@@ -506,8 +506,8 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
             Queue<List<Commodity>> pendingDiffUtilUpdates = favoritesFragment.commodityFavAdapter.pendingDiffUtilUpdates;
             pendingDiffUtilUpdates.remove();
-            pair.first.dispatchUpdatesTo(favoritesFragment.commodityFavAdapter);
             favoritesFragment.commodityFavAdapter.setList(pair.second);
+            pair.first.dispatchUpdatesTo(favoritesFragment.commodityFavAdapter);
             if (pendingDiffUtilUpdates.size() > 0) {
                 new CursorToListAsyncTask(pendingDiffUtilUpdates.peek(), favoritesFragment).execute();
             }

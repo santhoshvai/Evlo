@@ -544,8 +544,8 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
             if (pair == null) return;
 
             commodityDetailAdapter.pendingDiffUtilUpdates.remove();
-            pair.first.dispatchUpdatesTo(commodityDetailAdapter);
             commodityDetailAdapter.setList(pair.second);
+            pair.first.dispatchUpdatesTo(commodityDetailAdapter);
             if (commodityDetailAdapter.pendingDiffUtilUpdates.size() > 0) {
                 new CursorToListAsyncTask(commodityDetailAdapter.pendingDiffUtilUpdates.peek(), commodityDetailAdapter).execute();
             }
