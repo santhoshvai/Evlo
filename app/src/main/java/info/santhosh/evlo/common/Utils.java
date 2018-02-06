@@ -3,6 +3,7 @@ package info.santhosh.evlo.common;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,6 +12,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -201,5 +204,17 @@ public class Utils {
         Calendar now = Calendar.getInstance(TimeZone.getDefault());
         final int hour = now.get(Calendar.HOUR_OF_DAY);
         return hour >= 9 && hour <= 21;
+    }
+
+    public static void composeEmail(Activity activity, String address, String subject) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { address });
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (intent.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivity(intent);
+        } else {
+            Toast.makeText(activity, R.string.error_feedback_no_activity,Toast.LENGTH_LONG).show();
+        }
     }
 }

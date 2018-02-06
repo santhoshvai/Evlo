@@ -73,6 +73,10 @@
     <string name="something_went_wrong">"Something went wrong. Please check your connection or try again later."</string>
     <string name="retry">Retry</string>
     <string name="price_updates_channel_title">Price Updates of Bookmarked Commodities</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="feedback_subject">Feedback About Evlo App</string>
+    <string name="feedback_email">devforbillions@gmail.com</string>
+    <string name="error_feedback_no_activity">Error - Couldn\'t find any apps that can email feedback to the Evlo app developer</string>
     <plurals name="update_prices_notif_title">
         <item quantity="one">Price has been updated</item>
         <item quantity="other">Prices have been updated</item>

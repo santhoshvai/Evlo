@@ -1,6 +1,8 @@
 package info.santhosh.evlo.ui.main;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.transition.AutoTransition;
@@ -194,6 +196,11 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getString(R.string.faq));
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
                 startActivity(new Intent(this, FaqActivity.class));
+                return true;
+            case R.id.sendFeedback:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getString(R.string.send_feedback));
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
+                Utils.composeEmail(this, getString(R.string.feedback_email), getString(R.string.feedback_subject));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
