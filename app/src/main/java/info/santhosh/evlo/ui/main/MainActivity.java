@@ -22,6 +22,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.EvloPrefs;
+import info.santhosh.evlo.common.RateAskDialogFragment;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.DeleteDb;
 import info.santhosh.evlo.data.scheduleJobs.CommodityJob;

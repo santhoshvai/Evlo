@@ -19,6 +19,10 @@ public class EvloPrefs {
     private static final String IS_FIRST_RUN = "IS_FIRST_RUN";
     private static final String DATA_HAS_LOADED_ATLEAST_ONCE = "DATA_HAS_LOADED_ATLEAST_ONCE";
     private static final String UNNOTIFIED_BOOKMARK_UPDATES = "UNNOTIFIED_BOOKMARK_UPDATES";
+    private static final String APP_OPEN_COUNT = "APP_OPEN_COUNT";
+    private static final String APP_OPEN_DATE_MILLIS = "APP_OPEN_DATE_MILLIS";
+    private static final String APP_RATING_OPENED = "APP_RATING_OPENED";
+    private static final String APP_RATING_CHECK_MULTIPLIER_COUNT = "APP_RATING_CHECK_MULTIPLIER_COUNT";
 
     private static final String TAG = "EvloPrefs";
 
@@ -91,6 +95,46 @@ public class EvloPrefs {
     public static void setDataHasLoadedAtleastOnce(Context context, boolean value) {
         final SharedPreferences.Editor editor = generalPreferences(context).edit();
         editor.putBoolean(DATA_HAS_LOADED_ATLEAST_ONCE, value);
+        editor.apply();
+    }
+
+    public static boolean getAppRatingOpened(Context context) {
+        return generalPreferences(context).getBoolean(APP_RATING_OPENED, false);
+    }
+
+    public static void setAppRatingOpened(Context context, boolean value) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putBoolean(APP_RATING_OPENED, value);
+        editor.apply();
+    }
+
+    public static int getAppOpenCount(Context context) {
+        return generalPreferences(context).getInt(APP_OPEN_COUNT, 0);
+    }
+
+    public static void setAppOpenCount(Context context, int value) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putInt(APP_OPEN_COUNT, value);
+        editor.apply();
+    }
+
+    public static int getAppCheckMultiplierCount(Context context) {
+        return generalPreferences(context).getInt(APP_RATING_CHECK_MULTIPLIER_COUNT, 1);
+    }
+
+    public static void setAppCheckMultiplierCount(Context context, int value) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putInt(APP_RATING_CHECK_MULTIPLIER_COUNT, value);
+        editor.apply();
+    }
+
+    public static long getAppOpenDateMillis(Context context) {
+        return generalPreferences(context).getLong(APP_OPEN_DATE_MILLIS, 0);
+    }
+
+    public static void setAppOpenDateMillis(Context context, long value) {
+        final SharedPreferences.Editor editor = generalPreferences(context).edit();
+        editor.putLong(APP_OPEN_DATE_MILLIS, value);
         editor.apply();
     }
 

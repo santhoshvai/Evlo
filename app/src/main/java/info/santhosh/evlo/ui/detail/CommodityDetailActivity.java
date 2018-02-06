@@ -14,6 +14,7 @@ import com.google.android.gms.ads.MobileAds;
 
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.RateAskDialogFragment;
 
 public class CommodityDetailActivity extends AppCompatActivity {
 
@@ -57,4 +58,12 @@ public class CommodityDetailActivity extends AppCompatActivity {
         return intent;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // ask the user for a review
+        if (RateAskDialogFragment.shouldShow(this)) {
+            RateAskDialogFragment.start(this);
+        }
+    }
 }

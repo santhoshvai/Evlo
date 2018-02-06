@@ -77,6 +77,11 @@
     <string name="feedback_subject">Feedback About Evlo App</string>
     <string name="feedback_email">devforbillions@gmail.com</string>
     <string name="error_feedback_no_activity">Error - Couldn\'t find any apps that can email feedback to the Evlo app developer</string>
+    <string name="rate_ask_title">Enjoying Evlo?</string>
+    <string name="rate_ask_description">Recommend Evlo to others by leaving us a review in the play store</string>
+    <string name="rate_positive">Yes, Rate it now</string>
+    <string name="rate_negative">No, Send Feedback</string>
+    <string name="rate_neutral">Dismiss</string>
     <plurals name="update_prices_notif_title">
         <item quantity="one">Price has been updated</item>
         <item quantity="other">Prices have been updated</item>
