@@ -439,7 +439,7 @@ public class CommodityProvider extends ContentProvider {
                     Log.e(TAG, "BulkInsert", e);
                 } finally {
                     db.endTransaction();
-                    NotificationUtil.notifyBookmarkPriceUpdatesIfNeeded(getContext(), totalupdates);
+//                    NotificationUtil.notifyBookmarkPriceUpdatesIfNeeded(getContext(), totalupdates);
                 }
                 notifyChange(getContext(), uri);
                 return returnCount;
