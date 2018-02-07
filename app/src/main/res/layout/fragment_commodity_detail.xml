@@ -1,22 +1,24 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="info.santhosh.evlo.ui.detail.CommodityDetailFragment">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/commodity_detail_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@color/white"
+        app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/commodity_card_row" />
 
     <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
         android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
         ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/AD_DETAIL_SCREEN_UNIT_ID" />
-</FrameLayout>
+</LinearLayout>

@@ -5,13 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <info.santhosh.evlo.widget.EmptyRecyclerView
-        android:id="@+id/fav_rv"
-        tools:visibility="gone"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/commodity_card_row" />
+        android:orientation="vertical">
+
+        <info.santhosh.evlo.widget.EmptyRecyclerView
+            android:id="@+id/fav_rv"
+            tools:visibility="gone"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/commodity_card_row" />
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="gone"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="@string/AD_FAVORITES_SCREEN_UNIT_ID" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,12 +69,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
-    <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:visibility="gone"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="@string/AD_FAVORITES_SCREEN_UNIT_ID" />
 </FrameLayout>
