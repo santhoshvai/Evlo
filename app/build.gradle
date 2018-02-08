@@ -74,6 +74,7 @@ ext {
     protoModelVersion = '1.2-SNAPSHOT'
     crashlyticsVersion = '2.6.8'
     recyclerViewAnimatorsVersion = '2.2.7'
+    materialIntroViewVersion = '1.6.0'
 }
 
 dependencies {
@@ -98,6 +99,7 @@ dependencies {
 
     // ui
     implementation "ca.barrenechea.header-decor:header-decor:${stickyHeaderVersion}"
+    implementation "com.github.iammert:MaterialIntroView:${materialIntroViewVersion}"
 
     // okhttp
     implementation "com.squareup.okhttp3:okhttp:${okhttp3Version}"

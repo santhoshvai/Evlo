@@ -1,8 +1,6 @@
 package info.santhosh.evlo.ui.main;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.transition.AutoTransition;
@@ -10,7 +8,6 @@ import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,12 +16,14 @@ import android.widget.FrameLayout;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import co.mobiwise.materialintro.shape.Focus;
+import co.mobiwise.materialintro.shape.FocusGravity;
+import co.mobiwise.materialintro.shape.ShapeType;
+import co.mobiwise.materialintro.view.MaterialIntroView;
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.EvloPrefs;
-import info.santhosh.evlo.common.RateAskDialogFragment;
 import info.santhosh.evlo.common.Utils;
-import info.santhosh.evlo.data.DeleteDb;
 import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
 import info.santhosh.evlo.ui.faq.FaqActivity;
 import info.santhosh.evlo.ui.intro.IntroActivity;
@@ -64,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         // search bar
         mSearchToolbar = (SearchToolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mSearchToolbar);
+
 
         // just delegate the search icon click to action clicking the toolbar
         mSearchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -213,7 +213,20 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == INTRO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 EvloPrefs.setIsFirstRun(this, false);
-                Log.d(TAG, "onActivityResult: ");
+                //        new PreferencesManager(this).reset("search_bar");
+
+                new MaterialIntroView.Builder(this)
+                        .enableIcon(false)
+                        .setFocusGravity(FocusGravity.LEFT)
+                        .setFocusType(Focus.NORMAL)
+                        .setDelayMillis(500)
+                        .enableFadeAnimation(true)
+                        .performClick(true)
+                        .setInfoText("Hi There! Start by searching for commodities, Tap on the search bar.")
+                        .setShape(ShapeType.CIRCLE)
+                        .setTarget(mSearchToolbar)
+                        .setUsageId("search_bar") //THIS SHOULD BE UNIQUE ID
+                        .show();
             } else {
                 finish();
             }
