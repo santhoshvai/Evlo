@@ -133,10 +133,15 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() > 0) mAdView.setVisibility(View.VISIBLE);
-        else mAdView.setVisibility(View.GONE);
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
         new CursorToListAsyncTask(data, this).execute();
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (data.getCount() > 0) mAdView.setVisibility(View.VISIBLE);
+                else mAdView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
