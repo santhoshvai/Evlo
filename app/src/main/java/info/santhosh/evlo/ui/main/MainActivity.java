@@ -198,10 +198,10 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
                 startActivity(new Intent(this, FaqActivity.class));
                 return true;
-            case R.id.sendFeedback:
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getString(R.string.send_feedback));
+            case R.id.contactUs:
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getString(R.string.contact_us));
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
-                Utils.composeEmail(this, getString(R.string.feedback_email), getString(R.string.feedback_subject));
+                Utils.composeEmail(this, getString(R.string.feedback_email), getString(R.string.contact_us_subject));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

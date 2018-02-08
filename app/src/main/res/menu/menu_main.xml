@@ -8,7 +8,7 @@
     <item android:id="@+id/disclaimer"
         android:title="@string/disclaimer"
         app:showAsAction="never" />
-    <item android:id="@+id/sendFeedback"
-        android:title="@string/send_feedback"
+    <item android:id="@+id/contactUs"
+        android:title="@string/contact_us"
         app:showAsAction="never" />
 </menu>

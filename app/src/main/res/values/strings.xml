@@ -73,8 +73,8 @@
     <string name="something_went_wrong">"Something went wrong. Please check your connection or try again later."</string>
     <string name="retry">Retry</string>
     <string name="price_updates_channel_title">Price Updates of Bookmarked Commodities</string>
-    <string name="send_feedback">Send Feedback</string>
-    <string name="feedback_subject">Feedback About Evlo App</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="contact_us_subject">Contact regarding Evlo App</string>
     <string name="feedback_email">devforbillions@gmail.com</string>
     <string name="error_feedback_no_activity">Error - Couldn\'t find any apps that can email feedback to the Evlo app developer</string>
     <string name="rate_ask_title">Enjoying Evlo?</string>
@@ -82,6 +82,7 @@
     <string name="rate_positive">Yes, Rate it now</string>
     <string name="rate_negative">No, Send Feedback</string>
     <string name="rate_neutral">Dismiss</string>
+    <string name="bookmark_intro_helper">Tap on bookmark to pin the commodity information to the home screen.</string>
     <plurals name="update_prices_notif_title">
         <item quantity="one">Price has been updated</item>
         <item quantity="other">Prices have been updated</item>
