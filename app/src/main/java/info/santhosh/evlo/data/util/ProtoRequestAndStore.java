@@ -10,6 +10,7 @@ import com.evernote.android.job.Job;
 import java.io.IOException;
 import java.io.InputStream;
 
+import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.common.DataFetchStatusProvider;
 import info.santhosh.evlo.common.EvloPrefs;
 import info.santhosh.evlo.common.WriteDb;
@@ -25,8 +26,6 @@ import okhttp3.Response;
 
 public final class ProtoRequestAndStore {
     static final String TAG = "ProtoRequestAndStore";
-//    private static final String PROTO_URL = "https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1";
-    private static final String PROTO_URL = "https://s3.ap-south-1.amazonaws.com/evlo-proto/commodities_proto.bin";
 
     @WorkerThread
     public static Job.Result synchronousProtoRequest(Context context) {
@@ -55,7 +54,7 @@ public final class ProtoRequestAndStore {
 
         if (client == null) client = new OkHttpClient();
         Request requestProto = new Request.Builder()
-                .url( PROTO_URL )
+                .url(BuildConfig.PROTO_FETCH_URL)
                 .build();
         Response response = null;
 

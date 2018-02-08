@@ -35,12 +35,14 @@ android {
         debug {
             versionNameSuffix " Debug"
             buildConfigField("String", "AD_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\"")
+            buildConfigField("String", "PROTO_FETCH_URL", "\"https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1\"")
             resValue("string", "AD_DETAIL_SCREEN_UNIT_ID", "ca-app-pub-3940256099942544/6300978111")
             resValue("string", "AD_FAVORITES_SCREEN_UNIT_ID","ca-app-pub-3940256099942544/6300978111")
         }
 
         release {
             buildConfigField("String", "AD_APP_ID", "\"${ad_app_id}\"")
+            buildConfigField("String", "PROTO_FETCH_URL", "\"${proto_fetch_url}\"")
             resValue("string", "AD_DETAIL_SCREEN_UNIT_ID", "${ad_detail_screen_unit_id}")
             resValue("string", "AD_FAVORITES_SCREEN_UNIT_ID", "${ad_favorites_screen_unit_id}")
             signingConfig signingConfigs.debug // while release to play store, change this
