@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +20,6 @@ import android.view.View;
 import java.util.List;
 
 import info.santhosh.evlo.R;
-import info.santhosh.evlo.data.dbModels.Commodity;
 
 import static info.santhosh.evlo.common.Constants.SEVEN_DAYS_IN_MILLIS;
 
@@ -63,7 +61,7 @@ public class RateAskDialogFragment extends DialogFragment {
                         final int new_multiplier = EvloPrefs.getAppCheckMultiplierCount(getContext()) + 2;
                         EvloPrefs.setAppCheckMultiplierCount(getContext(), new_multiplier);
                         dismiss();
-                        Utils.composeEmail(getActivity(), getString(R.string.feedback_email), getString(R.string.feedback_subject));
+                        Utils.composeEmail(getActivity(), getString(R.string.feedback_email), getString(R.string.contact_us_subject));
                     }
                 });
             return builder.create();
