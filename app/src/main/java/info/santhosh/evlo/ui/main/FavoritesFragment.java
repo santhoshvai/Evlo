@@ -358,31 +358,6 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
             holder.mModalPrice.setText(Html.fromHtml(modal_price_text));
 
-            if (position == 1) {
-                final Activity activity = getActivity();
-                if (activity != null) {
-                    // new PreferencesManager(activity).reset("share");
-
-                    mRecyclerView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            new MaterialIntroView.Builder(activity)
-                                    .enableIcon(true)
-                                    .setFocusGravity(FocusGravity.CENTER)
-                                    .setFocusType(Focus.NORMAL)
-                                    .setDelayMillis(500)
-                                    .enableFadeAnimation(true)
-                                    .performClick(true)
-                                    .setInfoText(getString(R.string.share_btn_intro_helper))
-                                    .setShape(ShapeType.RECTANGLE)
-                                    .setTarget(holder.mShare)
-                                    .setUsageId("share") //THIS SHOULD BE UNIQUE ID
-                                    .show();
-                        }
-                    });
-                }
-            }
-
             if (!shouldShowMorebutton) {
                 holder.mDetail.setVisibility(View.GONE);
             }
