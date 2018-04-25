@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply from: "$project.rootDir/tools/script-git-version.gradle"
 apply plugin: 'io.fabric'
 
@@ -77,6 +79,8 @@ ext {
     crashlyticsVersion = '2.6.8'
     recyclerViewAnimatorsVersion = '2.2.7'
     materialIntroViewVersion = '1.6.0'
+    archLifeCycleExtensionsVersion = '1.1.1'
+    roomVersion = '1.0.0'
 }
 
 dependencies {
@@ -91,6 +95,11 @@ dependencies {
     implementation "com.android.support:design:${supportLibVersion}"
     implementation "com.android.support:customtabs:${supportLibVersion}"
     implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
+
+    // arch components
+    implementation "android.arch.lifecycle:extensions:${archLifeCycleExtensionsVersion}"
+    implementation "android.arch.persistence.room:runtime:${roomVersion}"
+    kapt "android.arch.persistence.room:compiler:${roomVersion}"
 
     // firebase
     implementation "com.google.firebase:firebase-core:${firebaseVersion}"
@@ -127,6 +136,12 @@ dependencies {
     // stetho - for inspecting networks and sqlite dbs
     debugImplementation "com.facebook.stetho:stetho:${stethoVersion}"
     implementation "jp.wasabeef:recyclerview-animators:${recyclerViewAnimatorsVersion}"
+
+    // kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}
