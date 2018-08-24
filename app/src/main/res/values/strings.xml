@@ -83,8 +83,6 @@
     <string name="rate_negative">No, Send Feedback</string>
     <string name="rate_neutral">Dismiss</string>
     <string name="bookmark_intro_helper">Tap on Bookmark to pin the commodity information to the home screen.</string>
-    <string name="share_btn_intro_helper">Tap on Share button to share this commodity information with your friends.</string>
-    <string name="more_btn_intro_helper">Tap on More button to see the detailed prices of this commodity.</string>
     <plurals name="update_prices_notif_title">
         <item quantity="one">Price has been updated</item>
         <item quantity="other">Prices have been updated</item>
