@@ -33,6 +33,7 @@ android {
 
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
             versionNameSuffix " Debug"
             buildConfigField("String", "AD_APP_ID", "\"ca-app-pub-3940256099942544~3347511713\"")
             buildConfigField("String", "PROTO_FETCH_URL", "\"https://www.dropbox.com/s/y80ip1cj3k0lds2/commodities_test?dl=1\"")
@@ -64,13 +65,14 @@ android {
 ext {
     // version numbers
     junitVersion = '4.12'
-    supportLibVersion = '27.0.2'
-    constraintLayoutVersion = '1.0.2'
-    firebaseVersion = '11.8.0'
+    supportLibVersion = '27.1.1'
+    constraintLayoutVersion = '1.1.2'
+    firebaseCoreVersion = '16.0.1'
+    firebaseAdsVersion = '15.0.1'
     okhttp3Version = '3.8.1'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.2'
-    leakCanaryVersion = '1.5.1'
+    leakCanaryVersion = '1.6.1'
     evernoteJobVersion = '1.2.2'
     stickyHeaderVersion = '0.2.8'
     protoModelVersion = 'c7c9f95840'
@@ -93,8 +95,8 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:${constraintLayoutVersion}"
 
     // firebase
-    implementation "com.google.firebase:firebase-core:${firebaseVersion}"
-    implementation "com.google.firebase:firebase-ads:${firebaseVersion}"
+    implementation "com.google.firebase:firebase-core:${firebaseCoreVersion}"
+    implementation "com.google.firebase:firebase-ads:${firebaseAdsVersion}"
 
     // job scheduler background compatibility
     implementation "com.evernote:android-job:${evernoteJobVersion}"

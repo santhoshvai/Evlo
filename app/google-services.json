@@ -1,0 +1,108 @@
+{
+  "project_info": {
+    "project_number": "263762258091",
+    "firebase_url": "https://evlo-51b95.firebaseio.com",
+    "project_id": "evlo-51b95",
+    "storage_bucket": "evlo-51b95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263762258091:android:deede92d9f21959e",
+        "android_client_info": {
+          "package_name": "info.santhosh.evlo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263762258091-uaar588jji2hlu5usov3gh3tk2tui4og.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.santhosh.evlo",
+            "certificate_hash": "b6b6b9041209328f44124998acc067fcbeadce1b"
+          }
+        },
+        {
+          "client_id": "263762258091-85e3ks3mfhe8snilt86374ncm9jkikpk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.santhosh.evlo",
+            "certificate_hash": "dd0935c97a89f3228f3f44e9a329bf4d53b2f4b6"
+          }
+        },
+        {
+          "client_id": "263762258091-af6j8en6u93kgmt0d3cdcutpt8sqlicr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa_cp2D5kL7sqVAYIGMMpXEXtGQG0Ncfw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "263762258091-af6j8en6u93kgmt0d3cdcutpt8sqlicr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-1682912146933324~9384541794"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263762258091:android:fdad31beb348592a",
+        "android_client_info": {
+          "package_name": "info.santhosh.evlo.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "263762258091-p6hjt83lq6uanufi29et55egjotqn106.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "info.santhosh.evlo.debug",
+            "certificate_hash": "b6b6b9041209328f44124998acc067fcbeadce1b"
+          }
+        },
+        {
+          "client_id": "263762258091-af6j8en6u93kgmt0d3cdcutpt8sqlicr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa_cp2D5kL7sqVAYIGMMpXEXtGQG0Ncfw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "263762258091-af6j8en6u93kgmt0d3cdcutpt8sqlicr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
