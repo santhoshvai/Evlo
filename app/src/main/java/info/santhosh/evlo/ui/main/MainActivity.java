@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-       if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
+       if (!EvloPrefs.getIsFirstRun(this) && getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
             FavoritesFragment favoritesFragment = FavoritesFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_fragment_container, favoritesFragment)

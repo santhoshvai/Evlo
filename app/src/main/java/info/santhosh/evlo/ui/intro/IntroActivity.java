@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.ConnectionStatusReceiver;
+import info.santhosh.evlo.common.EvloPrefs;
 import info.santhosh.evlo.common.Utils;
 
 public class IntroActivity extends AppCompatActivity implements ConnectionStatusReceiver.ConnectionReceivableActivity {
@@ -70,6 +71,7 @@ public class IntroActivity extends AppCompatActivity implements ConnectionStatus
 
     public void onGetStarted(View v) {
         if (setupDone) { // comes only after onLoadDone
+            EvloPrefs.setIsFirstRun(this, false);
             setResult(Activity.RESULT_OK);
             finish();
             overridePendingTransition(R.anim.fade_in, R.anim.slide_out_up);
