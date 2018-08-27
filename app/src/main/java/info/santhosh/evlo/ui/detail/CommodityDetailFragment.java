@@ -31,9 +31,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -73,6 +75,8 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     private CommodityDetailAdapter mCommodityDetailAdapter;
     RecyclerView mRecyclerView;
     private AdView mAdView;
+    boolean dataNotEmptyLoaded = false;
+    boolean adLoaded = false;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "CommodityDetailFragment.recycler.layout";
 
@@ -113,8 +117,30 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mAdView = rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                adLoaded = true;
+                if (dataNotEmptyLoaded) {
+                    mAdView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (mAdView != null) {
+            ViewParent parent = mAdView.getParent();
+            if (parent != null && parent instanceof ViewGroup) {
+                ((ViewGroup) parent).removeView(mAdView);
+            }
+            mAdView.destroy();
+            mAdView = null;
+        }
+        super.onDestroyView();
     }
 
     @Override
@@ -152,6 +178,13 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         new CursorToListAsyncTask(data, mCommodityDetailAdapter).execute();
+        // show ads only when we have data
+        dataNotEmptyLoaded = data.getCount() > 0;
+        if (dataNotEmptyLoaded && adLoaded) {
+            mAdView.setVisibility(View.VISIBLE);
+        } else {
+            mAdView.setVisibility(View.GONE);
+        }
     }
 
     @Override

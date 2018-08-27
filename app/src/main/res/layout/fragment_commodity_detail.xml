@@ -19,6 +19,8 @@
         android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        tools:visibility="visible"
+        android:visibility="gone"
         ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/AD_DETAIL_SCREEN_UNIT_ID" />
 </LinearLayout>

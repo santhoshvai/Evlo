@@ -29,9 +29,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -64,9 +66,12 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
 
     EmptyRecyclerView mRecyclerView;
 
+    static final String TAG = "FavoritesFragment";
     private static final int COMMODITY_FAV_LOADER = 1;
     CommodityFavAdapter commodityFavAdapter;
     private AdView mAdView;
+    boolean dataNotEmptyLoaded = false;
+    boolean adLoaded = false;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "FavoritesFragment.recycler.layout";
 
@@ -97,7 +102,29 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         mAdView = rootView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                adLoaded = true;
+                if (dataNotEmptyLoaded) {
+                    mAdView.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (mAdView != null) {
+            ViewParent parent = mAdView.getParent();
+            if (parent != null && parent instanceof ViewGroup) {
+                ((ViewGroup) parent).removeView(mAdView);
+            }
+            mAdView.destroy();
+            mAdView = null;
+        }
     }
 
     @Override
@@ -141,13 +168,13 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
         new CursorToListAsyncTask(data, this).execute();
-        mRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (data.getCount() > 0) mAdView.setVisibility(View.VISIBLE);
-                else mAdView.setVisibility(View.GONE);
-            }
-        });
+        // show ads only when we have data
+        dataNotEmptyLoaded = data.getCount() > 0;
+        if (dataNotEmptyLoaded && adLoaded) {
+            mAdView.setVisibility(View.VISIBLE);
+        } else {
+            mAdView.setVisibility(View.GONE);
+        }
     }
 
     @Override
