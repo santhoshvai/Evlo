@@ -33,6 +33,9 @@ import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.ads.consent.ConsentInfoUpdateListener;
+import com.google.ads.consent.ConsentInformation;
+import com.google.ads.consent.ConsentStatus;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -48,7 +51,9 @@ import co.mobiwise.materialintro.shape.Focus;
 import co.mobiwise.materialintro.shape.FocusGravity;
 import co.mobiwise.materialintro.shape.ShapeType;
 import co.mobiwise.materialintro.view.MaterialIntroView;
+import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.AdRequestor;
 import info.santhosh.evlo.common.ShareDialogFragment;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
@@ -72,6 +77,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     private AdView mAdView;
     boolean dataNotEmptyLoaded = false;
     boolean adLoaded = false;
+    private AdRequestor adRequestor;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "FavoritesFragment.recycler.layout";
 
@@ -97,12 +103,11 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 linearLayoutManager.getOrientation());
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_grey));
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(container.getContext(), R.drawable.divider_grey));
+
         mRecyclerView.addItemDecoration(dividerItemDecoration);
         mAdView = rootView.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.setAdListener(new AdListener() {
+        adRequestor = new AdRequestor(mAdView, new AdListener() {
             @Override
             public void onAdLoaded() {
                 adLoaded = true;
@@ -111,20 +116,12 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
                 }
             }
         });
+        adRequestor.start();
         return rootView;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (mAdView != null) {
-            ViewParent parent = mAdView.getParent();
-            if (parent != null && parent instanceof ViewGroup) {
-                ((ViewGroup) parent).removeView(mAdView);
-            }
-            mAdView.destroy();
-            mAdView = null;
-        }
+    public void changeAdSettings() {
+        adRequestor.showConsentForm();
     }
 
     @Override

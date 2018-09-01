@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.transition.AutoTransition;
 import android.support.transition.Transition;
 import android.support.transition.TransitionManager;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.Menu;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.ads.consent.ConsentInformation;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -183,6 +186,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean isEU = ConsentInformation.getInstance(this).isRequestLocationInEeaOrUnknown();
+        if (!isEU) {
+            menu.removeItem(R.id.changeAdSettings);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         Bundle bundle = new Bundle();
@@ -203,6 +215,13 @@ public class MainActivity extends AppCompatActivity {
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
                 Utils.composeEmail(this, getString(R.string.feedback_email), getString(R.string.contact_us_subject));
                 return true;
+            case R.id.changeAdSettings:
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
+                if (fragment instanceof FavoritesFragment) {
+                    ((FavoritesFragment) fragment).changeAdSettings();
+                } else {
+                    Crashlytics.logException(new IllegalStateException("User opted to change ad settings, but we couldnt find favorites fragment on the main activity"));
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

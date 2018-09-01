@@ -11,4 +11,7 @@
     <item android:id="@+id/contactUs"
         android:title="@string/contact_us"
         app:showAsAction="never" />
+    <item android:id="@+id/changeAdSettings"
+        android:title="@string/change_ad_settings"
+        app:showAsAction="never" />
 </menu>

@@ -55,6 +55,7 @@ import co.mobiwise.materialintro.shape.FocusGravity;
 import co.mobiwise.materialintro.shape.ShapeType;
 import co.mobiwise.materialintro.view.MaterialIntroView;
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.AdRequestor;
 import info.santhosh.evlo.common.ShareDialogFragment;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.CommodityContract;
@@ -75,6 +76,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     private CommodityDetailAdapter mCommodityDetailAdapter;
     RecyclerView mRecyclerView;
     private AdView mAdView;
+    private AdRequestor adRequestor;
     boolean dataNotEmptyLoaded = false;
     boolean adLoaded = false;
 
@@ -115,9 +117,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         mRecyclerView.addItemDecoration(new StickyHeaderDecoration(mCommodityDetailAdapter), 1);
 
         mAdView = rootView.findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-        mAdView.setAdListener(new AdListener() {
+        adRequestor = new AdRequestor(mAdView, new AdListener() {
             @Override
             public void onAdLoaded() {
                 adLoaded = true;
@@ -126,21 +126,9 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
                 }
             }
         });
+        adRequestor.start();
 
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        if (mAdView != null) {
-            ViewParent parent = mAdView.getParent();
-            if (parent != null && parent instanceof ViewGroup) {
-                ((ViewGroup) parent).removeView(mAdView);
-            }
-            mAdView.destroy();
-            mAdView = null;
-        }
-        super.onDestroyView();
     }
 
     @Override
