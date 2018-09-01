@@ -25,6 +25,7 @@ import co.mobiwise.materialintro.shape.ShapeType;
 import co.mobiwise.materialintro.view.MaterialIntroView;
 import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
+import info.santhosh.evlo.common.AnalyticsUtils;
 import info.santhosh.evlo.common.EvloPrefs;
 import info.santhosh.evlo.common.Utils;
 import info.santhosh.evlo.data.scheduleJobs.CommodityJob;
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int INTRO_REQUEST_CODE = 77;
 
     SearchToolbar mSearchToolbar;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     private static final int SEARCH_BAR_TRANSITION_DURATION = 200;
 
@@ -82,9 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 // Prepare the keyboard as soon as the user touches the Toolbar
                 // This will make the transition look faster
                 Utils.showKeyboard(MainActivity.this);
-                Bundle bundle = new Bundle();
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Search toolbar");
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                AnalyticsUtils.logItemSelection(MainActivity.this, "Search toolbar");
                 if (Utils.isAPI21Plus()) {
                     transitionToSearch();
                 } else { // use default animation on lower api's due to bad performance
@@ -102,11 +100,9 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         MobileAds.initialize(this, BuildConfig.AD_APP_ID);
 
         // schedule evernote jobs
-        // TODO: need to be done only once
         if (savedInstanceState == null) {
             CommodityJob.scheduleJobWhenCharging();
             CommodityJob.scheduleJobWhenNotChargingWiFiOnly();
@@ -198,30 +194,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        Bundle bundle = new Bundle();
         switch (item.getItemId()) {
             case R.id.disclaimer:
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getString(R.string.disclaimer));
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
+                AnalyticsUtils.logMenuClick(this, getString(R.string.disclaimer));
                 DisclaimerDialog.showDisclaimer(this);
                 return true;
             case R.id.faq:
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getString(R.string.faq));
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
+                AnalyticsUtils.logMenuClick(this, getString(R.string.faq));
                 startActivity(new Intent(this, FaqActivity.class));
                 return true;
             case R.id.contactUs:
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, getString(R.string.contact_us));
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu");
+                AnalyticsUtils.logMenuClick(this, getString(R.string.contact_us));
                 Utils.composeEmail(this, getString(R.string.feedback_email), getString(R.string.contact_us_subject));
                 return true;
             case R.id.changeAdSettings:
+                AnalyticsUtils.logMenuClick(this, getString(R.string.change_ad_settings));
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
                 if (fragment instanceof FavoritesFragment) {
                     ((FavoritesFragment) fragment).changeAdSettings();
                 } else {
-                    Crashlytics.logException(new IllegalStateException("User opted to change ad settings, but we couldnt find favorites fragment on the main activity"));
+                    Crashlytics.logException(
+                            new IllegalStateException("User opted to change ad settings, but we couldnt find favorites fragment on the main activity"));
                 }
             default:
                 return super.onOptionsItemSelected(item);
