@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-       if (!EvloPrefs.getIsFirstRun(this) && getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
+
+        if (getSupportFragmentManager().findFragmentById(R.id.main_fragment_container) == null) {
             FavoritesFragment favoritesFragment = FavoritesFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_fragment_container, favoritesFragment)
@@ -231,8 +232,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == INTRO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                EvloPrefs.setIsFirstRun(this, false);
-                //        new PreferencesManager(this).reset("search_bar");
 
                 new MaterialIntroView.Builder(this)
                         .enableIcon(false)
