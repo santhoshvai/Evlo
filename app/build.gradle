@@ -131,6 +131,8 @@ dependencies {
 
     // leak canary
     debugImplementation "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${leakCanaryVersion}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${leakCanaryVersion}"
 
     // stetho - for inspecting networks and sqlite dbs
     debugImplementation "com.facebook.stetho:stetho:${stethoVersion}"
