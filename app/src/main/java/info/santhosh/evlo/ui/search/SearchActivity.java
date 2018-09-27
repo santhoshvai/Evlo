@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
@@ -187,13 +188,14 @@ public class SearchActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         new CursorToListAsyncTask(data, this).execute();
+        // cursor close is handled by the cursor loader
     }
 
     // clean up any references to the now reset Loader data
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mCommodityAdapter.setList(null);
     }
 
@@ -224,7 +226,7 @@ public class SearchActivity extends AppCompatActivity
         }
 
         @Override
-        public CommodityAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public CommodityAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.commodity_list_content, parent, false);
             final CommodityAdapter.ViewHolder vh = new ViewHolder(view);
@@ -242,7 +244,7 @@ public class SearchActivity extends AppCompatActivity
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position, List<Object> payloads) {
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
             if (payloads.isEmpty()) {
                 onBindViewHolder(holder, position);
             } else {
@@ -257,7 +259,7 @@ public class SearchActivity extends AppCompatActivity
         }
 
         @Override
-        public void onBindViewHolder(final CommodityAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final CommodityAdapter.ViewHolder holder, int position) {
             final CommodityName commodity = mCommodityList.get(position);
             final String commodityName = commodity.getName();
 
@@ -433,35 +435,35 @@ public class SearchActivity extends AppCompatActivity
         }
     }
 
-    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, ArrayList<CommodityName>>> {
+    private static class CursorToListAsyncTask extends AsyncTask<String, Void, DiffUtil.DiffResult> {
 
-        Cursor mCursor;
         WeakReference<SearchActivity> searchActivityWeakReference;
+        ArrayList<CommodityName> newCommodities;
         String mFilterSearch;
 
         CursorToListAsyncTask(Cursor cursor, SearchActivity activity) {
-            mCursor = cursor;
             searchActivityWeakReference = new WeakReference<>(activity);
             mFilterSearch = activity.mFilterSearch;
+            if (cursor != null) {
+                newCommodities = new ArrayList<>(cursor.getCount());
+                cursor.moveToFirst();
+                while(!cursor.isAfterLast()) {
+                    newCommodities.add(SearchActivity.CommodityName.fromCursor(cursor));
+                    cursor.moveToNext();
+                }
+            }
         }
 
         @Override
-        protected Pair<DiffUtil.DiffResult, ArrayList<CommodityName>> doInBackground(String... params) {
+        protected DiffUtil.DiffResult doInBackground(String... params) {
             SearchActivity searchActivity = searchActivityWeakReference.get();
             if(searchActivity == null) return null;
+            if (newCommodities == null) return null;
 
             final List<CommodityName> oldCommodities = searchActivity.mCommodityAdapter.getList();
-            ArrayList<CommodityName> newCommodities = new ArrayList<>(mCursor.getCount());
-            mCursor.moveToFirst();
-            while(!mCursor.isAfterLast()) {
-                newCommodities.add(SearchActivity.CommodityName.fromCursor(mCursor));
-                mCursor.moveToNext();
-            }
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
+            return DiffUtil.calculateDiff(
                     new CommodityDiffCallback(oldCommodities, newCommodities,
                             searchActivity.mCommodityAdapter.getFilterSearch(), mFilterSearch), false);
-            return new Pair<>(diffResult, newCommodities);
-            // cursor close is handled by the cursor loader
         }
 
         @Override
@@ -470,14 +472,16 @@ public class SearchActivity extends AppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(Pair<DiffUtil.DiffResult, ArrayList<CommodityName>> pair) {
+        protected void onPostExecute(DiffUtil.DiffResult diffResult) {
             SearchActivity searchActivity = searchActivityWeakReference.get();
             if(searchActivity == null) return;
-
-            // TODO: the empty check is to not hide the bar on the first ever search fragment call, what if the user had no internet and nothing is displayed?
-            searchActivity.mCommodityAdapter.setList(pair.second);
+            if (diffResult == null) {
+                searchActivity.mRecyclerView.hideProgressView();
+                return;
+            }
+            searchActivity.mCommodityAdapter.setList(newCommodities);
             searchActivity.mCommodityAdapter.setmFilterSearch(mFilterSearch);
-            pair.first.dispatchUpdatesTo(searchActivity.mCommodityAdapter);
+            diffResult.dispatchUpdatesTo(searchActivity.mCommodityAdapter);
             searchActivity.mRecyclerView.hideProgressView();
         }
     }

@@ -1,18 +1,16 @@
 package info.santhosh.evlo.ui.detail;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.transition.TransitionManager;
@@ -31,12 +29,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.lang.ref.WeakReference;
@@ -49,7 +45,6 @@ import java.util.Queue;
 
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderAdapter;
 import ca.barrenechea.widget.recyclerview.decoration.StickyHeaderDecoration;
-import co.mobiwise.materialintro.prefs.PreferencesManager;
 import co.mobiwise.materialintro.shape.Focus;
 import co.mobiwise.materialintro.shape.FocusGravity;
 import co.mobiwise.materialintro.shape.ShapeType;
@@ -142,12 +137,13 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mRecyclerView = (RecyclerView) getView().findViewById(R.id.commodity_detail_list);
+        mRecyclerView = getView().findViewById(R.id.commodity_detail_list);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = CommodityContract.CommodityDataEntry.COLUMN_VARIETY + " ASC";
@@ -164,7 +160,7 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         new CursorToListAsyncTask(data, mCommodityDetailAdapter).execute();
         // show ads only when we have data
         dataNotEmptyLoaded = data.getCount() > 0;
@@ -173,10 +169,11 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         } else {
             mAdView.setVisibility(View.GONE);
         }
+        // cursor close will be done by the framework
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mCommodityDetailAdapter.setList(null);
     }
 
@@ -536,61 +533,51 @@ public class CommodityDetailFragment extends Fragment implements LoaderManager.L
         }
     }
 
-    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, List<Commodity>>> {
-
-        Cursor mCursor;
+    private static class CursorToListAsyncTask extends AsyncTask<String, Void, DiffUtil.DiffResult> {
         WeakReference<CommodityDetailAdapter> commodityAdapterWeakReference;
-        List<Commodity> pendingUpdateFromDiff;
+        List<Commodity> newCommodityList;
 
         CursorToListAsyncTask(Cursor cursor, CommodityDetailAdapter commodityDetailAdapter) {
-            mCursor = cursor;
             commodityAdapterWeakReference = new WeakReference<>(commodityDetailAdapter);
-            pendingUpdateFromDiff = null;
+            if (cursor != null) {
+                newCommodityList = new ArrayList<>(cursor.getCount());
+                cursor.moveToFirst();
+                while(!cursor.isAfterLast()) {
+                    newCommodityList.add(Commodity.fromCursor(cursor));
+                    cursor.moveToNext();
+                }
+            }
         }
 
         CursorToListAsyncTask(List<Commodity> data, CommodityDetailAdapter commodityDetailAdapter) {
-            mCursor = null;
             commodityAdapterWeakReference = new WeakReference<>(commodityDetailAdapter);
-            pendingUpdateFromDiff = data;
+            newCommodityList = data;
         }
 
 
         @Override
-        protected Pair<DiffUtil.DiffResult, List<Commodity>> doInBackground(String... params) {
+        protected DiffUtil.DiffResult doInBackground(String... params) {
             CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
             if(commodityDetailAdapter == null) return null;
+            if (newCommodityList == null) return null;
 
             final List<Commodity> oldCommodityList = commodityDetailAdapter.getList();
-            List<Commodity> newCommodityList;
-
-            if (mCursor != null) {
-                newCommodityList = new ArrayList<>(mCursor.getCount());
-                mCursor.moveToFirst();
-                while(!mCursor.isAfterLast()) {
-                    newCommodityList.add(Commodity.fromCursor(mCursor));
-                    mCursor.moveToNext();
-                }
-            } else {
-                newCommodityList = this.pendingUpdateFromDiff;
-            }
             commodityDetailAdapter.pendingDiffUtilUpdates.add(newCommodityList);
             if (commodityDetailAdapter.pendingDiffUtilUpdates.size() > 1) {
                 return null;
             }
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CommodityDiffCallback(oldCommodityList, newCommodityList), false);
-            return new Pair<>(diffResult, newCommodityList);
-            // cursor close is handled by the cursor loader
+            return DiffUtil.calculateDiff(new CommodityDiffCallback(oldCommodityList, newCommodityList), false);
         }
 
         @Override
-        protected void onPostExecute(Pair<DiffUtil.DiffResult, List<Commodity>> pair) {
+        protected void onPostExecute(DiffUtil.DiffResult diffResult) {
             CommodityDetailAdapter commodityDetailAdapter = commodityAdapterWeakReference.get();
             if(commodityDetailAdapter == null) return;
-            if (pair == null) return;
+            if (diffResult == null) return;
 
             commodityDetailAdapter.pendingDiffUtilUpdates.remove();
-            commodityDetailAdapter.setList(pair.second);
-            pair.first.dispatchUpdatesTo(commodityDetailAdapter);
+            commodityDetailAdapter.setList(newCommodityList);
+            diffResult.dispatchUpdatesTo(commodityDetailAdapter);
             if (commodityDetailAdapter.pendingDiffUtilUpdates.size() > 0) {
                 new CursorToListAsyncTask(commodityDetailAdapter.pendingDiffUtilUpdates.peek(), commodityDetailAdapter).execute();
             }

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -29,15 +30,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.ads.consent.ConsentInfoUpdateListener;
-import com.google.ads.consent.ConsentInformation;
-import com.google.ads.consent.ConsentStatus;
 import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import java.lang.ref.WeakReference;
@@ -45,13 +41,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-
-import co.mobiwise.materialintro.prefs.PreferencesManager;
-import co.mobiwise.materialintro.shape.Focus;
-import co.mobiwise.materialintro.shape.FocusGravity;
-import co.mobiwise.materialintro.shape.ShapeType;
-import co.mobiwise.materialintro.view.MaterialIntroView;
-import info.santhosh.evlo.BuildConfig;
 import info.santhosh.evlo.R;
 import info.santhosh.evlo.common.AdRequestor;
 import info.santhosh.evlo.common.ShareDialogFragment;
@@ -144,6 +133,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         super.onActivityCreated(savedInstanceState);
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         // sort by last added
@@ -163,7 +153,7 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, final Cursor data) {
         new CursorToListAsyncTask(data, this).execute();
         // show ads only when we have data
         dataNotEmptyLoaded = data.getCount() > 0;
@@ -172,10 +162,11 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         } else {
             mAdView.setVisibility(View.GONE);
         }
+        // cursor close will be done by the framework
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         commodityFavAdapter.setList(null);
     }
 
@@ -468,63 +459,57 @@ public class FavoritesFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    private static class CursorToListAsyncTask extends AsyncTask<String, Void, Pair<DiffUtil.DiffResult, List<Commodity>>> {
-        Cursor mCursor;
+    private static class CursorToListAsyncTask extends AsyncTask<String, Void, DiffUtil.DiffResult> {
         WeakReference<FavoritesFragment> favoritesFragmentWeakReference;
-        List<Commodity> pendingUpdateFromDiff;
+        List<Commodity> newCommodityList;
 
         CursorToListAsyncTask(Cursor cursor, FavoritesFragment favoritesFragment) {
-            mCursor = cursor;
             favoritesFragmentWeakReference = new WeakReference<>(favoritesFragment);
-            pendingUpdateFromDiff = null;
+            if (cursor != null) {
+                newCommodityList = new ArrayList<>(cursor.getCount());
+                cursor.moveToFirst();
+                while(!cursor.isAfterLast()) {
+                    newCommodityList.add(Commodity.fromCursor(cursor));
+                    cursor.moveToNext();
+                }
+            }
         }
 
         CursorToListAsyncTask(List<Commodity> data, FavoritesFragment favoritesFragment) {
-            mCursor = null;
             favoritesFragmentWeakReference = new WeakReference<>(favoritesFragment);
-            pendingUpdateFromDiff = data;
+            newCommodityList = data;
         }
 
         @Override
-        protected Pair<DiffUtil.DiffResult, List<Commodity>> doInBackground(String... params) {
+        protected DiffUtil.DiffResult doInBackground(String... params) {
             FavoritesFragment favoritesFragment = favoritesFragmentWeakReference.get();
             if(favoritesFragment == null) return null;
+            if (newCommodityList == null) return null;
 
             final List<Commodity> oldCommodityList = favoritesFragment.commodityFavAdapter.getList();
-
-            List<Commodity> newCommodityList;
-            if (mCursor != null) {
-                newCommodityList = new ArrayList<>(mCursor.getCount());
-                mCursor.moveToFirst();
-                while(!mCursor.isAfterLast()) {
-                    newCommodityList.add(Commodity.fromCursor(mCursor));
-                    mCursor.moveToNext();
-                }
-            } else {
-                newCommodityList = this.pendingUpdateFromDiff;
-            }
 
             Queue<List<Commodity>> pendingDiffUtilUpdates = favoritesFragment.commodityFavAdapter.pendingDiffUtilUpdates;
             pendingDiffUtilUpdates.add(newCommodityList);
             if (pendingDiffUtilUpdates.size() > 1) {
                 return null;
             }
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new CommodityDiffCallback(oldCommodityList, newCommodityList), false);
-            return new Pair<>(diffResult, newCommodityList);
-            // cursor close is handled by the cursor loader
+            return DiffUtil.calculateDiff(new CommodityDiffCallback(oldCommodityList, newCommodityList), false);
         }
 
         @Override
-        protected void onPostExecute(Pair<DiffUtil.DiffResult, List<Commodity>> pair) {
+        protected void onPostExecute(DiffUtil.DiffResult diffResult) {
             FavoritesFragment favoritesFragment = favoritesFragmentWeakReference.get();
             if(favoritesFragment == null) return;
-            favoritesFragment.mRecyclerView.hideProgressView();
-            if (pair == null) return;
+            if (diffResult == null) {
+                favoritesFragment.mRecyclerView.hideProgressView();
+                return;
+            }
 
             Queue<List<Commodity>> pendingDiffUtilUpdates = favoritesFragment.commodityFavAdapter.pendingDiffUtilUpdates;
             pendingDiffUtilUpdates.remove();
-            favoritesFragment.commodityFavAdapter.setList(pair.second);
-            pair.first.dispatchUpdatesTo(favoritesFragment.commodityFavAdapter);
+            favoritesFragment.commodityFavAdapter.setList(newCommodityList);
+            diffResult.dispatchUpdatesTo(favoritesFragment.commodityFavAdapter);
+            favoritesFragment.mRecyclerView.hideProgressView();
             if (pendingDiffUtilUpdates.size() > 0) {
                 new CursorToListAsyncTask(pendingDiffUtilUpdates.peek(), favoritesFragment).execute();
             }
