@@ -3,13 +3,12 @@ apply from: "$project.rootDir/tools/script-git-version.gradle"
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "info.santhosh.evlo"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode gitVersionCode
         versionName gitVersionName
         vectorDrawables.useSupportLibrary = true
@@ -67,7 +66,7 @@ android {
 ext {
     // version numbers
     junitVersion = '4.12'
-    supportLibVersion = '27.1.1'
+    supportLibVersion = '28.0.0'
     constraintLayoutVersion = '1.1.2'
     firebaseCoreVersion = '16.0.1'
     firebaseAdsVersion = '15.0.1'
