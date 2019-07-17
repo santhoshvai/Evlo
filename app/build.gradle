@@ -78,7 +78,7 @@ ext {
     stickyHeaderVersion = '0.2.8'
     protoModelVersion = 'c7c9f95840'
     crashlyticsVersion = '2.6.8'
-    recyclerViewAnimatorsVersion = '2.2.7'
+    recyclerViewAnimatorsVersion = '3.0.0'
     materialIntroViewVersion = '1.6.0'
     adConsentLibVersion = '1.0.6'
 }
