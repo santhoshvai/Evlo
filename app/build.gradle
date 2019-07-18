@@ -77,7 +77,7 @@ ext {
     evernoteJobVersion = '1.2.2'
     stickyHeaderVersion = '0.2.8'
     protoModelVersion = 'c7c9f95840'
-    crashlyticsVersion = '2.6.8'
+    crashlyticsVersion = '2.10.1'
     recyclerViewAnimatorsVersion = '2.2.7'
     materialIntroViewVersion = '1.6.0'
     adConsentLibVersion = '1.0.6'
