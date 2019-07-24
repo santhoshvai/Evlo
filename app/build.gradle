@@ -69,7 +69,7 @@ ext {
     supportLibVersion = '28.0.0'
     constraintLayoutVersion = '1.1.2'
     firebaseCoreVersion = '16.0.1'
-    firebaseAdsVersion = '15.0.1'
+    firebaseAdsVersion = '18.1.1'
     okhttp3Version = '3.8.1'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.4.2'
