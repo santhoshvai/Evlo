@@ -80,7 +80,7 @@ ext {
     crashlyticsVersion = '2.6.8'
     recyclerViewAnimatorsVersion = '2.2.7'
     materialIntroViewVersion = '1.6.0'
-    adConsentLibVersion = '1.0.6'
+    adConsentLibVersion = '1.0.7'
 }
 
 dependencies {
