@@ -70,7 +70,7 @@ ext {
     constraintLayoutVersion = '1.1.3'
     firebaseCoreVersion = '16.0.1'
     firebaseAdsVersion = '15.0.1'
-    okhttp3Version = '3.8.1'
+    okhttp3Version = '4.2.0'
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.5.1'
     leakCanaryVersion = '1.6.3'
