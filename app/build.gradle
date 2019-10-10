@@ -74,7 +74,7 @@ ext {
     simplexmlVersion = '2.7.1'
     stethoVersion = '1.5.1'
     leakCanaryVersion = '1.6.3'
-    evernoteJobVersion = '1.2.6'
+    evernoteJobVersion = '1.4.2'
     stickyHeaderVersion = '0.2.8'
     protoModelVersion = 'c7c9f95840'
     crashlyticsVersion = '2.6.8'
