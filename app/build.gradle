@@ -72,7 +72,7 @@ ext {
     firebaseAdsVersion = '15.0.1'
     okhttp3Version = '3.8.1'
     simplexmlVersion = '2.7.1'
-    stethoVersion = '1.5.1'
+    stethoVersion = '1.6.0'
     leakCanaryVersion = '1.6.3'
     evernoteJobVersion = '1.2.6'
     stickyHeaderVersion = '0.2.8'
